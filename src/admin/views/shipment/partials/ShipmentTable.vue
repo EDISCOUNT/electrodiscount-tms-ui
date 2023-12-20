@@ -33,7 +33,6 @@ const headers = [
 
 
 const itemsPerPage = ref(5);
-
 const search = ref('');
 const serverItems = ref([]);
 const loading = ref(true);

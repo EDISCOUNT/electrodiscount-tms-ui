@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer expand-on-hover rail>
+    <v-navigation-drawer color="primary" expand-on-hover rail>
 
         <!-- <v-container class="fill-height">
     <v-responsive class="align-center text-center fill-height"> -->
@@ -18,8 +18,11 @@
             <!-- <v-list-subheader>
                 Orders
             </v-list-subheader> -->
+            <v-divider/>
+            <v-list-item prepend-icon="mdi-label" title="Orders" :to="{ name: 'admin:order:index' }"
+                value="orders"></v-list-item>
             <v-list-item prepend-icon="mdi-tools" title="Additional Services"
-                :to="{ name: 'admin:order:additional_service:index' }" value="starred"></v-list-item>
+                :to="{ name: 'admin:order:additional_service:index' }" value="additional_service"></v-list-item>
         </v-list>
         <!-- </v-responsive>
 </v-container> -->

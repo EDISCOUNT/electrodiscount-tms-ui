@@ -37,4 +37,21 @@ export default class Channel {
         this.createdAt = data.createdAt;
         this.updatedAt = data.updatedAt;
     }
+
+
+    static fromJson(data: any): Channel {
+        return new Channel({
+            id: data.id,
+            code: data.code,
+            name: data.name,
+            type: data.type,
+            typeConfig: data.typeConfig,
+            metadata: data.metadata,
+            enabled: data.enabled,
+            shortDescription: data.shortDescription,
+            description: data.description,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+        });
+    }
 }

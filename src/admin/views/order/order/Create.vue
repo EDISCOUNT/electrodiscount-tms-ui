@@ -19,16 +19,16 @@
       </div>
     </v-card-title>
     <v-card-text class="pa-0">
-      <channel-form @save="(data) => save(data)" :type="props.type" :height="source ? 'calc(100vh - 80px)' : undefined"
+      <order-form @save="(data) => save(data)" :type="props.type" :height="source ? 'calc(100vh - 80px)' : undefined"
         :loading="isSaving" />
     </v-card-text>
   </v-card>
 </template>
 
 <script lang="ts" setup>
-import ChannelForm from './ChannelForm.vue';
+import OrderForm from './OrderForm.vue';
 import { ref } from 'vue';
-import { createChannel, ChannelFormData } from '@/admin/repository/channel/channel_repository';
+import { createOrder, OrderFormData } from '@/admin/repository/order/order_repository';
 import { getShipmentSourceById, getShipmentSourceByCode } from '@/admin/repository/shipment/shipment_source_repository';
 import useSWRV from 'swrv';
 
@@ -44,10 +44,10 @@ const { data: source, isValidating: loading, error } = useSWRV(
 
 
 const isSaving = ref(false);
-async function save(data: ChannelFormData) {
+async function save(data: OrderFormData) {
   try {
     isSaving.value = true;
-    const result = await createChannel(data);
+    const result = await createOrder(data);
 
   }
   catch (err) {

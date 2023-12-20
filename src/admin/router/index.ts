@@ -62,6 +62,35 @@ const routes = [
       },
     ]
   },
+  // >> ORDER
+  // >> ORDER >> ORDERS
+  {
+    path: 'order/orders',
+    name: 'admin:order',
+    component: () => import('@/admin/layouts/order/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin:order:index',
+        component: () => import('@/admin/views/order/order/Index.vue')
+
+      },
+      {
+        path: 'create',
+        name: 'admin:order:create',
+        component: () => import('@/admin/views/order/order/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:order:edit',
+        component: () => import('@/admin/views/order/order/Edit.vue'),
+        props: true
+
+      },
+    ]
+  },
+  // >> ORDER >> ADDITIONAL SERVICE
   {
     path: 'order/additional_services',
     name: 'admin:order:additional_service',
@@ -88,6 +117,7 @@ const routes = [
       },
     ]
   },
+  // 
   {
     path: 'shipment/shipments',
     name: 'admin:shipment',

@@ -15,7 +15,10 @@
                             </v-btn>
                         </template>
                         <v-card flat>
-                            <v-card-text class="pa-0">
+                            <v-card-subtitle>
+                                Create a new channel
+                            </v-card-subtitle>
+                            <v-card-text class="">
                                 <v-list>
                                     <div v-for="(type, i) in types" :key="type.code ?? i">
                                         <v-list-item :to="{ name: 'admin:channel:create', params: { type: type.code } }">
