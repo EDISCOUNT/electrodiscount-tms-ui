@@ -1,7 +1,10 @@
 import http from "@/admin/plugins/http";
+import Pagination from "@/data/pagination/pagination";
 import Channel from "@/model/channel/channel";
+import Shipment from "@/model/shipment/shipment";
 import Order from "@/model/order/order";
 import { encodeURLParams } from "@/utils/url";
+import Carrier from "@/model/carrier/carrier";
 
 export async function getPaginatedOrders({ page, limit, channel }: { page?: number, limit?: number, channel?: Channel | string } = {}) {
     if (channel) {
@@ -25,32 +28,54 @@ export async function getPaginatedOrders({ page, limit, channel }: { page?: numb
     }
 
 
-    function normalizePagination(pagination: any) {
-        return {
-            ...pagination,
-            items: pagination.items.map((data: any) => Order.fromJson(data))
-        }
+    function normalizePagination(data: any) {
+        const pagination = Pagination.fromJson<Order>({
+            ...data,
+            buildItem: (input) => Order.fromJson(input),
+        })
+        return pagination;
     }
 }
 
-export async function getOrderTypes() {
-    const { data } = await http.get(`/api/admin/order/order-types`);
+
+
+export async function getOrder(orderId: string, channelId: string) {
+    const { data } = await http.get(`/api/admin/channel/channels/${channelId}/orders/${orderId}`);
     return data;
 }
 
-export async function getOrder(id: string, channelId: string) {
-    const { data } = await http.get(`/api/admin/order/orders/${id}`);
-    return data;
-}
 
-
-export async function importShipment(order: Order) {
+export async function importShipment(order: Order, { carrier }: { carrier?: Carrier } = {}) {
     const id = order.channelOrderId;
     const channelId = order.channel?.id;
+    const input: Record<string, any> = {};
+    if (carrier) {
+        input.carrier = carrier.id;
+    }
     const { data } = await http.post(
-        `/api/admin/channel/channels/${channelId}/orders/${id}/import-shipment`,
+        `/api/admin/channel/channels/${channelId}/import-order/${id}`, input
     );
-    return data;
+    const shipment = Shipment.fromJson(data);
+    return shipment;
+}
+
+
+export async function bulkImportShipment(orders: (Order[])|(string[]), { channel, carrier }: { channel: Channel, carrier?: Carrier }) {
+    const ids = orders.map(order => (order instanceof Order)? order.channelOrderId : order);
+    const channelId = channel?.id;
+    const input: Record<string, any> = {
+        orders: ids,
+        // channel: channelId,
+    };
+    if (carrier) {
+        input.carrier = carrier.id;
+    }
+    const { data } = await http.post(
+        `/api/admin/channel/channels/${channelId}/bulk-import-order`, input
+    );
+    console.log("ORDER IMPORT RESULT: ", data);
+    // const shipment = Shipment.fromJson(data);
+    // return shipment;
 }
 
 // export async function createOrder(data: OrderFormData) {

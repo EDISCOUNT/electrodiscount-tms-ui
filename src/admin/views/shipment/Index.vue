@@ -7,13 +7,15 @@
                 </template>
 
                 <template v-slot:append>
-                   <create-shipment-button/>
+                    <create-shipment-button />
                 </template>
             </v-card>
 
+
+          
             <v-card class="mt-4 fill-height" flat>
                 <v-card-text>
-                    <shipment-table />
+                    <shipment-table show-select />
                 </v-card-text>
             </v-card>
 

@@ -1,19 +1,26 @@
 <template>
     <v-card height="100vh" color="secondary-bg" flat>
-        <v-card-text>
-            <v-card class="" flat>
+        <v-card-text >
+            <v-card class="" v-if="false" flat>
                 <template v-slot:title>
                     <span> Orders Index</span>
                 </template>
 
                 <template v-slot:append>
-                    <create-order-button/>
+                    <create-order-button />
                 </template>
             </v-card>
 
-            <v-card class="mt-4 fill-height" flat>
+            <!-- <v-card class="mt-4" flat>
+                <v-card-text>
+                    <order-filter-bar />
+                </v-card-text>
+            </v-card> -->
+
+
+            <v-card class="mt-0 fill-height" flat>
                 <!-- <v-card-text> -->
-                    <order-table />
+                <order-table />
                 <!-- </v-card-text> -->
             </v-card>
 
@@ -24,6 +31,7 @@
 <script lang="ts" setup>
 import OrderTable from './partials/OrderTable.vue';
 import CreateOrderButton from './partials/CreateOrderButton.vue';
+import OrderFilterBar from './partials/OrderFilterBar.vue';
 
 
 </script>

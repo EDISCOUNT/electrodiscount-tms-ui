@@ -1,28 +1,39 @@
 <template>
-  <v-card flat>
-    <v-card v-if="isLoading" flat>
-      <v-card-subtitle>
-        Please wait...
-      </v-card-subtitle>
-    </v-card>
+  <v-card height="100vh" color="secondary-bg" flat>
 
-    <v-card flat v-else-if="service">
-      <v-card-text v-if="error">
-        <v-alert type="error">
+    <v-row justify="center" align="center" class="fill-height" v-if="isLoading">
+      <v-card width="400px" flat>
+        <v-card-subtitle>
+          Please wait...
+        </v-card-subtitle>
+        <v-card-text>
+          <v-progress-linear indeterminate />
+        </v-card-text>
+      </v-card>
+    </v-row>
+    <v-row justify="center" align="center" class="fill-height" v-else-if="service">
+      <v-card flat>
+        <v-card-text v-if="error">
+          <v-alert type="error">
+            {{ error }}
+          </v-alert>
+        </v-card-text>
+        <v-card-text>
+          <additional-service-form @save="(data) => save(data)" :service="service" :loading="isSaving" />
+        </v-card-text>
+      </v-card>
+    </v-row>
+
+    <v-row justify="center" align="center" class="fill-height" v-else>
+      <v-card flat>
+        <v-card-title>
+          Seems and error occurred
+        </v-card-title>
+        <v-card-subtitle v-if="error">
           {{ error }}
-        </v-alert>
-      </v-card-text>
-      <addition-service-form @save="(data) => save(data)" :channel="service" :loading="isSaving" />
-    </v-card>
-
-    <v-card v-else flat>
-      <v-card-title>
-        Seems and error occurred
-      </v-card-title>
-      <v-card-subtitle v-if="error">
-        {{ error }}
-      </v-card-subtitle>
-    </v-card>
+        </v-card-subtitle>
+      </v-card>
+    </v-row>
   </v-card>
 </template>
 

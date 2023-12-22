@@ -4,7 +4,9 @@
 
         <v-row justify="center" align="center" class="fill-height">
             <v-card color="transparent" width="1000px" flat>
-
+                <v-card-text v-if="error" class="text-center">
+                    <v-alert type="error" dense>{{ error }}</v-alert>
+                </v-card-text>
                 <v-card-text>
                     <v-form ref="form">
                         <v-row justify="space-between">
@@ -65,7 +67,7 @@
 import Channel from '@/model/channel/channel';
 import { ChannelFormData } from '@/repository/channel/channel_repository';
 import { computed, defineProps, reactive, ref } from "vue";
-import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
+// import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 
@@ -82,8 +84,8 @@ const emit = defineEmits<{
     (e: 'save', data: FormData): void,
 }>();
 
-const createConfirm = useConfirm()
-const createSnackbar = useSnackbar();
+// const createConfirm = useConfirm()
+// const createSnackbar = useSnackbar();
 
 const { xs, smAndDown, mdAndUp } = useDisplay();
 
@@ -101,11 +103,13 @@ const data = reactive<ChannelFormData>({
 });
 
 const form = ref<VForm>();
+const error = ref<string>();
 
 
 
 async function save() {
     try {
+        error.value = undefined;
         const { valid, errors } = await form.value!.validate();
         if (!valid) {
             throw new Error(errors.toString());
@@ -114,7 +118,7 @@ async function save() {
     }
     catch (err) {
         const text = (err as any).message as string;
-        createSnackbar({ text });
+        // createSnackbar({ text });
         // error.value = text;
     }
     finally {

@@ -19,7 +19,7 @@
 
 
         <template v-slot:item.enabled="{ item: { enabled } }">
-            <v-chip color="primary" class="pl-1"  size="small">
+            <v-chip color="primary" class="pl-1" size="small">
                 <template v-slot:prepend>
                     <v-icon>{{ enabled ? 'mdi-check' : 'mdi-close' }}</v-icon>
                 </template>
@@ -63,21 +63,20 @@ const headers = [
 ];
 
 
-const itemsPerPage = ref(5);
+const itemsPerPage = ref(10);
 
 const search = ref('');
 const serverItems = ref<any[]>([]);
 const loading = ref(true);
 const totalItems = ref(0);
 
-
-async function loadItems({ page, itemsPerPage, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
-
+async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
     try {
         loading.value = true;
-
-        const channels = await getPaginatedChannels({ page, limit: itemsPerPage });
-        serverItems.value = [...serverItems.value, ...channels];
+        const pagination = await getPaginatedChannels({ page, limit });
+        serverItems.value = [...serverItems.value, ...pagination.items];
+        totalItems.value = pagination.pageInfo.totalItems;
+        itemsPerPage.value = pagination.pageInfo.perPage;
 
     }
     catch (err) {
@@ -86,6 +85,5 @@ async function loadItems({ page, itemsPerPage, sortBy }: { page?: number, itemsP
     finally {
         loading.value = false;
     }
-
 }
 </script>

@@ -139,7 +139,7 @@ import { computed } from 'vue';
 import { watch } from 'vue';
 import { onMounted } from 'vue';
 import { reactive, useSlots } from 'vue';
-import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
+// import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
 import AddressCoordinateMapInput from './AddressCoordinateMapInput.vue';
 import Coords from '@/model/addressing/coordinate';
 import { getCountries } from '@/utils/intl';
@@ -176,8 +176,8 @@ const props = defineProps({
 });
 const emit = defineEmits(['submit', 'cancel'])
 
-const createConfirm = useConfirm()
-const createSnackbar = useSnackbar();
+// const createConfirm = useConfirm()
+// const createSnackbar = useSnackbar();
 
 const { xs, smAndDown, mdAndUp } = useDisplay();
 
@@ -211,7 +211,7 @@ async function submit() {
     }
     catch (err) {
         const text = (err as any).message as string;
-        createSnackbar({ text });
+        // createSnackbar({ text });
         error.value = text;
     }
     finally {

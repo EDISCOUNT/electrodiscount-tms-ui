@@ -12,6 +12,21 @@
             </v-chip>
         </template>
 
+
+        <!-- <template v-slot:item.title="{ item }">
+            <span>{{ item }}</span>
+        </template> -->
+
+
+        <template v-slot:item.actions="{ item: { id } }">
+
+            <v-btn color="primary" :to="{ name: 'admin:order:additional_service:edit', params: { id } }" :elevation="0"
+                size="small">
+                <v-icon>mdi-pencil</v-icon>
+                Edit
+            </v-btn>
+        </template>
+
     </v-data-table-server>
 </template>
 
@@ -42,7 +57,7 @@ const headers = [
 ];
 
 
-const itemsPerPage = ref(5);
+const itemsPerPage = ref(10);
 
 const search = ref('');
 const serverItems = ref<any[]>([]);
@@ -50,12 +65,14 @@ const loading = ref(true);
 const totalItems = ref(0);
 
 
-async function loadItems({ page, itemsPerPage, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
-
+async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
     try {
         loading.value = true;
-        const services = await getPaginatedAdditionalServices({ page, limit: itemsPerPage });
-        serverItems.value = [...serverItems.value, ...services];
+        const pagination = await getPaginatedAdditionalServices({ page, limit });
+        serverItems.value = [...serverItems.value, ...pagination.items];
+        totalItems.value = pagination.pageInfo.totalItems;
+        itemsPerPage.value = pagination.pageInfo.perPage;
+
     }
     catch (err) {
         throw err;

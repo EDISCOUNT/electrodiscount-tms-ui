@@ -1,9 +1,14 @@
 import http from "@/admin/plugins/http";
+import Pagination from "@/data/pagination/pagination";
+import AdditionalService from "@/model/order/additional_service";
 
 export async function getPaginatedAdditionalServices({ page, limit, }: { page?: number, limit?: number } = {}) {
     const { data } = await http.get(`/api/admin/order/additional_services?page=${page ?? 1}&limit=${limit ?? 10}`);
-    console.log("DATA: ", data);
-    return data;
+    const pagination = Pagination.fromJson<AdditionalService>({
+        ...data,
+        buildItem: (input) => AdditionalService.fromJson(input),
+    })
+    return pagination;
 }
 
 export async function getAdditionalServiceTypes() {
@@ -41,9 +46,9 @@ export interface AdditionalServiceType {
 
 export interface AdditionalServiceFormData {
     code: string;
-    name: string;
+    title: string;
     // shortDescription: string;
-    description: string;
+    description?: string;
     // type: string;
     enabled: boolean;
     // metadata: { [i: string]: any };

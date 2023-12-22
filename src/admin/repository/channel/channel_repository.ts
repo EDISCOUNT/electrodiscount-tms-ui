@@ -1,9 +1,14 @@
 import http from "@/admin/plugins/http";
+import Pagination from "@/data/pagination/pagination";
+import Channel from "@/model/channel/channel";
 
 export async function getPaginatedChannels({ page, limit, }: { page?: number, limit?: number } = {}) {
     const { data } = await http.get(`/api/admin/channel/channels?page=${page ?? 1}&limit=${limit ?? 10}`);
-    console.log("DATA: ", data);
-    return data;
+    const pagination = Pagination.fromJson<Channel>({
+        ...data,
+        buildItem: (input) => Channel.fromJson(input),
+    })
+    return pagination;
 }
 
 export async function getChannelTypes() {

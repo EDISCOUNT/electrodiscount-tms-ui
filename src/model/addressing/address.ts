@@ -52,7 +52,7 @@ export default class Address {
         this.postcode = data.postcode;
         this.countryCode = data.countryCode;
         this.coordinates = data.coordinates;
-            this.arriveAt = data.arriveAt;
+        this.arriveAt = data.arriveAt;
         this.updatedAt = data.updatedAt; // You might want to specify the correct data type here
         this.createdAt = data.createdAt;
     }
@@ -66,7 +66,7 @@ export default class Address {
     }
 
     get label(): string {
-        return ` ${this.street ?? ''}, ${this.city ?? ''}, ${this.postcode ?? ''}, ${this.provinceCode ?? this.provinceName ?? ''}`;
+        return ` ${this.street ?? ''}, ${this.city ?? ''}, ${this.postcode ?? ''}, ${this.provinceCode ?? this.provinceName ?? this.countryCode ?? ''}`;
     }
 
     get formatted(): string {

@@ -1,9 +1,15 @@
 import http from "@/admin/plugins/http";
+import Pagination from "@/data/pagination/pagination";
+import ShipmentSource from "@/model/shipment/shipment_source";
 
 export async function getPaginatedShipmentSources({ page, limit, }: { page?: number, limit?: number } = {}) {
     const { data } = await http.get(`/api/admin/shipment/sources?page=${page ?? 1}&limit=${limit ?? 10}`);
-    // console.log("DATA: ", data);
-    return data;
+    console.log("PROVIDER PAGINATION DATA: ", data);
+    const pagination = Pagination.fromJson<ShipmentSource>({
+        ...data,
+        buildItem: (input) => ShipmentSource.fromJson(input),
+    })
+    return pagination;
 }
 
 

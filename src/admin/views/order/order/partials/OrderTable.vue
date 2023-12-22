@@ -1,16 +1,12 @@
 <template>
-    <!-- {{ {channels, loading, error} }} -->
-    <v-card :height="height ?? 'calc(100vh - 100px)'" color="secondary-bg" flat>
-        <!-- <v-card-text> -->
+    <v-card :height="height ?? 'calc(100vh - 0px)'" color="secondary-bg" flat>
 
-        <template v-if="channels">
-            <v-card v-if="channels.length" width="100%" flat>
-                <v-card-text class="pa-1">
-                    <!-- {{ channels }} -->
-
-                    <v-expansion-panels>
-                        <v-expansion-panel v-for="(channel) in channels" :key="channel.id">
-                            <v-expansion-panel-title>
+        <template v-if="pagination">
+            <v-card v-if="pagination.pageInfo.totalItems" width="100%" color="transparent" flat>
+                <v-card-title class="px-0">
+                    <v-card class="pa-3" flat>
+                        <v-tabs v-model="tab" r-bg-color="primary" align-tabs="start">
+                            <v-tab v-for="(channel) in pagination.items" :key="channel.id" :value="channel.id">
                                 <v-list-item>
                                     <template v-slot:prepend>
                                         <v-avatar>
@@ -20,24 +16,28 @@
                                     <template v-slot:title>
                                         {{ channel.name }}
                                     </template>
-                                    <template v-slot:subtitle>
+                                    <!-- <template v-slot:subtitle>
                                         {{ channel.typeConfig.subtitle }}
-                                    </template>
+                                    </template> -->
                                 </v-list-item>
-                            </v-expansion-panel-title>
-                            <v-expansion-panel-text>
-                                <channel-order-table :channel="channel" />
-                            </v-expansion-panel-text>
-                        </v-expansion-panel>
-                    </v-expansion-panels>
+                            </v-tab>
+                        </v-tabs>
+                    </v-card>
+                </v-card-title>
+
+                <v-card-text class="px-0">
+                    <v-card flat>
+                        <v-window v-model="tab">
+                            <v-window-item v-for="(channel) in pagination.items" :key="channel.id" :value="channel.id">
+                                <channel-order-table :channel="channel" show-select height="calc(100vh - 250px)"/>
+                            </v-window-item>
+                        </v-window>
+                    </v-card>
                 </v-card-text>
             </v-card>
-            <v-card v-else flat>
-                <v-card-title>
-                    <span>No Channels</span>
-                </v-card-title>
-            </v-card>
         </template>
+
+
 
         <v-row justify="center" align="center" class="fill-height" v-else-if="loading">
             <v-card width="400px" flat>
@@ -77,10 +77,12 @@ const props = defineProps<{
 
 
 
-const { data: channels, isValidating: loading, error } = useSWRV(
+const { data: pagination, isValidating: loading, error } = useSWRV(
     `/api/admin/channel/channels`,
     () => getPaginatedChannels(),
 );
 
+
+const tab = ref<any>();
 
 </script>

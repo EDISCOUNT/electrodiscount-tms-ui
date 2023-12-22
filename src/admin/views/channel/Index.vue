@@ -19,8 +19,8 @@
                                 Create a new channel
                             </v-card-subtitle>
                             <v-card-text class="">
-                                <v-list>
-                                    <div v-for="(type, i) in types" :key="type.code ?? i">
+                                <v-list v-if="pagination?.pageInfo">
+                                    <div v-for="(type, i) in pagination.items" :key="type.code ?? i">
                                         <v-list-item :to="{ name: 'admin:channel:create', params: { type: type.code } }">
                                             <template v-slot:prepend>
                                                 <v-avatar>
@@ -36,6 +36,16 @@
                                         </v-list-item>
                                     </div>
                                 </v-list>
+                                <v-card v-else-if="loading" flat>
+                                    <v-progress-circular indeterminate/>
+                                </v-card>
+                                <v-card v-else flat>
+                                    <v-card-text v-if="error">
+                                        <v-alert type="error">
+                                            {{ error }}
+                                        </v-alert>
+                                    </v-card-text>
+                                </v-card>
                             </v-card-text>
 
                         </v-card>
@@ -54,18 +64,26 @@
 </template>
 
 <script lang="ts" setup>
+import { getPaginatedShipmentSources } from '@/admin/repository/shipment/shipment_source_repository';
+import useSWRV from 'swrv';
 import ChannelTable from './partials/ChannelTable.vue';
 
 
+const { data: pagination, isValidating: loading, error } = useSWRV(
+    () => `/api/admin/shipment/sources`,
+    () => getPaginatedShipmentSources(),
+)
 
 
-const types = [
-    {
-        title: 'Bol.com',
-        subtitle: 'Bol.com Marketplace',
-        iconImage: 'http://localhost:8000/images/icons/bol.webp',
-        code: 'app.shipment.sourcing.source.bol_dot_com',
-    }
-]
+
+
+// const types = [
+//     {
+//         title: 'Bol.com',
+//         subtitle: 'Bol.com Marketplace',
+//         iconImage: 'http://localhost:8000/images/icons/bol.webp',
+//         code: 'app.shipment.sourcing.source.bol_dot_com',
+//     }
+// ]
 
 </script>

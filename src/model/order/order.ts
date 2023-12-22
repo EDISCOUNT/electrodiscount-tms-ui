@@ -2,16 +2,16 @@ import Address from "../addressing/address";
 import Channel from "../channel/channel";
 import OrderItem from "./order_item";
 
-export default class Order{
+export default class Order {
 
 
-    
+
     id?: string;
     code?: string;
     status?: string;
     currency?: string;
     _total?: number;
-    customerData: {[key: string]: string | null};
+    customerData: { [key: string]: string | null };
     paid: boolean;
     paidAt?: Date;
     metadata: { [key: string]: any };
@@ -21,17 +21,25 @@ export default class Order{
     billingAddress?: Address;
     channelOrderId?: string;
 
-    get total(): number  {
+    get total(): number {
 
-        if(this._total != null){
+        if (this._total != null) {
             return this._total;
         }
-        if(this.items.length == 0){
+        if (this.items.length == 0) {
             return 0;
         }
         return this.items.reduce((total, item) => {
             return total + item.total;
         }, 0);
+    }
+
+
+
+    get fulfilments() {
+        return this.items
+            .filter((item) => item.fulfilment != null)
+            .map((item) => item.fulfilment!);
     }
 
     constructor({
@@ -58,7 +66,7 @@ export default class Order{
         customerData: any;
         paid: any;
         paidAt: any;
-        metadata: {[i:string]: any};
+        metadata: { [i: string]: any };
         channel?: Channel;
         items: OrderItem[];
         shippingAddress?: Address;
@@ -69,7 +77,7 @@ export default class Order{
         this.code = code;
         this.status = status;
         this.currency = currency;
-        this._total = total != null? Number(total) : undefined;
+        this._total = total != null ? Number(total) : undefined;
         this.customerData = customerData;
         this.paid = paid;
         this.paidAt = paidAt;
@@ -80,7 +88,7 @@ export default class Order{
         this.billingAddress = billingAddress;
         this.channelOrderId = channelOrderId;
     }
-    
+
     copyWith({
         id,
         code,
@@ -105,7 +113,7 @@ export default class Order{
         customerData?: any;
         paid?: any;
         paidAt?: any;
-        metadata?: {[i:string]: any};
+        metadata?: { [i: string]: any };
         channel?: Channel;
         items?: OrderItem[];
         shippingAddress?: Address;
@@ -129,7 +137,7 @@ export default class Order{
             channelOrderId: channelOrderId ?? this.channelOrderId,
         });
     }
-    
+
     static fromJson(json: { [key: string]: any }): Order {
         return new Order({
             id: json["id"],
@@ -141,14 +149,14 @@ export default class Order{
             paid: json["paid"],
             paidAt: json["paidAt"],
             metadata: json["metadata"],
-            channel: json["channel"] != null? Channel.fromJson(json["channel"]) : undefined,
+            channel: json["channel"] != null ? Channel.fromJson(json["channel"]) : undefined,
             items: json["items"].map((x: any) => OrderItem.fromJson(x)),
-            shippingAddress:  json["shippingAddress"] != null? Address.fromJson(json["shippingAddress"]) : undefined,
-            billingAddress: json['billingAddress'] != null? Address.fromJson(json['billingAddress']) : undefined,
+            shippingAddress: json["shippingAddress"] != null ? Address.fromJson(json["shippingAddress"]) : undefined,
+            billingAddress: json['billingAddress'] != null ? Address.fromJson(json['billingAddress']) : undefined,
             channelOrderId: json["channelOrderId"],
         });
     }
-    
+
     toJson(): { [key: string]: any } {
         return {
             "id": this.id,

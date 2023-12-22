@@ -75,19 +75,19 @@ const routes = [
         component: () => import('@/admin/views/order/order/Index.vue')
 
       },
-      {
-        path: 'create',
-        name: 'admin:order:create',
-        component: () => import('@/admin/views/order/order/Create.vue'),
-        props: true
-      },
-      {
-        path: ':id/edit',
-        name: 'admin:order:edit',
-        component: () => import('@/admin/views/order/order/Edit.vue'),
-        props: true
+      // {
+      //   path: 'create',
+      //   name: 'admin:order:create',
+      //   component: () => import('@/admin/views/order/order/Create.vue'),
+      //   props: true
+      // },
+      // {
+      //   path: ':id/edit',
+      //   name: 'admin:order:edit',
+      //   component: () => import('@/admin/views/order/order/Edit.vue'),
+      //   props: true
 
-      },
+      // },
     ]
   },
   // >> ORDER >> ADDITIONAL SERVICE
@@ -118,6 +118,71 @@ const routes = [
     ]
   },
   // 
+
+
+  // >> CARRIER
+  // >> CARRIER >> CARRIER
+  {
+    path: 'carrier/carriers',
+    name: 'admin:carrier',
+    component: () => import('@/admin/layouts/carrier/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin:carrier:index',
+        component: () => import('@/admin/views/carrier/carrier/Index.vue')
+
+      },
+      {
+        path: 'create',
+        name: 'admin:carrier:create',
+        component: () => import('@/admin/views/carrier/carrier/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:carrier:edit',
+        component: () => import('@/admin/views/carrier/carrier/Edit.vue'),
+        props: true
+
+      },
+    ]
+  },
+
+
+
+  // >> CATLOG
+  // >> CATALOG >> PRODUCT
+  {
+    path: 'catalog/products',
+    name: 'admin:catalog:product',
+    component: () => import('@/admin/layouts/catalog/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin:catalog:product:index',
+        component: () => import('@/admin/views/catalog/product/Index.vue')
+
+      },
+      {
+        path: 'create',
+        name: 'admin:catalog:product:create',
+        component: () => import('@/admin/views/catalog/product/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:catalog:product:edit',
+        component: () => import('@/admin/views/catalog/product/Edit.vue'),
+        props: true
+
+      },
+    ]
+  },
+
+
+  //
+  //
   {
     path: 'shipment/shipments',
     name: 'admin:shipment',

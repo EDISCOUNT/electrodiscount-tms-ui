@@ -1,4 +1,5 @@
 import Product from "../catalog/product";
+import ShipmentFulfilment from "../shipment/shipment_fulfilment";
 
 export default class OrderItem {
     
@@ -12,6 +13,7 @@ export default class OrderItem {
     unitPrice: string;
     sku: any;
     _total?: number;
+    fulfilment?: ShipmentFulfilment;
 
 
     get total(): number {
@@ -32,6 +34,7 @@ export default class OrderItem {
         unitPrice,
         sku,
         total,
+        fulfilment,
     }: {
         id: any;
         channelProductId: any;
@@ -43,6 +46,7 @@ export default class OrderItem {
         unitPrice: string;
         sku: any;
         total?: number;
+        fulfilment?: ShipmentFulfilment;
     }) {
         this.id = id;
         this.channelProductId = channelProductId;
@@ -54,6 +58,8 @@ export default class OrderItem {
         this.unitPrice = unitPrice;
         this.sku = sku;
         this._total = total;
+        this.fulfilment = fulfilment;
+
     }
 
     copyWith({
@@ -67,6 +73,7 @@ export default class OrderItem {
         unitPrice,
         sku,
         total,
+        fulfilment,
     }: {
         id?: any;
         channelProductId?: any;
@@ -78,6 +85,7 @@ export default class OrderItem {
         unitPrice?: string;
         sku?: any;
         total?: any;
+        fulfilment?: ShipmentFulfilment;
     }): OrderItem {
         return new OrderItem({
             id: id ?? this.id,
@@ -90,6 +98,7 @@ export default class OrderItem {
             unitPrice: unitPrice ?? this.unitPrice,
             sku: sku ?? this.sku,
             total: total ?? this.total,
+            fulfilment: fulfilment ?? this.fulfilment,
         });
     }
 
@@ -105,6 +114,7 @@ export default class OrderItem {
             unitPrice: json["unitPrice"],
             sku: json["sku"],
             total: json["total"],
+            fulfilment: json["fulfilment"] != null ? ShipmentFulfilment.fromJson(json["fulfilment"]) : undefined,
         });
     }
 
@@ -120,6 +130,7 @@ export default class OrderItem {
             "unitPrice": this.unitPrice,
             "sku": this.sku,
             "total": this.total,
+            "fulfilment": this.fulfilment?.toJson(),
         };
     }
 }
