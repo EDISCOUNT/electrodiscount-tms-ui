@@ -44,6 +44,16 @@
                                             <v-text-field v-model="data.metadata.client_secret" type="password"
                                                 label="Client Secret" variant="outlined" density="compact"></v-text-field>
                                         </template>
+                                        <template v-if="data.type == 'app.shipment.sourcing.source.woo_commerce'">
+
+                                            <v-text-field v-model="data.metadata.base_url" label="Base URL"
+                                                variant="outlined" density="compact"></v-text-field>
+
+                                            <v-text-field v-model="data.metadata.client_id" label="Client ID"
+                                                variant="outlined" density="compact"></v-text-field>
+                                            <v-text-field v-model="data.metadata.client_secret" type="password"
+                                                label="Client Secret" variant="outlined" density="compact"></v-text-field>
+                                        </template>
                                     </v-card-text>
                                     <v-card-actions class="px-5">
                                         <!-- <v-spacer></v-spacer> -->
@@ -65,7 +75,7 @@
 </template>
 <script lang="ts" setup>
 import Channel from '@/model/channel/channel';
-import { ChannelFormData } from '@/repository/channel/channel_repository';
+import { ChannelFormData } from '@/admin/repository/channel/channel_repository';
 import { computed, defineProps, reactive, ref } from "vue";
 // import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
 import { VForm } from 'vuetify/lib/components/index.mjs';
@@ -81,7 +91,7 @@ const props = defineProps<{
 
 
 const emit = defineEmits<{
-    (e: 'save', data: FormData): void,
+    (e: 'save', data: ChannelFormData): void,
 }>();
 
 // const createConfirm = useConfirm()

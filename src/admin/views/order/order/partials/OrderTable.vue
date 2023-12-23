@@ -3,7 +3,7 @@
 
         <template v-if="pagination">
             <v-card v-if="pagination.pageInfo.totalItems" width="100%" color="transparent" flat>
-                <v-card-title class="px-0">
+                <v-card-title class="pa-0 py-md-3">
                     <v-card class="pa-3" flat>
                         <v-tabs v-model="tab" r-bg-color="primary" align-tabs="start">
                             <v-tab v-for="(channel) in pagination.items" :key="channel.id" :value="channel.id">

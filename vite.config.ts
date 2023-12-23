@@ -40,7 +40,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         admin: resolve(__dirname, 'admin/index.html'),
-        carrier: resolve(__dirname, 'carrier/index.html'),
+        index: resolve(__dirname, 'index.html'),
       },
     },
   },

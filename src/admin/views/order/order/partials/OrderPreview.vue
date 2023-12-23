@@ -16,7 +16,7 @@
                 <template v-if="!loading">
                     <span>Order: </span>
                     <strong>
-                        # {{ order.channelOrderId }}
+                        # {{ order?.channelOrderId }}
                     </strong>
                 </template>
             </slot>
@@ -60,7 +60,7 @@
                             <v-card-title>
                                 Shipping Address
                             </v-card-title>
-                            <v-card-text>
+                            <v-card-text v-if="order.shippingAddress">
                                 <address-formatted-view :address="order.shippingAddress" />
                             </v-card-text>
                         </v-card>
@@ -71,7 +71,7 @@
                             <v-card-title>
                                 Billing Address
                             </v-card-title>
-                            <v-card-text>
+                            <v-card-text v-if="order.billingAddress">
                                 <address-formatted-view :address="order.billingAddress" />
                             </v-card-text>
                         </v-card>
@@ -156,7 +156,7 @@ const height = computed(() => {
 
 
 
-function onImport(shipment: Shipment){
+function onImport(shipment: Shipment) {
 
     close();
 }

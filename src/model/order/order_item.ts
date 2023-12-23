@@ -2,16 +2,17 @@ import Product from "../catalog/product";
 import ShipmentFulfilment from "../shipment/shipment_fulfilment";
 
 export default class OrderItem {
-    
+
     id: any;
     channelProductId: any;
     channelVariantId: any;
-    product: Product;
+    product?: Product;
     quantity: number;
     quantityShipped: number;
     quantityCancelled: number;
     unitPrice: string;
     sku: any;
+    name?: string;
     _total?: number;
     fulfilment?: ShipmentFulfilment;
 
@@ -33,18 +34,20 @@ export default class OrderItem {
         quantityCancelled,
         unitPrice,
         sku,
+        name,
         total,
         fulfilment,
     }: {
         id: any;
         channelProductId: any;
         channelVariantId: any;
-        product: Product;
+        product?: Product;
         quantity: number;
         quantityShipped: number;
         quantityCancelled: number;
         unitPrice: string;
         sku: any;
+        name?: string;
         total?: number;
         fulfilment?: ShipmentFulfilment;
     }) {
@@ -57,6 +60,7 @@ export default class OrderItem {
         this.quantityCancelled = quantityCancelled;
         this.unitPrice = unitPrice;
         this.sku = sku;
+        this.name = name;
         this._total = total;
         this.fulfilment = fulfilment;
 
@@ -72,6 +76,7 @@ export default class OrderItem {
         quantityCancelled,
         unitPrice,
         sku,
+        name,
         total,
         fulfilment,
     }: {
@@ -84,6 +89,7 @@ export default class OrderItem {
         quantityCancelled?: number;
         unitPrice?: string;
         sku?: any;
+        name?: string;
         total?: any;
         fulfilment?: ShipmentFulfilment;
     }): OrderItem {
@@ -97,6 +103,7 @@ export default class OrderItem {
             quantityCancelled: quantityCancelled ?? this.quantityCancelled,
             unitPrice: unitPrice ?? this.unitPrice,
             sku: sku ?? this.sku,
+            name: name ?? this.name,
             total: total ?? this.total,
             fulfilment: fulfilment ?? this.fulfilment,
         });
@@ -107,12 +114,13 @@ export default class OrderItem {
             id: json["id"],
             channelProductId: json["channelProductId"],
             channelVariantId: json["channelVariantId"],
-            product: Product.fromJson(json["product"]),
+            product: json["product"] != null ? Product.fromJson(json["product"]) : undefined,
             quantity: json["quantity"],
             quantityShipped: json["quantityShipped"],
             quantityCancelled: json["quantityCancelled"],
             unitPrice: json["unitPrice"],
             sku: json["sku"],
+            name: json["name"],
             total: json["total"],
             fulfilment: json["fulfilment"] != null ? ShipmentFulfilment.fromJson(json["fulfilment"]) : undefined,
         });
@@ -123,12 +131,13 @@ export default class OrderItem {
             "id": this.id,
             "channelProductId": this.channelProductId,
             "channelVariantId": this.channelVariantId,
-            "product": this.product.toJson(),
+            "product": this.product?.toJson(),
             "quantity": this.quantity,
             "quantityShipped": this.quantityShipped,
             "quantityCancelled": this.quantityCancelled,
             "unitPrice": this.unitPrice,
             "sku": this.sku,
+            "name": this.name,
             "total": this.total,
             "fulfilment": this.fulfilment?.toJson(),
         };

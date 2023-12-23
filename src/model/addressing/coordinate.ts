@@ -19,7 +19,7 @@ export default class Coords {
         };
     }
 
-    toJson() {
+    toJson(): CoordsFormData {
         return {
             latitude: this.latitude,
             longitude: this.longitude,
@@ -29,4 +29,12 @@ export default class Coords {
     toString(){
         return `${this.latitude},${this.longitude}`;
     }
+}
+
+
+
+export interface CoordsFormData{
+    
+    latitude: number;
+    longitude: number;
 }

@@ -11,7 +11,7 @@
                             <v-form>
                                 <v-text-field label="Username" v-model="username" variant="outlined" />
                                 <v-text-field label="Password" v-model="password" variant="outlined" />
-                                <v-btn @click="login" color="primary" :elevation="0" block="">Login</v-btn>
+                                <v-btn @click="login" color="primary" :elevation="0" block>Login</v-btn>
                             </v-form>
                         </v-card-text>
                     </v-card>

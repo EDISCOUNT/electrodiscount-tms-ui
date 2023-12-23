@@ -1,9 +1,11 @@
 import http from "@/admin/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Carrier from "@/model/carrier/carrier";
+import { encodeURLParams } from "@/utils/url";
 
-export async function getPaginatedCarriers({ page, limit, }: { page?: number, limit?: number } = {}) {
-    const { data } = await http.get(`/api/admin/carrier/carriers?page=${page ?? 1}&limit=${limit ?? 10}`);
+export async function getPaginatedCarriers({ page, limit, search }: { page?: number, limit?: number, search?: string } = {}) {
+    const params = encodeURLParams({page, limit, search});
+    const { data } = await http.get(`/api/admin/carrier/carriers?${params}`);
     const pagination = Pagination.fromJson<Carrier>({
         ...data,
         buildItem: (input) => Carrier.fromJson(input),
@@ -13,19 +15,19 @@ export async function getPaginatedCarriers({ page, limit, }: { page?: number, li
 
 export async function getCarrier(id: string) {
     const { data } = await http.get(`/api/admin/carrier/carriers/${id}`);
-    return data;
+    return Carrier.fromJson(data);
 }
 
 
 export async function createCarrier(data: CarrierFormData) {
     const { data: result } = await http.post(`/api/admin/carrier/carriers`, data);
-    return result;
+    return Carrier.fromJson(result);
 }
 
 
 export async function updateCarrier(id: string, data: CarrierFormData) {
     const { data: result } = await http.patch(`/api/admin/carrier/carriers/${id}`, data);
-    return result;
+    return Carrier.fromJson(result);
 }
 
 

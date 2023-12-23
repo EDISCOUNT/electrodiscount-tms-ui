@@ -4,10 +4,11 @@ import ShipmentFulfilment from "./shipment_fulfilment";
 
 export default class ShipmentItem {
     id?: string;
-    product: Product;
+    product?: Product;
     quantity: number;
     quantityReturned: any;
     internalOrderItemId: any;
+    name?: string;
     fulfilment?: ShipmentFulfilment;
 
     constructor({
@@ -16,19 +17,22 @@ export default class ShipmentItem {
         quantity,
         quantityReturned,
         internalOrderItemId,
+        name,
         fulfilment,
     }: {
         id?: string;
-        product: Product;
+        product?: Product;
         quantity: number;
         quantityReturned: any;
         internalOrderItemId: any;
+        name?: string;
         fulfilment?: ShipmentFulfilment;
     }) {
         this.product = product;
         this.quantity = quantity;
         this.quantityReturned = quantityReturned;
         this.internalOrderItemId = internalOrderItemId;
+        this.name = name;
         this.fulfilment = fulfilment;
     }
 
@@ -38,6 +42,7 @@ export default class ShipmentItem {
         quantity,
         quantityReturned,
         internalOrderItemId,
+        name,
         fulfilment,
     }: {
         id?: string;
@@ -45,6 +50,7 @@ export default class ShipmentItem {
         quantity?: number;
         quantityReturned?: any;
         internalOrderItemId?: any;
+        name?: string;
         fulfilment?: ShipmentFulfilment;
     }): ShipmentItem {
         return new ShipmentItem({
@@ -53,6 +59,7 @@ export default class ShipmentItem {
             quantity: quantity ?? this.quantity,
             quantityReturned: quantityReturned ?? this.quantityReturned,
             internalOrderItemId: internalOrderItemId ?? this.internalOrderItemId,
+            name: name ?? this.name,
             fulfilment: fulfilment ?? this.fulfilment,
         });
     }
@@ -60,21 +67,23 @@ export default class ShipmentItem {
     static fromJson(json: Record<string, any>): ShipmentItem {
         return new ShipmentItem({
             id: json["id"],
-            product: Product.fromJson(json["product"]),
+            product: json["product"] != null?  Product.fromJson(json["product"]) : undefined,
             quantity: json["quantity"],
             quantityReturned: json["quantityReturned"],
             internalOrderItemId: json["internalOrderItemId"],
+            name: json["name"],
             fulfilment: json["fulfilment"] != null ? ShipmentFulfilment.fromJson(json["fulfilment"]) : undefined,
         });
     }
 
-    toJson(): Record<string, any> {
+    toJson(): ShipmentItemFormData {
         return {
-            "product": this.product.toJson(),
+            "product": this.product?.id,
             "quantity": this.quantity,
-            "quantityReturned": this.quantityReturned,
-            "internalOrderItemId": this.internalOrderItemId,
-            "fulfilment": this.fulfilment?.toJson(),
+            // "quantityReturned": this.quantityReturned,
+            // "internalOrderItemId": this.internalOrderItemId,
+            "name": this.name,
+            // "fulfilment": this.fulfilment?.toJson(),
         };
     }
 }
@@ -83,3 +92,12 @@ export default class ShipmentItem {
 
 
 
+
+
+
+export interface ShipmentItemFormData {
+    product?: string;
+    name?: string;
+    quantity: number;
+    metadata?: { [i: string]: any };
+}

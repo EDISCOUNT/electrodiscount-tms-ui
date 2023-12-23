@@ -45,17 +45,27 @@ export default class ShipmentFulfilment {
       });
     }
   
-    toJson(): Record<string, any> {
+    toJson(): ShipmentFulfilmentFormData {
       return {
-        "id": this.id,
         "method": this.method,
         "distributionParty": this.distributionParty,
-        "latestDeliveryDate": this.latestDeliveryDate,
-        "exactDeliveryDate": this.exactDeliveryDate,
-        "expiryDate": this.expiryDate,
+        "latestDeliveryDate": this.latestDeliveryDate?.toISOString(),
+        "exactDeliveryDate": this.exactDeliveryDate?.toISOString(),
+        "expiryDate": this.expiryDate?.toISOString(),
         "timeFrameType": this.timeFrameType,
       };
     }
+  }
+
+
+  export interface ShipmentFulfilmentFormData{
+    method?: string;
+    distributionParty?: string;
+    latestDeliveryDate?: string;
+    exactDeliveryDate?:  string;
+    expiryDate?: string;
+    timeFrameType?: string;
+
   }
   
 //   // Example usage

@@ -67,11 +67,14 @@
             <template v-if="items">
                 <div v-for="(item, i) in items" :key="item.product?.gtn ?? i">
                     <div v-if="i == 0">
-                        <span v-if="item?.product?.name">
-                            {{ item.product.name }}
+                        <span v-if="item?.product">
+                            {{ item.product.name ?? 'UN NAMED' }}
+                        </span>
+                        <span v-else-if="item.name">
+                            {{ item.name }}
                         </span>
                         <span class="text-grey" v-else>
-                            Name Not Found
+                            N/A
                         </span>
                     </div>
                     <v-chip v-else-if="i == (items.length - 1)">
@@ -169,19 +172,19 @@ const theme = useTheme();
 
 
 const headers = [
-    { title: 'ID', key: 'id', value: 'channelOrderId', align: 'start' },
-    // { title: 'Code', key: 'code', align: 'end' },
+    { title: 'ID', key: 'id', value: 'channelOrderId', },
+    // { title: 'Code', key: 'code', },
     {
         title: 'Total',
-        align: 'start',
+        
         sortable: true,
         key: 'total',
     },
-    { title: 'Products', key: 'items', align: 'center' },
-    { title: 'Shipping Address', key: 'shippingAddress', align: 'end', sortable: false },
-    { title: 'Status', key: 'status', align: 'end' },
-    { title: 'Expiry Date', key: 'date', align: 'center' },
-    { title: 'Actions', key: 'actions', align: 'center', sortable: false },
+    { title: 'Products', key: 'items', },
+    { title: 'Shipping Address', key: 'shippingAddress', sortable: false },
+    { title: 'Status', key: 'status', },
+    { title: 'Expiry Date', key: 'date', },
+    { title: 'Actions', key: 'actions', sortable: false },
 ];
 
 
@@ -204,7 +207,7 @@ async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number,
     try {
         loading.value = true;
         const pagination = await getPaginatedOrders({ page, limit, channel: props.channel });
-        serverItems.value = [...serverItems.value, ...pagination.items];
+        serverItems.value = [ ...pagination.items ];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;
 

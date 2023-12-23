@@ -4,6 +4,29 @@
         :height="height ?? 'calc(100vh - 200px)'" @update:options="loadItems" :show-select="showSelect">
 
 
+        <template v-slot:item.items="{ item: { items } }">
+            <template v-if="items">
+                <div v-for="(item, i) in items" :key="item.product?.gtn ?? i">
+                    <div v-if="i == 0">
+                        <span v-if="item?.product">
+                            {{ item.product.name ?? 'UN NAMED' }}
+                        </span>
+                        <span v-else-if="item.name">
+                            {{ item.name }}
+                        </span>
+                        <span class="text-grey" v-else>
+                            N/A
+                        </span>
+                    </div>
+                    <v-chip v-else-if="i == (items.length - 1)">
+                        {{ items.length - 1 }} More
+                    </v-chip>
+                </div>
+            </template>
+            <span v-else class="text-grey">N/A</span>
+        </template>
+
+
         <template v-slot:item.destinationAddress="{ item: { destinationAddress } }">
             <div v-if="destinationAddress">
                 {{ destinationAddress.label }}
@@ -32,10 +55,11 @@
             </span>
         </template>
 
-        <template v-slot:item.actions="{ item }">
-            <v-btn color="primary" :to="`/admin/shipment/${item.id}`" :loading="loading" :disabled="loading" :elevation="0"
-                variant="flat">
+        <template v-slot:item.actions="{ item: { id } }">
+            <v-btn color="primary" :to="{ name: 'admin:shipment:show', params: { id } }" :disabled="loading" :elevation="0"
+                variant="flat" size="small" rounded>
                 View
+                <v-icon>mdi-eye</v-icon>
             </v-btn>
         </template>
     </v-data-table-server>
@@ -43,7 +67,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { getPaginatedShipments } from '../../../repository/shipment/shipment_repository';
+import { getPaginatedShipments } from '../../../../repository/shipment/shipment_repository';
 
 
 const props = defineProps<{
@@ -63,16 +87,36 @@ const emit = defineEmits<{
 const headers = [
     {
         title: 'ID',
-        align: 'start',
-        sortable: false,
+        // align: 'start',
+        // sortable: false,
         key: 'id',
     },
-    { title: 'Code', key: 'code', align: 'end' },
-    { title: 'Destination', key: 'destinationAddress', align: 'center' },
-    { title: 'Carrier', key: 'carrier', align: 'center' },
-    { title: 'Status', key: 'status', align: 'center' },
-    { title: 'Channel', key: 'channel', align: 'center' },
-    { title: 'Actions', key: 'actions', align: 'end' },
+    { title: 'Code', key: 'code',
+    //  align: 'end' 
+    },
+    {
+        title: 'Products', key: 'items',
+        //  align: 'center' 
+    },
+    {
+        title: 'Destination', key: 'destinationAddress',
+        //  align: 'center' 
+    },
+    {
+        title: 'Carrier', key: 'carrier',
+        // align: 'center' 
+    },
+    {
+        title: 'Status', key: 'status',
+        //  align: 'center'
+    },
+    {
+        title: 'Channel', key: 'channel', 
+        // align: 'center'
+ },
+    { title: 'Actions', key: 'actions',
+    //  align: 'end' 
+    },
 ];
 
 
@@ -92,7 +136,7 @@ async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number,
     try {
         loading.value = true;
         const pagination = await getPaginatedShipments({ page, limit });
-        serverItems.value = [...serverItems.value, ...pagination.items];
+        serverItems.value = [...pagination.items];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;
 

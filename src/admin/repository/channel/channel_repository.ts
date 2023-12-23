@@ -11,26 +11,21 @@ export async function getPaginatedChannels({ page, limit, }: { page?: number, li
     return pagination;
 }
 
-export async function getChannelTypes() {
-    const { data } = await http.get(`/api/admin/channel/channel-types`);
-    return data;
-}
-
 export async function getChannel(id: string) {
     const { data } = await http.get(`/api/admin/channel/channels/${id}`);
-    return data;
+    return Channel.fromJson(data);
 }
 
 
 export async function createChannel(data: ChannelFormData) {
     const { data: result } = await http.post(`/api/admin/channel/channels`, data);
-    return result;
+    return Channel.fromJson(result);
 }
 
 
 export async function updateChannel(id: string, data: ChannelFormData) {
     const { data: result } = await http.patch(`/api/admin/channel/channels/${id}`, data);
-    return result;
+    return Channel.fromJson(result);
 }
 
 

@@ -31,6 +31,8 @@ import { ref } from 'vue';
 import { createChannel, ChannelFormData } from '@/admin/repository/channel/channel_repository';
 import { getShipmentSourceById, getShipmentSourceByCode } from '@/admin/repository/shipment/shipment_source_repository';
 import useSWRV from 'swrv';
+import { useRouter } from 'vue-router';
+import { useNotifier } from 'vuetify-notifier';
 
 
 const props = defineProps<{
@@ -43,12 +45,17 @@ const { data: source, isValidating: loading, error } = useSWRV(
   () => getShipmentSourceByCode(props.type));
 
 
+  const router = useRouter();
+  const notifier = useNotifier();
+
+
 const isSaving = ref(false);
 async function save(data: ChannelFormData) {
   try {
     isSaving.value = true;
     const result = await createChannel(data);
-
+    notifier.toastSuccess('Channel created successfully');
+    await router.replace({ name: 'admin:channel:edit', params: { id: result.id } });
   }
   catch (err) {
 

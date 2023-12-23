@@ -5,8 +5,8 @@
     <v-responsive class="align-center text-center fill-height"> -->
 
         <template v-slot:prepend>
-            <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="Sandra Adams"
-                subtitle="sandra_a88@gmailcom" nav>
+            <v-list-item v-if="user" prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" :title="user.fullName"
+                :subtitle="user.email" nav>
                 <template v-slot:append>
                 </template>
             </v-list-item>
@@ -18,8 +18,8 @@
 
 
                 <v-list density="compact" nav>
-                    <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments" :to="{ name: 'admin:shipment:index' }"
-                        value="myfiles"></v-list-item>
+                    <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments"
+                        :to="{ name: 'admin:shipment:index' }" value="myfiles"></v-list-item>
                     <v-list-item prepend-icon="mdi-storefront" title="Channels" :to="{ name: 'admin:channel:index' }"
                         value="shared"></v-list-item>
                     <!-- <v-list-subheader>
@@ -43,5 +43,9 @@
 </template>
 
 <script lang="ts" setup>
+import { useUser } from '@/store/app';
+
+
+const { user, loading, error } = useUser();
 
 </script>

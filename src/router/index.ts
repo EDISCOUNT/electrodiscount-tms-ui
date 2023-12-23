@@ -17,10 +17,26 @@ const routes = [
       //   // which is lazy-loaded when the route is visited.
       //   component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
       // },
+
+      {
+        path: 'login',
+        name: 'auth:login',
+        component: () => import(/* webpackChunkName: "login" */ '@/layouts/login/Default.vue'),
+      },
+      //
+      {
+        path: '',
+        redirect: { name: 'admin:home' },
+      },
+      //
       {
         path: '/admin',
         name: 'Admin',
         children: adminRoutes,
+        meta: {
+          isProtected: true,
+          roles: ['ROLE_ADMIN'],
+        }
       },
     ],
   },

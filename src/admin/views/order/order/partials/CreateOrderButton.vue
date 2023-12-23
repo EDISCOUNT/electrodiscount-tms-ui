@@ -22,7 +22,7 @@
 
                     <!-- {{ { channels, loading, error } }} -->
                     <v-list>
-                        <div v-for="(channel, i) in channels" :key="channel.code ?? channel.id ?? i">
+                        <div v-for="(channel, i) in channels?.items" :key="channel.code ?? channel.id ?? i">
                             <v-list-item :to="{ name: 'admin:channel:create', params: { type: channel.id } }">
                                 <template v-slot:prepend>
                                     <v-avatar>

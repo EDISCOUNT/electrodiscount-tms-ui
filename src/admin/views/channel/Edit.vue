@@ -1,10 +1,17 @@
 <template>
-  <v-card flat>
-    <v-card v-if="isLoading" flat>
-      <v-card-subtitle>
-        Please wait...
-      </v-card-subtitle>
-    </v-card>
+  <v-card color="secondary-bg" height="100vh" flat>
+
+    <!-- {{ { channel } }} -->
+    <v-row justify="center" align="center" v-if="isLoading" class="fill-height">
+      <v-card width="400px" flat>
+        <v-card-subtitle>
+          Please wait...
+        </v-card-subtitle>
+        <v-card-text>
+          <v-progress-linear indeterminate />
+        </v-card-text>
+      </v-card>
+    </v-row>
 
     <v-card flat v-else-if="channel">
       <v-card-text v-if="error">
@@ -15,14 +22,16 @@
       <channel-form @save="(data) => save(data)" :channel="channel" :loading="isSaving" />
     </v-card>
 
-    <v-card v-else flat>
-      <v-card-title>
-        Seems and error occurred
-      </v-card-title>
-      <v-card-subtitle v-if="error">
-        {{ error }}
-      </v-card-subtitle>
-    </v-card>
+    <v-row justify="center" align="center" class="fill-height" v-else>
+      <v-card flat>
+        <v-card-title>
+          Seems and error occurred
+        </v-card-title>
+        <v-card-subtitle v-if="error">
+          {{ error }}
+        </v-card-subtitle>
+      </v-card>
+    </v-row>
   </v-card>
 </template>
 
@@ -32,6 +41,7 @@ import { onMounted, ref } from 'vue';
 import { getChannel, updateChannel, ChannelFormData } from '@/admin/repository/channel/channel_repository';
 import Channel from '@/model/channel/channel';
 import { useRouter } from 'vue-router';
+import { useNotifier } from 'vuetify-notifier';
 
 const props = defineProps<{
   id: string,
@@ -43,6 +53,7 @@ const isSaving = ref(false);
 const isLoading = ref(false);
 
 const router = useRouter();
+const notifier = useNotifier();
 
 
 
@@ -56,6 +67,7 @@ async function save(data: ChannelFormData) {
     error.value = null;
     isSaving.value = true;
     const result = await updateChannel(props.id, data);
+    notifier.toastSuccess('Channel updated successfully');
     router.back();
 
   }

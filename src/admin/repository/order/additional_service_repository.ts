@@ -13,24 +13,24 @@ export async function getPaginatedAdditionalServices({ page, limit, }: { page?: 
 
 export async function getAdditionalServiceTypes() {
     const { data } = await http.get(`/api/admin/order/additional_service-types`);
-    return data;
+    return AdditionalService.fromJson(data);
 }
 
 export async function getAdditionalService(id: string) {
     const { data } = await http.get(`/api/admin/order/additional_services/${id}`);
-    return data;
+    return AdditionalService.fromJson(data);
 }
 
 
 export async function createAdditionalService(data: AdditionalServiceFormData) {
     const { data: result } = await http.post(`/api/admin/order/additional_services`, data);
-    return result;
+    return AdditionalService.fromJson(result);
 }
 
 
 export async function updateAdditionalService(id: string, data: AdditionalServiceFormData) {
     const { data: result } = await http.patch(`/api/admin/order/additional_services/${id}`, data);
-    return result;
+    return AdditionalService.fromJson(result);
 }
 
 

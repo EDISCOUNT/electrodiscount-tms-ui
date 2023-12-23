@@ -8,17 +8,24 @@ export function openLink(url: string, { openInNew = false } = {}) {
 }
 
 
-export function encodeURLParams(data: {[i:string]: any}){
-    
+export function encodeURLParams(data: { [i: string]: any }) {
+
     const params = new URLSearchParams();
-    
+
     for (const key in data) {
         if (Array.isArray(data[key])) {
             data[key].forEach((item: any) => {
+                if (item === undefined || item === null || item === '') {
+                    return;
+                }
                 params.append(key, item);
             });
         } else {
-            params.append(key, data[key]);
+            const item = data[key];
+            if (item === undefined || item === null || item === '') {
+                continue;
+            }
+            params.append(key, item);
         }
     }
 

@@ -1,3 +1,3 @@
-import Connection from "./connection";
+import Pagination from "./pagination";
 
-export default Connection;
+export default Pagination;

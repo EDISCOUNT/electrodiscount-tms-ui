@@ -5,8 +5,8 @@
         {{ address.street }}
         <br />
         {{ address.city }},
-        <template v-if="address.state">
-            {{ address.state }},
+        <template v-if="address.province">
+            {{ address.province }},
             <!-- <br /> -->
         </template>
         {{ address.postcode }},

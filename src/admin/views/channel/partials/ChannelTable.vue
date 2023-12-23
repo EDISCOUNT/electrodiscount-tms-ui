@@ -28,7 +28,7 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-            <v-btn color="primary" :to="{ name: 'admin:channel:edit', params: { id: item.id } }">
+            <v-btn color="primary" :to="{ name: 'admin:channel:edit', params: { id: item.id } }" :elevation="0" size="small">
                 <v-icon>mdi-pencil</v-icon>
             </v-btn>
         </template>
@@ -49,17 +49,17 @@ const props = defineProps<{
 
 
 const headers = [
-    { title: 'ID', key: 'id', align: 'end' },
-    { title: 'Code', key: 'code', align: 'end' },
+    { title: 'ID', key: 'id', },
+    { title: 'Code', key: 'code', },
     {
         title: 'Name',
-        align: 'start',
+        
         sortable: false,
         key: 'name',
     },
-    { title: 'type', key: 'type', align: 'end' },
-    { title: 'Enabled', key: 'enabled', align: 'end' },
-    { title: 'Actions', key: 'actions', align: 'end' },
+    { title: 'type', key: 'type', },
+    { title: 'Enabled', key: 'enabled', },
+    { title: 'Actions', key: 'actions', },
 ];
 
 
@@ -74,7 +74,7 @@ async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number,
     try {
         loading.value = true;
         const pagination = await getPaginatedChannels({ page, limit });
-        serverItems.value = [...serverItems.value, ...pagination.items];
+        serverItems.value = [ ...pagination.items ];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;
 

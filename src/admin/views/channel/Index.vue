@@ -3,7 +3,7 @@
         <v-card-text>
             <v-card class="" flat>
                 <template v-slot:title>
-                    <span> Channels Index</span>
+                    <span> Channels</span>
                 </template>
 
                 <template v-slot:append>
@@ -14,7 +14,7 @@
                                 <v-icon>mdi-menu-down</v-icon>
                             </v-btn>
                         </template>
-                        <v-card flat>
+                        <v-card min-width="300px" flat>
                             <v-card-subtitle>
                                 Create a new channel
                             </v-card-subtitle>

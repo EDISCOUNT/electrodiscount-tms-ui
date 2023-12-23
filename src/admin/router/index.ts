@@ -25,17 +25,17 @@ const routes = [
 
   {
     path: '',
-    name: 'Home',
+    name: 'admin:home',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "home" */ '@/admin/layouts/home/Default.vue'),
   },
-  {
-    path: 'login',
-    name: 'admin:login',
-    component: () => import(/* webpackChunkName: "login" */ '@/admin/layouts/login/Default.vue'),
-  },
+  // {
+  //   path: 'login',
+  //   name: 'admin:login',
+  //   component: () => import(/* webpackChunkName: "login" */ '@/admin/layouts/login/Default.vue'),
+  // },
   {
     path: 'channel/channels',
     name: 'admin:channel',
@@ -144,7 +144,6 @@ const routes = [
         name: 'admin:carrier:edit',
         component: () => import('@/admin/views/carrier/carrier/Edit.vue'),
         props: true
-
       },
     ]
   },
@@ -162,7 +161,6 @@ const routes = [
         path: '',
         name: 'admin:catalog:product:index',
         component: () => import('@/admin/views/catalog/product/Index.vue')
-
       },
       {
         path: 'create',
@@ -191,9 +189,28 @@ const routes = [
       {
         path: '',
         name: 'admin:shipment:index',
-        component: () => import('@/admin/views/shipment/Index.vue')
+        component: () => import('@/admin/views/shipment/shipment/Index.vue')
+      },
+      {
+        path: 'create',
+        name: 'admin:shipment:create',
+        component: () => import('@/admin/views/shipment/shipment/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:shipment:edit',
+        component: () => import('@/admin/views/shipment/shipment/Edit.vue'),
+        props: true
 
-      }
+      },
+      {
+        path: ':id',
+        name: 'admin:shipment:show',
+        component: () => import('@/admin/views/shipment/shipment/Show.vue'),
+        props: true
+
+      },
     ]
   }
 ]

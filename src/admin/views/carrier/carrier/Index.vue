@@ -3,7 +3,7 @@
         <v-card-text>
             <v-card class="" flat>
                 <template v-slot:title>
-                    <span> Carriers Index</span>
+                    <span> Carriers</span>
                 </template>
 
                 <template v-slot:append>

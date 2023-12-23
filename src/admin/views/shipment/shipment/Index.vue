@@ -3,7 +3,7 @@
         <v-card-text>
             <v-card class="" flat>
                 <template v-slot:title>
-                    <span> Shipments Index</span>
+                    <span> Shipments</span>
                 </template>
 
                 <template v-slot:append>

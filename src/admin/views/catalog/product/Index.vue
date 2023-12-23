@@ -3,7 +3,7 @@
         <v-card-text>
             <v-card class="" flat>
                 <template v-slot:title>
-                    <span> Products Index</span>
+                    <span> Products</span>
                 </template>
 
                 <template v-slot:append>

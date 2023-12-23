@@ -1,9 +1,9 @@
 <template>
     <v-card height="100vh" color="secondary-bg" flat>
-        <v-card-text >
+        <v-card-text class="pa-0 pa-md-3 pt-md-0" >
             <v-card class="" v-if="false" flat>
                 <template v-slot:title>
-                    <span> Orders Index</span>
+                    <span> Orders</span>
                 </template>
 
                 <template v-slot:append>

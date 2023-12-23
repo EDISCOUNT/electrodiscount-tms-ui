@@ -1,4 +1,4 @@
-import Coords from "./coordinate";
+import Coords, { CoordsFormData } from "./coordinate";
 
 export default class Address {
     id: string;
@@ -81,10 +81,13 @@ export default class Address {
         return this.googleId || this.coordinates?.toString() || this.company || this.street || '';
     }
 
+    public get province(){
+        return this.provinceCode?? this.provinceName;
+    }
 
-    toJson(): any {
+
+    toJson(): AddressFormData {
         return {
-            id: this.id,
             googleId: this.googleId,
             firstName: this.firstName,
             lastName: this.lastName,
@@ -99,8 +102,8 @@ export default class Address {
             countryCode: this.countryCode,
             coordinates: this.coordinates?.toJson(),
             arriveAt: this.arriveAt?.toISOString(),
-            updatedAt: this.updatedAt?.toISOString(), // You might want to specify the correct data type here
-            createdAt: this.createdAt?.toISOString(),
+            // updatedAt: this.updatedAt?.toISOString(), // You might want to specify the correct data type here
+            // createdAt: this.createdAt?.toISOString(),
         };
     }
 
@@ -195,3 +198,23 @@ export default class Address {
 
 
 type PlaceDetails = google.maps.places.PlaceResult;
+
+
+
+export interface AddressFormData {
+
+    googleId?: string;
+    firstName?: string;
+    lastName?: string;
+    emailAddress?: string;
+    phoneNumber?: string;
+    company?: string;
+    street?: string;
+    city: string;
+    provinceCode: string;
+    provinceName: string;
+    postcode: string;
+    countryCode: string;
+    coordinates?: CoordsFormData;
+    arriveAt?: string;
+}

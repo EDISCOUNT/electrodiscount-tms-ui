@@ -5,6 +5,7 @@ export default class Carrier {
     code: string;
     name: string;
     enabled: boolean;
+    logo?: string;
     shortDescription?: string;
     description?: string;
     createdAt?: Date;
@@ -15,6 +16,7 @@ export default class Carrier {
         code: string;
         name: string;
         enabled?: boolean;
+        logo?: string,
         shortDescription?: string;
         description?: string;
         createdAt?: Date;
@@ -24,6 +26,7 @@ export default class Carrier {
         this.code = data.code;
         this.name = data.name;
         this.enabled = data.enabled ?? false;
+        this.logo = data.logo;
         this.shortDescription = data.shortDescription;
         this.description = data.description;
         this.createdAt = data.createdAt;
@@ -36,6 +39,7 @@ export default class Carrier {
             code: input.code,
             name: input.name,
             enabled: input.enabled,
+            logo: input.logo,
             shortDescription: input.shortDescription,
             description: input.description,
             createdAt: input.createdAt,

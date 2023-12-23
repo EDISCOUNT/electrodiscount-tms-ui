@@ -3,7 +3,7 @@
         <v-card-text>
             <v-card class="" flat>
                 <template v-slot:title>
-                    <span> Additional Services Index</span>
+                    <span> Additional Services</span>
                 </template>
 
                 <template v-slot:append>

@@ -41,7 +41,7 @@ export async function getPaginatedOrders({ page, limit, channel }: { page?: numb
 
 export async function getOrder(orderId: string, channelId: string) {
     const { data } = await http.get(`/api/admin/channel/channels/${channelId}/orders/${orderId}`);
-    return data;
+    return Order.fromJson(data);
 }
 
 

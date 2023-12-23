@@ -10,7 +10,7 @@
             <v-card-text>
 
                 <v-card-actions>
-                    <v-btn color="primary" variant="flat" :elevation="0" block>
+                    <v-btn :to="{ name: 'admin:shipment:create' }" color="primary" variant="flat" :elevation="0" block>
                         Create Shipment Manualy
                     </v-btn>
                 </v-card-actions>
@@ -21,9 +21,9 @@
                 <v-card-text class="pa-0">
 
                     <!-- {{ { channels, loading, error } }} -->
-                    <v-list>
-                        <div v-for="(channel, i) in channels" :key="channel.code ?? channel.id ?? i">
-                            <v-list-item :to="{ name: 'admin:channel:create', params: { type: channel.id } }">
+                    <v-list v-if="pagination">
+                        <div v-for="(channel, i) in pagination.items" :key="channel.code ?? channel.id ?? i">
+                            <v-list-item :to="{ name: 'admin:shipment:create', }">
                                 <template v-slot:prepend>
                                     <v-avatar>
                                         <v-img :src="channel.typeConfig.iconImage" />
@@ -48,7 +48,7 @@
 import { getPaginatedChannels } from '@/admin/repository/channel/channel_repository';
 import useSWRV from 'swrv';
 
-const { data: channels, isValidating: loading, error } = useSWRV(
+const { data: pagination, isValidating: loading, error } = useSWRV(
     `/api/admin/channel/channels`,
     () => getPaginatedChannels(),
 );

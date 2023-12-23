@@ -44,17 +44,17 @@ const props = defineProps<{
 
 
 const headers = [
-    { title: 'ID', key: 'id', align: 'start' },
-    // { title: 'Code', key: 'code', align: 'center' },
-    { title: 'EAN', key: 'ean', align: 'center' },
+    { title: 'ID', key: 'id', },
+    // { title: 'Code', key: 'code', },
+    { title: 'EAN', key: 'ean', },
     {
         title: 'Name',
-        align: 'start',
+        
         sortable: true,
         key: 'name',
     },
-    { title: 'Status', key: 'enabled', align: 'end' },
-    { title: 'Actions', key: 'actions', align: 'end' },
+    { title: 'Status', key: 'enabled', },
+    { title: 'Actions', key: 'actions', },
 ];
 
 
@@ -70,7 +70,7 @@ async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number,
     try {
         loading.value = true;
         const pagination = await getPaginatedProducts({ page, limit });
-        serverItems.value = [...serverItems.value, ...pagination.items];
+        serverItems.value = [ ...pagination.items ];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;
 
