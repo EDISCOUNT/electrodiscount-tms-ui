@@ -9,7 +9,7 @@
             <v-divider v-if="smAndDown" class="mt-4"/>
             <v-form ref="form" @submit.prevent="() => submit()" class="pt-2">
                 <v-row>
-                    <v-col :cols="12" :md="7">
+                    <v-col :cols="12" :md="showMap? 7 : 12">
                         <v-card flat>
                             <slot v-if="mdAndUp" name="title"></slot>
                             <v-card-text v-if="error">
@@ -121,8 +121,8 @@
                         </v-card>
                     </v-col>
 
-                    <v-col :cols="12" :md="5">
-                        <v-card width="100%" v-if="mdAndUp" :height="height" color="grey-lighten-4" flat>
+                    <v-col v-if="showMap" :cols="12" :md="5">
+                        <v-card width="100%" v-if="showMap && mdAndUp" :height="height" color="grey-lighten-4" flat>
                             <address-coordinate-map-input @update:coordinate="coords => onUpdateCoordinate(coords)"
                                 v-model:coordinate="addressInfo.coordinate" :height="height" />
                         </v-card>
@@ -172,7 +172,12 @@ const props = defineProps({
     height: {
         type: [String, Number],
         required: false,
-    }
+    },
+    showMap: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 const emit = defineEmits(['submit', 'cancel'])
 
@@ -198,6 +203,12 @@ const height = computed(() => {
     if (props.height)
         return props.height;
     return '630px';
+});
+
+const showMap = computed(() => {
+    if (props.showMap)
+        return props.showMap;
+    return false;
 });
 
 async function submit() {

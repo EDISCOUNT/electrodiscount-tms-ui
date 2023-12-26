@@ -7,9 +7,10 @@ export default class User {
     lastName: string;
     email: string;
     phone: string;
+    username?: string;
     status?: UserStatus;
-    driver: any;
-    isVerified: boolean;
+    driver?: any;
+    isVerified?: boolean;
     isDriver?: boolean;
     createdAt?: Date;
     roles?: string[];
@@ -20,8 +21,9 @@ export default class User {
         lastName: string,
         email: string,
         phone: string,
-        driver: any,
-        isVerified: boolean,
+        username?: string,
+        driver?: any,
+        isVerified?: boolean,
         status?: UserStatus,
         avatar?: string,
         isDriver?: boolean,
@@ -36,11 +38,14 @@ export default class User {
         this.email = email;
         this.phone = phone;
         this.status = status;
+        this.username = username;
         this.driver = driver;
         this.isVerified = isVerified;
         this.isDriver = isDriver;
         this.createdAt = createdAt;
         this.roles = roles;
+
+        // console.log("ROLES: ", roles, this.roles);
     }
 
 
@@ -55,6 +60,7 @@ export default class User {
             json["lastName"],
             json["email"],
             json["phone"],
+            json["username"],
             json["driver"],
             json["isVerified"],
             json["status"],
@@ -65,20 +71,16 @@ export default class User {
         );
     }
 
-    toJson(): any {
+    toJson(): UserFormData {
         return {
-            "id": this.id,
             "firstName": this.firstName,
             "lastName": this.lastName,
+            "username": this.username,
             "email": this.email,
             "phone": this.phone,
-            "driver": this.driver,
             "isVerified": this.isVerified,
-            "status": this.status,
             "avatar": this.avatar,
-            "isDriver": this.isDriver,
             "roles": this.roles,
-            "createdAt": this.createdAt?.toISOString(),
         };
     }
 }
@@ -90,4 +92,22 @@ function userFromJson(jsonString: string): User {
 
 function userToJson(data: User): string {
     return JSON.stringify(data.toJson());
+}
+
+
+
+export interface UserFormData {
+    avatar?: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    username?: string;
+    // status?: UserStatus;
+    // driver: any;
+    isVerified?: boolean;
+    password?: string;
+    // isDriver?: boolean;
+    // createdAt?: Date;
+    roles?: string[];
 }

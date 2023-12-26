@@ -14,6 +14,12 @@
                     (v) => !!v || 'Name is required',
                     (v) => (v && v.length <= 50) || 'Name must be less than 50 characters',
                 ]"></v-text-field>
+
+                <v-card flat>
+                    <v-card-text class="pa-0">
+                        <CarrierUserOperatorInput v-model="data.operatorUser" variant="outlined" density="compact" label="Operator User Account" clearable/>
+                    </v-card-text>
+                </v-card>
                 <v-switch v-model="data.enabled" label="Enabled" color="primary" inset></v-switch>
             </v-card-text>
             <v-card-actions class="px-5 pb-5">
@@ -29,6 +35,7 @@ import { defineProps, reactive, ref, watch } from "vue";
 // import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
+import CarrierUserOperatorInput from './partials/CarrierUserOperatorInput.vue';
 
 const props = defineProps<{
     type?: string;
@@ -52,6 +59,7 @@ const data = reactive<CarrierFormData>({
     code: props.carrier?.code ?? '',
     name: props.carrier?.name ?? '',
     enabled: props.carrier?.enabled ?? false,
+    operatorUser: props.carrier?.operatorUser?.id,
 
 });
 

@@ -1,4 +1,4 @@
-import http from "@/admin/plugins/axios";
+import http from "@/plugins/axios";
 import Driver from "@/model/account/driver";
 import DriverLicense from "@/model/account/driver_license";
 import useSWRV, { IConfig } from "swrv";

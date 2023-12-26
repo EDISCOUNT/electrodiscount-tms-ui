@@ -1,4 +1,4 @@
-import http from "@/admin/plugins/http";
+import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 

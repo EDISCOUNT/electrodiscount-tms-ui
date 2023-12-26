@@ -212,6 +212,41 @@ const routes = [
 
       },
     ]
+  },
+
+  //
+
+  //
+  //
+  {
+    path: 'account/users',
+    name: 'admin:account:user',
+    component: () => import('@/admin/layouts/account/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin:account:user:index',
+        component: () => import('@/admin/views/account/user/Index.vue')
+      },
+      {
+        path: 'create',
+        name: 'admin:account:user:create',
+        component: () => import('@/admin/views/account/user/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:account:user:edit',
+        component: () => import('@/admin/views/account/user/Edit.vue'),
+        props: true
+      },
+      {
+        path: ':id',
+        name: 'admin:account:user:show',
+        component: () => import('@/admin/views/account/user/Show.vue'),
+        props: true
+      },
+    ]
   }
 ]
 

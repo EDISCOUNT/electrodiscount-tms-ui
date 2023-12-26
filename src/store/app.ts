@@ -8,12 +8,22 @@ import User from '@/model/account/user';
 import { computed, ref } from 'vue';
 import useSWRV from 'swrv';
 import Driver from '@/model/account/driver';
-import http from '../admin/plugins/axios';
+import http from '../plugins/axios';
+import { BASE_URL } from '@/common/constants';
+
+
+export class UnAuthenticatedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UnAuthenticatedError';
+  }
+}
 
 
 export const useConfigStore = defineStore('config', {
   state: () => ({
-    baseUrl: 'http://localhost:8000',
+    // baseUrl: 'http://localhost:8000',
+    baseUrl:  BASE_URL,
   }),
 
   getters: {
@@ -28,8 +38,7 @@ export const useConfigStore = defineStore('config', {
 
       const baseUrl = (serverURL ?? '').replace(/(\/)+$/, '');
       const segment = String(url).replace(/^(\/)+/, '');
-
-
+      
       return baseUrl + '/' + segment;
     },
   },
@@ -75,12 +84,13 @@ export const useAccountStore = defineStore('account', () => {
     return Promise.reject(error);
   });
 
+  let _fetchUserPromise: Promise<User> | undefined;;
 
   const targetRoute = ref<TargetRouteInfo>();
   const user = ref<User>();
   const driver = ref<Driver>();
   const auth = ref({ token });
-
+  const isFetchingUser = ref(false);
 
   const authToken = computed(() => auth.value?.token)
   const isAuthenticated = computed(() => !!auth.value.token)
@@ -101,11 +111,26 @@ export const useAccountStore = defineStore('account', () => {
 
   async function fetchUser() {
     try {
-      return user.value = await getCurrentUser();
+      if(!_fetchUserPromise){
+        _fetchUserPromise = getCurrentUser();
+      }
+      isFetchingUser.value = true;
+      return user.value = await _fetchUserPromise;
     }
     catch (err) {
-      throw err;
+      // throw err;
     }
+    finally{
+      isFetchingUser.value = false;
+      _fetchUserPromise = undefined;
+    }
+  }
+
+  async function getOrFetchUser(){
+    if(user.value){
+      return user.value;
+    }
+    return fetchUser();
   }
 
 
@@ -143,7 +168,11 @@ export const useAccountStore = defineStore('account', () => {
       roles = [roles];
     if (!roles.length)
       return true;
-    const userRoles = user.value?.roles ?? [];
+    let userRoles = user.value?.roles ?? [];
+    if(!Array.isArray(userRoles)){
+      userRoles = Object.values(userRoles);
+    }
+    console.log("USER ROLES: ", {userRoles});
     if (includeAll)
       return roles.every(r => userRoles.includes(r));
     return roles.some(r => userRoles.includes(r));
@@ -166,11 +195,13 @@ export const useAccountStore = defineStore('account', () => {
     loginInWithToken,
     logout,
     fetchUser,
+    getOrFetchUser,
     //
     setTargetRoute,
     clearTargetRoute,
     //
     isGranted,
+    isFetchingUser,
   }
 
 });
@@ -178,10 +209,10 @@ export const useAccountStore = defineStore('account', () => {
 
 
 export function useUser() {
-  const { fetchUser, user: crntUser } = useAccountStore();
+  const { getOrFetchUser, } = useAccountStore();
   const { data: user, error, isValidating: loading } = useSWRV(
     () => `/api/current_user`,
-    async () => crntUser ?? await fetchUser());
+    async () => getOrFetchUser());
 
   return { user, loading, error };
   // return computed(() => store.user);

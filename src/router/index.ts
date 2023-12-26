@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 
 import { routes as adminRoutes } from '@/admin/router'
+import { routes as carrierRoutes } from '@/carrier/router'
 
 const routes = [
   {
@@ -28,6 +29,17 @@ const routes = [
         path: '',
         redirect: { name: 'admin:home' },
       },
+      //
+      {
+        path: '/carrier',
+        name: 'carrier',
+        children: carrierRoutes,
+        meta: {
+          // isProtected: true,
+          roles: ['ROLE_CARRIER', 'ROLE_CARRIER_OPERATOR'],
+        }
+      },
+
       //
       {
         path: '/admin',

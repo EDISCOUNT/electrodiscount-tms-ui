@@ -20,6 +20,7 @@ export default class Order {
     shippingAddress?: Address;
     billingAddress?: Address;
     channelOrderId?: string;
+    channelOrderCreatedAt?: Date;
 
     get total(): number {
 
@@ -57,6 +58,7 @@ export default class Order {
         shippingAddress,
         billingAddress,
         channelOrderId,
+        channelOrderCreatedAt,
     }: {
         id: any;
         code: any;
@@ -72,6 +74,7 @@ export default class Order {
         shippingAddress?: Address;
         billingAddress?: Address;
         channelOrderId?: string;
+        channelOrderCreatedAt?: Date;
     }) {
         this.id = id;
         this.code = code;
@@ -87,6 +90,7 @@ export default class Order {
         this.shippingAddress = shippingAddress;
         this.billingAddress = billingAddress;
         this.channelOrderId = channelOrderId;
+        this.channelOrderCreatedAt = channelOrderCreatedAt;
     }
 
     copyWith({
@@ -104,6 +108,7 @@ export default class Order {
         shippingAddress,
         billingAddress,
         channelOrderId,
+        channelOrderCreatedAt,
     }: {
         id?: any;
         code?: any;
@@ -119,6 +124,7 @@ export default class Order {
         shippingAddress?: Address;
         billingAddress?: Address;
         channelOrderId?: string;
+        channelOrderCreatedAt?: Date;
     }): Order {
         return new Order({
             id: id ?? this.id,
@@ -135,6 +141,7 @@ export default class Order {
             shippingAddress: shippingAddress ?? this.shippingAddress,
             billingAddress: billingAddress ?? this.billingAddress,
             channelOrderId: channelOrderId ?? this.channelOrderId,
+            channelOrderCreatedAt: channelOrderCreatedAt ?? this.channelOrderCreatedAt,
         });
     }
 
@@ -154,6 +161,7 @@ export default class Order {
             shippingAddress: json["shippingAddress"] != null ? Address.fromJson(json["shippingAddress"]) : undefined,
             billingAddress: json['billingAddress'] != null ? Address.fromJson(json['billingAddress']) : undefined,
             channelOrderId: json["channelOrderId"],
+            channelOrderCreatedAt: json["channelOrderCreatedAt"] != null ? new Date(json["channelOrderCreatedAt"]) : undefined,
         });
     }
 

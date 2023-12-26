@@ -15,6 +15,7 @@ export default class OrderItem {
     name?: string;
     _total?: number;
     fulfilment?: ShipmentFulfilment;
+    status: string = "pending";
 
 
     get total(): number {
@@ -37,6 +38,7 @@ export default class OrderItem {
         name,
         total,
         fulfilment,
+        status,
     }: {
         id: any;
         channelProductId: any;
@@ -50,6 +52,7 @@ export default class OrderItem {
         name?: string;
         total?: number;
         fulfilment?: ShipmentFulfilment;
+        status?: string;
     }) {
         this.id = id;
         this.channelProductId = channelProductId;
@@ -63,6 +66,7 @@ export default class OrderItem {
         this.name = name;
         this._total = total;
         this.fulfilment = fulfilment;
+        this.status = status ?? this.status;
 
     }
 
@@ -79,6 +83,7 @@ export default class OrderItem {
         name,
         total,
         fulfilment,
+        status,
     }: {
         id?: any;
         channelProductId?: any;
@@ -92,6 +97,7 @@ export default class OrderItem {
         name?: string;
         total?: any;
         fulfilment?: ShipmentFulfilment;
+        status?: string;
     }): OrderItem {
         return new OrderItem({
             id: id ?? this.id,
@@ -106,6 +112,7 @@ export default class OrderItem {
             name: name ?? this.name,
             total: total ?? this.total,
             fulfilment: fulfilment ?? this.fulfilment,
+            status: status ?? this.status,
         });
     }
 
@@ -123,6 +130,7 @@ export default class OrderItem {
             name: json["name"],
             total: json["total"],
             fulfilment: json["fulfilment"] != null ? ShipmentFulfilment.fromJson(json["fulfilment"]) : undefined,
+            status: json["status"],
         });
     }
 

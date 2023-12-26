@@ -1,7 +1,7 @@
 <template>
     <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers"
         :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="channelOrderId"
-        :height="height ?? 'calc(100vh - 260px)'" @update:options="loadItems" :show-select="showSelect">
+        :height="height ?? 'calc(100vh - 260px)'" @update:options="loadItems" fixed-header :show-select="showSelect">
 
 
         <template v-slot:top>
@@ -18,23 +18,7 @@
                 </v-card-actions>
 
                 <v-spacer />
-                <v-chip-group>
-                    <v-chip color="primary" size="small" label>
-                        All
-                    </v-chip>
-
-                    <v-chip color="primary" size="small" label>
-                        Assigned
-                    </v-chip>
-
-                    <v-chip color="primary" size="small" label>
-                        Unplanned
-                    </v-chip>
-
-                    <v-chip color="primary" size="small" label>
-                        Completed
-                    </v-chip>
-                </v-chip-group>
+                <ChannelOrderFilter />
             </v-toolbar>
         </template>
 
@@ -54,12 +38,17 @@
         </template>
 
 
-        <template v-slot:item.status="{ item: { status } }">
+        <template v-slot:item.status="{ item: { status, items } }">
             <template v-if="status">
-                <v-chip>
+                <v-chip size="small" :color="getStatusColor(status)">
                     {{ status }}
                 </v-chip>
             </template>
+            <span v-else-if="items">
+                <v-chip size="small" :color="getStatusColor(items[0].status)">
+                    {{ items[0].status }}
+                </v-chip>
+            </span>
             <span v-else class="text-grey">N/A</span>
         </template>
 
@@ -86,21 +75,30 @@
         </template>
 
 
-        <template v-slot:item.date="{ item: { fulfilments } }">
-            <template v-if="fulfilments">
+        <template v-slot:item.expiresAt="{ item: { fulfilments } }">
+            <template v-if="fulfilments?.length">
                 <template v-for="(fulfilment, i) in fulfilments" :key="fulfilment.id ?? i">
                     <div v-if="i == 0">
-                        <span v-if="fulfilment.expiryDate">
-                            {{ fulfilment.expiryDate }}
+                        <span v-if="fulfilment.exactDeliveryDate">
+                            {{ formatDate(fulfilment.exactDeliveryDate) }}
                         </span>
                         <span class="text-grey" v-else>
-                            Name Not Found
+                            N/A
                         </span>
                     </div>
                     <v-chip v-else-if="i == (fulfilments.length - 1)">
                         {{ fulfilments.length - 1 }} More
                     </v-chip>
                 </template>
+            </template>
+            <span v-else class="text-grey">N/A</span>
+        </template>
+
+
+
+        <template v-slot:item.createdAt="{ item: { channelOrderCreatedAt: createdAt, items } }">
+            <template v-if="createdAt">
+                <span> {{ formatDate(createdAt) }} </span>
             </template>
             <span v-else class="text-grey">N/A</span>
         </template>
@@ -152,6 +150,9 @@ import { useTheme } from 'vuetify/lib/framework.mjs';
 import { getPaginatedOrders } from '../../../../repository/order/order_repository';
 import OrderPreview from './OrderPreview.vue';
 import BulkImportShipmentAction from '../import/BulkImportShipmentAction.vue';
+import ChannelOrderFilter from './filtter/ChannelOrderFilter.vue';
+import { getStatusColor } from '@/utils/color';
+import { formatDate } from '@/utils/format';
 
 
 const props = defineProps<{
@@ -176,14 +177,15 @@ const headers = [
     // { title: 'Code', key: 'code', },
     {
         title: 'Total',
-        
+
         sortable: true,
         key: 'total',
     },
     { title: 'Products', key: 'items', },
     { title: 'Shipping Address', key: 'shippingAddress', sortable: false },
     { title: 'Status', key: 'status', },
-    { title: 'Expiry Date', key: 'date', },
+    { title: 'Delivery Date', key: 'expiresAt', },
+    { title: 'Created At', key: 'createdAt', },
     { title: 'Actions', key: 'actions', sortable: false },
 ];
 
@@ -207,7 +209,7 @@ async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number,
     try {
         loading.value = true;
         const pagination = await getPaginatedOrders({ page, limit, channel: props.channel });
-        serverItems.value = [ ...pagination.items ];
+        serverItems.value = [...pagination.items];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;
 

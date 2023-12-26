@@ -1,6 +1,6 @@
 <template>
     <v-card height="100vh" color="secondary-bg" flat>
-        <v-card-text>
+        <v-card-text class="pa-0 pa-sm-4">
             <v-card class="" flat>
                 <template v-slot:title>
                     <span> Shipments</span>

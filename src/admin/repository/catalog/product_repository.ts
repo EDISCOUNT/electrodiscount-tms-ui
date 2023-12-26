@@ -1,4 +1,4 @@
-import http from "@/admin/plugins/http";
+import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Product from "@/model/catalog/product";
 

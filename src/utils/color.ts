@@ -1,14 +1,23 @@
+import { computed } from 'vue';
+import { useDisplay, useTheme } from 'vuetify';
+
 export function getRandomColor(): string {
     // Generate a random hexadecimal color
-    return "#" + Math.floor(Math.random()*16777215).toString(16);
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 export function getStatusColor(status: string | undefined): string {
     // If a status is provided, check if it exists in the mapping
+    status = (status ?? '').toUpperCase();
     if (status) {
         const statusColorMap: Record<string, string> = {
+            "PENDING": "#FFA500", // Orange
             "CANCELLED": "#FF0000", // Red
             "COMPLETED": "#00FF00", // Green
+            "CREATED": "#0000FF", // Blue	
+            "DELIVERED": "#00FF00", // Green
+            "PROCESSING": "#FFA500", // Orange
+            "PICKED_UP": "#00FF00", // Green
             "INTRANSIT": "#0000FF", // Blue
             // Add more status-color pairs as needed
         };
@@ -29,3 +38,19 @@ console.log(`Status: ${status1}, Color: ${color1}`);
 
 const color2 = getStatusColor(undefined); // No status provided
 console.log(`Status: No status provided, Color: ${color2}`);
+
+
+
+// 
+// 
+
+
+
+export function useColorScheme() {
+    const { xs } = useDisplay();
+    const theme = useTheme();
+    console.log("THEME:", theme);
+    const inlineBg = computed(() => theme.current.value.dark ? 'black' : 'grey-lighten-4');
+    const secondaryBg = computed(() => xs.value ? '' : 'secondary-bg');
+    return { secondaryBg, inlineBg }
+}

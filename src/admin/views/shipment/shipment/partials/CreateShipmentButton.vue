@@ -1,10 +1,12 @@
 <template>
     <v-menu>
         <template v-slot:activator="{ props }">
-            <v-btn v-bind="props" color="primary" :elevation="0">
-                New Shipment <v-divider vertical />
-                <v-icon>mdi-menu-down</v-icon>
-            </v-btn>
+            <slot name="activator" v-bind="{ props, to: { name: 'admin:shipment:index' } }">
+                <v-btn v-bind="props" color="primary" :elevation="0">
+                    New <v-divider vertical />
+                    <v-icon>mdi-menu-down</v-icon>
+                </v-btn>
+            </slot>
         </template>
         <v-card flat>
             <v-card-text>
@@ -52,17 +54,5 @@ const { data: pagination, isValidating: loading, error } = useSWRV(
     `/api/admin/channel/channels`,
     () => getPaginatedChannels(),
 );
-
-
-
-
-const types = [
-    {
-        title: 'Bol.com',
-        subtitle: 'Bol.com Marketplace',
-        iconImage: 'http://localhost:8000/images/icons/bol.webp',
-        code: 'app.shipment.sourcing.source.bol_dot_com',
-    }
-]
 
 </script>

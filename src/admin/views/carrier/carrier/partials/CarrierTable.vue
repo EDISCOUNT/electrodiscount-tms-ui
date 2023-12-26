@@ -12,6 +12,13 @@
             </v-chip>
         </template>
 
+        <template v-slot:item.operatorUser="{ item: { operatorUser } }">
+            <div v-if="operatorUser">
+                {{ operatorUser.fullName }}
+            </div>
+            <span class="text-grey" v-else>N/A</span>
+        </template>
+
 
         <!-- <template v-slot:item.name="{ item }">
             <span>{{ item }}</span>
@@ -20,8 +27,7 @@
 
         <template v-slot:item.actions="{ item: { id } }">
 
-            <v-btn color="primary" :to="{ name: 'admin:carrier:edit', params: { id } }" :elevation="0"
-                size="small">
+            <v-btn color="primary" :to="{ name: 'admin:carrier:edit', params: { id } }" :elevation="0" size="small">
                 <v-icon>mdi-pencil</v-icon>
                 Edit
             </v-btn>
@@ -48,10 +54,10 @@ const headers = [
     { title: 'Code', key: 'code', },
     {
         title: 'Name',
-        
         sortable: true,
         key: 'name',
     },
+    { title: 'Owner Operator', key: 'operatorUser', },
     { title: 'Status', key: 'enabled', },
     { title: 'Actions', key: 'actions', },
 ];
@@ -69,7 +75,7 @@ async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number,
     try {
         loading.value = true;
         const pagination = await getPaginatedCarriers({ page, limit });
-        serverItems.value = [ ...pagination.items ];
+        serverItems.value = [...pagination.items];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;
 

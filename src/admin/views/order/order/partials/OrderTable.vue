@@ -29,7 +29,7 @@
                     <v-card flat>
                         <v-window v-model="tab">
                             <v-window-item v-for="(channel) in pagination.items" :key="channel.id" :value="channel.id">
-                                <channel-order-table :channel="channel" show-select height="calc(100vh - 250px)"/>
+                                <channel-order-table :channel="channel" show-select height="calc(100vh - 230px)"/>
                             </v-window-item>
                         </v-window>
                     </v-card>
@@ -51,7 +51,7 @@
         <v-row justify="center" align="center" class="fill-height" v-else>
             <v-card width="400px" flat>
                 <v-card-title>
-                    Seems and Error Occured
+                    Seems an Error Occured
                 </v-card-title>
                 <v-card-text>
                     <v-alert type="error" dismissible>

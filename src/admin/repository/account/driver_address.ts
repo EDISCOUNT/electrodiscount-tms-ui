@@ -1,4 +1,4 @@
-import http from "@/admin/plugins/axios";
+import http from "@/plugins/axios";
 import Connection from "@/data/pagination";
 import DriverAddress from "@/model/account/driver_address";
 import useSWRV from "swrv";

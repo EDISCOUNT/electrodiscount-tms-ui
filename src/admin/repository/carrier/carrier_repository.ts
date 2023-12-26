@@ -1,4 +1,4 @@
-import http from "@/admin/plugins/http";
+import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Carrier from "@/model/carrier/carrier";
 import { encodeURLParams } from "@/utils/url";
@@ -48,5 +48,6 @@ export interface CarrierFormData {
     description?: string;
     // type: string;
     enabled: boolean;
+    operatorUser?: string;
     // metadata: { [i: string]: any };
 }

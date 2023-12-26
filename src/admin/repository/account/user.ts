@@ -1,10 +1,11 @@
-import http from "@/admin/plugins/axios";
+import http from "@/plugins/axios";
 import Pagination from "@/data/pagination/pagination";
-import User from "@/model/account/user";
+import User, { UserFormData } from "@/model/account/user";
+import { encodeURLParams } from "@/utils/url";
 
 interface GetUserParams {
   page?: number;
-  limit?: String;
+  limit?: number;
   filter?: String;
   sort?: String;
 }
@@ -18,9 +19,11 @@ interface UtilityProps {
 }
 
 
-export async function getUserConnection({ page, limit, filter, sort }: GetUserParams = {}, { }: UtilityProps = {}) {
+export async function getPaginatedUsers({ page, limit, filter, sort }: GetUserParams = {}, { }: UtilityProps = {}) {
 
-  const { data } = await http.get(`/api/admin/account/users?page=${page ?? 10}&limit=${limit ?? ''}&filter=${filter ?? ''}&sort=${sort ?? ''}`);
+  const params = encodeURLParams({page, limit, filter, sort});
+
+  const { data } = await http.get(`/api/admin/account/users?${params}`);
   const connection = Pagination.fromJson<User>({
     ...data,
     buildItem: (a) => User.fromJson(a),
@@ -29,19 +32,14 @@ export async function getUserConnection({ page, limit, filter, sort }: GetUserPa
 }
 
 
-export async function getUserItem({ id }: { id: string }, { }: UtilityProps = {}) {
+export async function getUser({ id }: { id: string }, { }: UtilityProps = {}) {
   const { data } = await http.get(`/api/admin/account/users/${id}`);
   const user = User.fromJson(data);
   return user;
 }
 
 
-export interface UserUpdateInput {
-  pageName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  avatar?: File;
+export interface UserUpdateInput extends UserFormData {
 }
 
 interface UpdateUserParams {
@@ -51,13 +49,7 @@ interface UpdateUserParams {
 
 
 export async function updateUser({ user, input }: UpdateUserParams, { }: UtilityProps = {}) {
-  const formData = new FormData();
-  formData.append('pageName', input.pageName ?? '');
-  formData.append('lastName', input.lastName ?? '');
-  formData.append('email', input.email ?? '');
-  formData.append('phone', input.phone ?? '');
-  formData.append('avatar', input.avatar ?? '');
-  const { data } = await http.patch(`/api/admin/account/users/${user.id}`, formData);
+  const { data } = await http.patch(`/api/admin/account/users/${user.id}`, input);
   return User.fromJson(data);
 }
 

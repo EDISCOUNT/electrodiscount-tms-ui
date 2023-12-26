@@ -1,5 +1,5 @@
 <template>
-  <v-card color="secondary-bg" height="100vh" flat>
+  <v-card :color="secondaryBg" height="100vh" style="overflow: auto;" flat>
 
     <!-- {{ { shipment } }} -->
     <v-row justify="center" align="center" v-if="isLoading" class="fill-height">
@@ -13,7 +13,7 @@
       </v-card>
     </v-row>
 
-    <v-card flat v-else-if="shipment">
+    <v-card color="transparent" flat v-else-if="shipment">
       <v-card-text v-if="error">
         <v-alert type="error">
           {{ error }}
@@ -42,6 +42,7 @@ import { getShipment, updateShipment, } from '@/admin/repository/shipment/shipme
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 import { useRouter } from 'vue-router';
 import { useNotifier } from 'vuetify-notifier';
+import { useColorScheme } from '@/utils/color';
 
 const props = defineProps<{
   id: string,
@@ -54,6 +55,7 @@ const isLoading = ref(false);
 
 const router = useRouter();
 const notifier = useNotifier();
+const { secondaryBg } = useColorScheme();
 
 
 

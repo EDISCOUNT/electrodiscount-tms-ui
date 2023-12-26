@@ -75,15 +75,4 @@ const { data: pagination, isValidating: loading, error } = useSWRV(
 )
 
 
-
-
-// const types = [
-//     {
-//         title: 'Bol.com',
-//         subtitle: 'Bol.com Marketplace',
-//         iconImage: 'http://localhost:8000/images/icons/bol.webp',
-//         code: 'app.shipment.sourcing.source.bol_dot_com',
-//     }
-// ]
-
 </script>

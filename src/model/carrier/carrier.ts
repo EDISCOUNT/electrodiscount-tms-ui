@@ -1,3 +1,4 @@
+import User from "../account/user";
 
 
 export default class Carrier {
@@ -8,6 +9,7 @@ export default class Carrier {
     logo?: string;
     shortDescription?: string;
     description?: string;
+    operatorUser?: User;
     createdAt?: Date;
     updatedAt?: Date;
 
@@ -19,6 +21,7 @@ export default class Carrier {
         logo?: string,
         shortDescription?: string;
         description?: string;
+        operatorUser?: User;
         createdAt?: Date;
         updatedAt?: Date;
     }) {
@@ -31,6 +34,7 @@ export default class Carrier {
         this.description = data.description;
         this.createdAt = data.createdAt;
         this.updatedAt = data.updatedAt;
+        this.operatorUser = data.operatorUser;
     }
 
     static fromJson(input: { [i: string]: any }): Carrier {
@@ -42,6 +46,7 @@ export default class Carrier {
             logo: input.logo,
             shortDescription: input.shortDescription,
             description: input.description,
+            operatorUser: input.operatorUser ? User.fromJson(input.operatorUser) : undefined,
             createdAt: input.createdAt,
             updatedAt: input.updatedAt
         });

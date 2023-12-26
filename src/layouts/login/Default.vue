@@ -1,7 +1,8 @@
 <template>
     <v-app>
         <v-main>
-            <v-card color="secondary-bg" height="100vh">
+            <v-card :color="secondaryBg" height="100vh">
+                <!-- {{ { secondaryBg } }} -->
                 <!-- <v-card-text> -->
 
                 <v-row justify="center" align="center" class="fill-height">
@@ -13,8 +14,10 @@
                         <v-card-text>
                             <v-form ref="form">
                                 <v-text-field label="Username" v-model="username" variant="outlined" density="compact" />
-                                <v-text-field label="Password" v-model="password" type="password" variant="outlined" density="compact" />
-                                <v-btn @click="login" color="primary" :elevation="0" :loading="authenticating" block>Login</v-btn>
+                                <v-text-field label="Password" v-model="password" type="password" variant="outlined"
+                                    density="compact" />
+                                <v-btn @click="login" color="primary" :elevation="0" :loading="authenticating"
+                                    block>Login</v-btn>
                             </v-form>
                         </v-card-text>
                     </v-card>
@@ -31,10 +34,12 @@ import { reactive, ref, watch } from 'vue';
 import { useAccountStore } from '@/store/app';
 import { useRouter } from 'vue-router';
 import { useNotifier } from 'vuetify-notifier';
+import { useColorScheme } from '@/utils/color';
 
 const accountStore = useAccountStore();
 const router = useRouter();
 const notifier = useNotifier();
+const { secondaryBg } = useColorScheme();
 //
 
 const form = ref();
@@ -63,8 +68,16 @@ async function login() {
         if (accountStore.hasTargetPath) {
             const route = accountStore.targetRoute!;
             router.push(route);
+            console.log("Redirecting to target route", route);
         } else {
-            router.replace({ name: 'admin:home' });
+            if (accountStore.isGranted('ROLE_CARRIER_OPERATOR')) {
+                router.replace({ name: 'carrier:home' });
+            }
+            else if (accountStore.isGranted('ROLE_ADMIN')) {
+                router.replace({ name: 'admin:home' });
+            }
+
+            console.log("Redirecting to Home",);
         }
     }
     catch (err) {

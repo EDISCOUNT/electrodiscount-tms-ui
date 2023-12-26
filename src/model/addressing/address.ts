@@ -81,8 +81,8 @@ export default class Address {
         return this.googleId || this.coordinates?.toString() || this.company || this.street || '';
     }
 
-    public get province(){
-        return this.provinceCode?? this.provinceName;
+    public get province() {
+        return this.provinceCode ?? this.provinceName;
     }
 
 
@@ -118,10 +118,10 @@ export default class Address {
             company: json.company,
             street: json.street,
             city: json.city,
-            provinceCode: json.provinceCode,
-            provinceName: json.provinceName,
+            provinceCode: json.provinceCode?? json.provinceName,
+            provinceName: json.provinceName ?? json.provinceCode,
             postcode: json.postcode,
-            countryCode: json.countryCode,
+            countryCode: json.country ?? json.countryCode,
             coordinates: json.coordinate ? Coords.fromJson(json.coordinate) : undefined,
             arriveAt: json.arriveAt ? new Date(json.arriveAt) : undefined,
             updatedAt: json.updatedAt ? new Date(json.updatedAt) : undefined, // You might want to specify the correct data type here

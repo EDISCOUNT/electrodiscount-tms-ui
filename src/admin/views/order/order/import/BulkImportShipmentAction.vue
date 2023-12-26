@@ -11,10 +11,22 @@
                     </v-btn>
                 </template>
                 <v-card class="pt-3" min-width="300px" flat>
+
+                    <v-card-actions class="px-5">
+                        <v-btn @click="() => createShipment()" :loading="isImportingShipping" color="primary" :elevation="0"
+                            :disabled="!orderIds.length" variant="flat" block>
+                            Import Shipment
+                            <v-icon>mdi-import</v-icon>
+                        </v-btn>
+                    </v-card-actions>
+
                     <v-card-text r-class="pa-0">
+                        <v-card-subtitle>
+                            Import and assign to carrier
+                        </v-card-subtitle>
                         <v-list v-if="pagination">
                             <div v-for="(carrier, i) in pagination.items" :key="carrier.id ?? i">
-                                <v-list-item @click="() => createShipment({ carrier })" color="primary" class="mx-2"
+                                <v-list-item @click="() => createShipment({ carrier })" color="primary" class="mx-0"
                                     :elevation="0" :disabled="isImportingShipping || !orderIds.length" variant="flat"
                                     :loading="isImportingShipping && carrier.id == choosenCarrier?.id">
                                     <template v-slot:prepend>
@@ -40,7 +52,7 @@
                         <v-row justify="center" align="center" class="fill-height" v-else-if="loading">
                             <v-progress-circular indeterminate />
                         </v-row>
-                        
+
                     </v-card-text>
                     <!-- <v-card-text r-class="px-0">
                         <v-row>
@@ -59,13 +71,6 @@
                         Import and Select Carrier
                     </v-card-subtitle> -->
 
-                    <v-card-actions class="px-5">
-                        <v-btn @click="() => createShipment()" :loading="isImportingShipping" color="primary" :elevation="0"
-                            :disabled="!orderIds.length" variant="flat" block>
-                            Import Shipment
-                            <v-icon>mdi-import</v-icon>
-                        </v-btn>
-                    </v-card-actions>
                 </v-card>
             </v-menu>
 

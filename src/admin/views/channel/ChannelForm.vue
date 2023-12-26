@@ -1,5 +1,13 @@
 <template>
-    <v-card color="secondary-bg" :height="height" flat>
+    <v-card color="secondary-bg" :height="height" style="overflow-y:auto;" flat>
+        <template v-slot:prepend>
+            <!-- <v-btn @click="router.go(-1)" icon>
+                <v-icon>mdi-arrow-left</v-icon>
+            </v-btn> -->
+        </template>
+        <template v-slot:title>
+            <slot name="title"></slot>
+        </template>
         <!-- <v-card-text> -->
 
         <v-row justify="center" align="center" class="fill-height">
@@ -80,6 +88,7 @@ import { computed, defineProps, reactive, ref } from "vue";
 // import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
     type?: string;
@@ -97,6 +106,7 @@ const emit = defineEmits<{
 // const createConfirm = useConfirm()
 // const createSnackbar = useSnackbar();
 
+const router = useRouter();
 const { xs, smAndDown, mdAndUp } = useDisplay();
 
 const height = computed(() => props.height ?? (xs.value ? '100%' : '100vh'));

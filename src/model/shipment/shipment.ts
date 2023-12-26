@@ -2,6 +2,7 @@ import Address, { AddressFormData } from "../addressing/address";
 import Carrier from "../carrier/carrier";
 import Channel from "../channel/channel";
 import AdditionalService from "../order/additional_service";
+import ShipmentDimension, { ShipmentDimensionFormData } from "./shipment_dimension";
 import ShipmentFulfilment, { ShipmentFulfilmentFormData } from "./shipment_fulfilment";
 import ShipmentItem, { ShipmentItemFormData } from "./shipment_item";
 
@@ -20,6 +21,16 @@ export default class Shipment {
   items: ShipmentItem[];
   fulfilment?: ShipmentFulfilment;
   additionalServices?: AdditionalService[];
+  dimension?: ShipmentDimension;
+
+
+  bookedAt?: Date | undefined;
+  codAmount?: number;
+  codCurrency?: string;
+  type?: string;
+  //
+  netWeight?: number;
+  volumetricWeight?: number;
 
   constructor({
     id,
@@ -36,6 +47,15 @@ export default class Shipment {
     items,
     fulfilment,
     additionalServices,
+    dimension,
+    //
+    bookedAt,
+    codAmount,
+    codCurrency,
+    type,
+    netWeight,
+    volumetricWeight,
+    //
   }: {
     id: number;
     code: string;
@@ -51,6 +71,14 @@ export default class Shipment {
     metadata?: Record<string, any>;
     fulfilment?: ShipmentFulfilment;
     additionalServices?: AdditionalService[];
+    dimension?: ShipmentDimension;
+    //
+    bookedAt?: Date,
+    codAmount?: number,
+    codCurrency?: string,
+    type?: string,
+    netWeight?: number,
+    volumetricWeight?: number,
   }) {
     this.id = id;
     this.code = code;
@@ -66,6 +94,14 @@ export default class Shipment {
     this.metadata = metadata;
     this.fulfilment = fulfilment;
     this.additionalServices = additionalServices;
+    this.dimension = dimension;
+    //
+    this.bookedAt = bookedAt;
+    this.codAmount = codAmount;
+    this.codCurrency = codCurrency;
+    this.type = type;
+    this.netWeight = netWeight;
+    this.volumetricWeight = volumetricWeight;
   }
 
   copyWith({
@@ -83,6 +119,14 @@ export default class Shipment {
     metadata,
     fulfilment,
     additionalServices,
+    dimension,
+    //
+    bookedAt,
+    codAmount,
+    codCurrency,
+    type,
+    netWeight,
+    volumetricWeight,
   }: {
     id?: number;
     code?: string;
@@ -98,6 +142,14 @@ export default class Shipment {
     metadata?: Record<string, any>;
     fulfilment?: ShipmentFulfilment;
     additionalServices?: AdditionalService[];
+    dimension?: ShipmentDimension,
+    //
+    bookedAt?: Date,
+    codAmount?: number,
+    codCurrency?: string,
+    type?: string,
+    netWeight?: number,
+    volumetricWeight?: number,
   }): Shipment {
     return new Shipment({
       id: id ?? this.id,
@@ -114,6 +166,14 @@ export default class Shipment {
       metadata: metadata ?? this.metadata,
       fulfilment: fulfilment ?? this.fulfilment,
       additionalServices: additionalServices ?? this.additionalServices,
+      dimension: dimension ?? this.dimension,
+      //
+      bookedAt: bookedAt ?? this.bookedAt,
+      codAmount: codAmount ?? this.codAmount,
+      codCurrency: codCurrency ?? this.codCurrency,
+      type: type ?? this.type,
+      netWeight: netWeight ?? this.netWeight,
+      volumetricWeight: volumetricWeight ?? this.volumetricWeight,
     });
   }
 
@@ -122,7 +182,7 @@ export default class Shipment {
       id: json["id"],
       code: json["code"],
       originAddress: json["originAddress"] != null ? Address.fromJson(json["originAddress"]) : undefined,
-      destinationAddress: json["originAddress"] != null ? Address.fromJson(json["originAddress"]) : undefined,
+      destinationAddress: json["destinationAddress"] != null ? Address.fromJson(json["destinationAddress"]) : undefined,
       sourceId: json["sourceId"],
       idOnSorce: json["idOnSorce"],
       status: json["status"],
@@ -133,34 +193,64 @@ export default class Shipment {
       additionalServices: json["additionalServices"]?.map((x: any) => AdditionalService.fromJson(x)),
       metadata: json["metadata"] ?? [],
       fulfilment: json["fulfilment"] ? ShipmentFulfilment.fromJson(json["fulfilment"]) : undefined,
+      dimension: json["dimension"] ? ShipmentDimension.fromJson(json["dimension"]) : undefined,
+      //
+      bookedAt: json["bookedAt"] != null ? new Date(json["bookedAt"]) : undefined,
+      codAmount: json["codAmount"],
+      codCurrency: json["codCurrency"],
+      type: json["type"],
+      netWeight: json["netWeight"],
+      volumetricWeight: json["volumetricWeight"],
     });
   }
 
   toJson(): ShipmentFormData {
     return {
       "code": this.code,
-      "originAddress": this.originAddress?.id ?? this.originAddress?.toJson(),
-      "destinationAddress": this.destinationAddress?.id ?? this.destinationAddress?.toJson(),
-      // "channelOrderId": this.channelOrderId,
+      // "originAddress": this.originAddress?.id ?? this.originAddress?.toJson(),
+      // "destinationAddress": this.destinationAddress?.id ?? this.destinationAddress?.toJson(),
+      //
+      "originAddress": this.originAddress?.toJson(),
+      "destinationAddress": this.destinationAddress?.toJson(),
+      //
+      "channelOrderId": this.channelOrderId,
       "items": this.items.map((x) => x.toJson()),
       "additionalServices": this.additionalServices?.map((x) => x.id),
-      // "carrier": this.carrier?.toJson(),
-      // "metadata": this.metadata ?? [],
+      "carrier": this.carrier?.id,
+      // "metadata": this.metadata ?? {},
       "fulfilment": this.fulfilment?.toJson(),
+      "dimension": this.dimension?.toJson(),
+      //
+      "type": this.type,
+      "bookedAt": this.bookedAt,
+      "volumetricWeight": this.volumetricWeight,
+      "netWeight": this.netWeight,
+      "codAmount": this.codAmount,
+      "codCurrency": this.codCurrency,
+
     };
   }
 }
 
 
 export interface ShipmentFormData {
-  code: string;
+  code?: string;
   items: ShipmentItemFormData[];
-  originAddress?: string | AddressFormData;
+  originAddress?: AddressFormData;
   destinationAddress?: string | AddressFormData;
   fulfilment?: ShipmentFulfilmentFormData;
   description?: string;
   additionalServices?: string[],
   metadata?: { [i: string]: any };
+  bookedAt?: Date | string;
+  channelOrderId?: string;
+  codAmount?: number;
+  codCurrency?: string;
+  type?: string;
+  //
+  dimension?: ShipmentDimensionFormData;
+  netWeight?: number;
+  volumetricWeight?: number;
   //
   carrier?: string;
 }

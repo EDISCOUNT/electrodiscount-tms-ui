@@ -1,4 +1,6 @@
-import axios from 'axios'
+import { BASE_URL } from '@/common/constants'
+import { useConfigStore } from '@/store/app'
+import axios, { AxiosInstance } from 'axios'
 import type { App } from 'vue'
 
 interface AxiosOptions {
@@ -7,16 +9,22 @@ interface AxiosOptions {
 }
 
 
-export function createAxios(options: AxiosOptions) {
+// let http!: AxiosInstance;
+
+
+export function createAxios(options: AxiosOptions = {}) {
+
+
+    const baseURL = options.baseUrl ?? 'http://localhost:8000';
 
     const Authorization = options.token ? `Bearer ${options.token}` : undefined;
-    const http = axios.create({
+    const instance = axios.create({
         baseURL: options.baseUrl,
         headers: {
             Authorization
         }
     });
-    return http;
+    return  instance;
 }
 
 export const AxiosPlugin = {
@@ -27,7 +35,8 @@ export const AxiosPlugin = {
 }
 
 const http = createAxios({
-    baseUrl: 'http://localhost:8000',
+    // baseUrl: 'http://localhost:8000',
+    baseUrl: BASE_URL
 });
 
 

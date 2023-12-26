@@ -1,6 +1,11 @@
 <template>
   <v-card flat>
-    <v-card-title>
+    <template v-slot:prepend>
+      <v-btn @click="router.go(-1)" :elevation="0" icon>
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+    </template>
+    <template v-slot:title>
       <v-list-item v-if="source">
         <template v-slot:prepend>
           <v-avatar>
@@ -17,7 +22,7 @@
       <div v-else-if="loading">
         <v-progress-linear indeterminate />
       </div>
-    </v-card-title>
+    </template>
     <v-card-text class="pa-0">
       <channel-form @save="(data) => save(data)" :type="props.type" :height="source ? 'calc(100vh - 80px)' : undefined"
         :loading="isSaving" />
@@ -45,8 +50,8 @@ const { data: source, isValidating: loading, error } = useSWRV(
   () => getShipmentSourceByCode(props.type));
 
 
-  const router = useRouter();
-  const notifier = useNotifier();
+const router = useRouter();
+const notifier = useNotifier();
 
 
 const isSaving = ref(false);

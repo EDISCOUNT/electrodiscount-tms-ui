@@ -1,12 +1,12 @@
 <template>
-    <v-navigation-drawer color="primary" expand-on-hover rail>
+    <v-navigation-drawer r-color="primary" expand-on-hover rail>
 
         <!-- <v-container class="fill-height">
     <v-responsive class="align-center text-center fill-height"> -->
 
         <template v-slot:prepend>
-            <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="Sandra Adams"
-                subtitle="sandra_a88@gmailcom" nav>
+            <v-list-item v-if="user" prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" :title="user.fullName"
+                :subtitle="user.username" nav>
                 <template v-slot:append>
                 </template>
             </v-list-item>
@@ -18,14 +18,14 @@
 
 
                 <v-list density="compact" nav>
-                    <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments" :to="{ name: 'carrier:shipment:index' }"
-                        value="myfiles"></v-list-item>
-                    <v-list-item prepend-icon="mdi-storefront" title="Channels" :to="{ name: 'carrier:channel:index' }"
-                        value="shared"></v-list-item>
-                    <!-- <v-list-subheader>
-                Orders
-            </v-list-subheader> -->
-                 
+                    <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments"
+                        :to="{ name: 'carrier:shipment:index' }" value="myfiles"></v-list-item>
+
+                    <template v-if="isGranted(['ROLE_ADMIN'])">
+                        <v-list-item prepend-icon="mdi-account" title="Goto Admin" :to="{ name: 'admin:home' }"
+                            value="admin-home"></v-list-item>
+                    </template>
+
                 </v-list>
             </v-responsive>
         </v-container>
@@ -33,5 +33,9 @@
 </template>
 
 <script lang="ts" setup>
+import { useAccountStore, useUser } from '@/store/app';
+
+const { isGranted } = useAccountStore();
+const { user, loading, error } = useUser();
 
 </script>

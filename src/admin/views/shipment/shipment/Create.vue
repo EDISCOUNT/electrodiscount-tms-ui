@@ -1,5 +1,5 @@
 <template>
-  <v-card color="secondary-bg" min-height="100vh" flat>
+  <v-card :color="secondaryBg" min-height="100vh" flat>
     <v-card-text class="pa-0 pb-5">
       <shipment-form @save="(data) => save(data)" :loading="isSaving" />
     </v-card-text>
@@ -15,6 +15,7 @@ import useSWRV from 'swrv';
 import { useRouter } from 'vue-router';
 import { useNotifier } from 'vuetify-notifier';
 import { ShipmentFormData } from '@/model/shipment/shipment';
+import { useColorScheme } from '@/utils/color';
 
 
 const props = defineProps<{
@@ -22,6 +23,7 @@ const props = defineProps<{
 
 const router = useRouter();
 const notifier = useNotifier();
+const { secondaryBg} = useColorScheme();
 
 
 const isSaving = ref(false);
