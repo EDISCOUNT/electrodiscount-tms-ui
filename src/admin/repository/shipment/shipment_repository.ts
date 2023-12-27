@@ -1,9 +1,16 @@
 import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
+import { encodeURLParams } from "@/utils/url";
 
-export async function getPaginatedShipments({ page, limit, }: { page?: number, limit?: number } = {}) {
-    const { data } = await http.get(`/api/admin/shipment/shipments?page=${page ?? 1}&limit=${limit ?? 10}`);
+export async function getPaginatedShipments({ page, limit, criteria }: { page?: number, limit?: number, criteria?: { [i: string]: any } } = {}) {
+    criteria ??= {};
+    const query = encodeURLParams({
+        ...criteria,
+        page,
+        limit
+    });
+    const { data } = await http.get(`/api/admin/shipment/shipments?${query}`);
     const pagination = Pagination.fromJson<Shipment>({
         ...data,
         buildItem: (input) => Shipment.fromJson(input),
@@ -15,6 +22,21 @@ export async function getPaginatedShipments({ page, limit, }: { page?: number, l
 
 export async function getShipment(id: string) {
     const { data } = await http.get(`/api/admin/shipment/shipments/${id}`);
+    return Shipment.fromJson(data);
+}
+
+
+
+
+export async function generatePacklist({ shipments }: { shipments: string[] }) {
+    const { data } = await http.post(`/api/admin/shipment/shipments/operation/generate-packlist`, { shipments });
+    return data as { url: string };
+}
+
+
+export async function applyTransition({ shipment, transition }: { shipment: Shipment, transition: string }) {
+    const { id } = shipment;
+    const { data } = await http.post(`/api/admin/shipment/shipments/${id}/apply-transition`, { transition });
     return Shipment.fromJson(data);
 }
 

@@ -1,7 +1,8 @@
 <template>
+    <!-- {{ {filter, } }} -->
     <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers"
         :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="id"
-        :height="height ?? 'calc(100vh - 200px)'" @update:options="loadItems" :show-select="showSelect">
+        :height="height ?? 'calc(100vh - 230px)'" @update:options="loadItems" :show-select="showSelect">
 
 
         <template v-slot:item.items="{ item: { items } }">
@@ -71,9 +72,10 @@ import { getPaginatedShipments } from '../../../../repository/shipment/shipment_
 
 
 const props = defineProps<{
-    height?: number | string,
-    showSelect?: boolean,
-    modelValue?: string[],
+    height?: number | string;
+    showSelect?: boolean;
+    modelValue?: string[];
+    filter?: { [i: string]: any };
 
 }>();
 
@@ -91,8 +93,9 @@ const headers = [
         // sortable: false,
         key: 'id',
     },
-    { title: 'Code', key: 'code',
-    //  align: 'end' 
+    {
+        title: 'Code', key: 'code',
+        //  align: 'end' 
     },
     {
         title: 'Products', key: 'items',
@@ -111,11 +114,12 @@ const headers = [
         //  align: 'center'
     },
     {
-        title: 'Channel', key: 'channel', 
+        title: 'Channel', key: 'channel',
         // align: 'center'
- },
-    { title: 'Actions', key: 'actions',
-    //  align: 'end' 
+    },
+    {
+        title: 'Actions', key: 'actions',
+        //  align: 'end' 
     },
 ];
 
@@ -125,6 +129,7 @@ const search = ref('');
 const serverItems = ref<any[]>([]);
 const loading = ref(true);
 const totalItems = ref(0);
+const tablePage = ref(1);
 const selected = ref<string[]>(props.modelValue ?? []);
 
 
@@ -132,10 +137,30 @@ watch(() => props.modelValue, (value) => selected.value = value ?? []);
 watch(selected, (selected) => emit('update:model-value', selected));
 
 
-async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
+
+watch(
+    () => props.filter,
+    (filter) => {
+        // console.log("DATA CHANGED:", filter);
+        loadItems({
+            page: tablePage.value,
+            itemsPerPage: itemsPerPage.value,
+            // sortBy: sortBy.value,
+            sortBy: {},
+            filter: filter,
+        })
+    }, {deep: true});
+
+
+async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy: any, filter?: { [i: string]: any } }) {
     try {
+        const criteria = {
+            ...(filter ?? props.filter ?? {}),
+        };
+
         loading.value = true;
-        const pagination = await getPaginatedShipments({ page, limit });
+        const pagination = await getPaginatedShipments({ page, limit, criteria });
+        tablePage.value = page ?? 1;
         serverItems.value = [...pagination.items];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;

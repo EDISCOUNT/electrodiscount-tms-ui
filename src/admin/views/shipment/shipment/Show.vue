@@ -19,7 +19,141 @@
           {{ error }}
         </v-alert>
       </v-card-text>
-      <shipment-form @save="(data) => save(data)" :shipment="shipment" :loading="isSaving" />
+      <v-card-text class="pa-0 pa-sm-5">
+        <v-row>
+          <v-col :cols="12" :md="12">
+            <v-card flat>
+              <v-toolbar color="transparent" flat>
+                <template v-slot:title>
+                  <span>
+                    <!-- <span>Order:</span> -->
+                    <strong class="text-black">#{{ shipment.code }}</strong>
+                    <span class="mx-2"></span>
+                    <v-chip :color="getStatusColor(shipment.status)">
+                      {{ shipment.status }}
+                    </v-chip>
+                  </span>
+                </template>
+                <template v-slot:append>
+                  <PrintShipmentManifestButton :shipments="[(shipment.id as any)!]" />
+                </template>
+                <!-- <template v-slot:extension>
+                  <v-btn icon @click="router.back()">
+                    <v-icon>mdi-arrow-left</v-icon>
+                  </v-btn>
+                </template> -->
+              </v-toolbar>
+            </v-card>
+          </v-col>
+          <v-col :cols="12" :md="12">
+            <v-card flat>
+              <ShipmentStatusStepBar :shipment="shipment" />
+            </v-card>
+          </v-col>
+
+          <v-col :cols="12" :md="8">
+            <v-card flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-book</v-icon>
+              </template>
+              <template v-slot:title>
+                Fulfilment
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
+              </v-card-text>
+            </v-card>
+            <v-card class="mt-4" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-package</v-icon>
+              </template>
+              <template v-slot:title>
+                Basic Information
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentBasicInformationCard :shipment="shipment" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col :cols="12" :md="4">
+            <v-card class="fill-height" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-open</v-icon>
+              </template>
+              <template v-slot:title>
+                Shipment Status
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentActionCard :shipment="shipment" @updated="(shipment) => onUpdateShipment(shipment)" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col :cols="12" :md="4">
+            <v-card class="fill-height" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-map-marker</v-icon>
+              </template>
+              <template v-slot:title>
+                Stops
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentStops :shipment="shipment" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col :cols="12" :md="8">
+            <v-card flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-map</v-icon>
+              </template>
+              <template v-slot:title>
+                Shipment Map
+              </template>
+              <v-divider />
+              <v-card-text class="pa-2">
+                <v-card height="300px" :color="inlineBg" flat />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col :cols="12" :md="8">
+            <v-card class="fill-height" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-package</v-icon>
+              </template>
+              <template v-slot:title>
+                Shipment Lines
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentItemList :shipment="shipment" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col :cols="12" :md="4">
+            <v-card class="fill-height" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-history</v-icon>
+              </template>
+              <template v-slot:title>
+                Shipment Events
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentEventTimeline :shipment="shipment" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+        </v-row>
+      </v-card-text>
     </v-card>
 
     <v-row justify="center" align="center" class="fill-height" v-else>
@@ -42,7 +176,15 @@ import { getShipment, updateShipment, } from '@/admin/repository/shipment/shipme
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 import { useRouter } from 'vue-router';
 import { useNotifier } from 'vuetify-notifier';
-import { useColorScheme } from '@/utils/color';
+import { getStatusColor, useColorScheme } from '@/utils/color';
+import ShipmentFulfilmentCard from '@/views/shipment/ShipmentFulfilmentCard.vue';
+import ShipmentStatusStepBar from '@/views/shipment/ShipmentStatusStepBar.vue';
+import ShipmentActionCard from '@/views/shipment/ShipmentActionCard.vue';
+import ShipmentBasicInformationCard from '@/views/shipment/ShipmentBasicInformationCard.vue';
+import ShipmentItemList from '@/views/shipment/ShipmentItemList.vue';
+import ShipmentEventTimeline from '@/views/shipment/ShipmentEventTimeline.vue';
+import ShipmentStops from '@/views/shipment/ShipmentStops.vue';
+import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
 
 const props = defineProps<{
   id: string,
@@ -55,7 +197,7 @@ const isLoading = ref(false);
 
 const router = useRouter();
 const notifier = useNotifier();
-const { secondaryBg } = useColorScheme();
+const { secondaryBg, inlineBg } = useColorScheme();
 
 
 
@@ -63,6 +205,13 @@ onMounted(async () => {
   await loadShipment();
 });
 
+
+
+function onUpdateShipment(rshipment: Shipment) {
+  if (rshipment) {
+    shipment.value = rshipment;
+  }
+}
 
 async function save(data: ShipmentFormData) {
   try {
@@ -98,4 +247,6 @@ async function loadShipment() {
     isLoading.value = false;
   }
 }
+
+
 </script>

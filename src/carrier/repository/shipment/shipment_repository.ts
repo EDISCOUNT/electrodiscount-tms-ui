@@ -20,6 +20,14 @@ export async function getShipment(id: string) {
 
 
 
+export async function applyTransition({ shipment, transition }: { shipment: Shipment, transition: string }) {
+    const { id } = shipment;
+    const { data } = await http.post(`/api/carrier/shipment/shipments/${id}/apply-transition`,{transition});
+    return Shipment.fromJson(data);
+}
+
+
+
 export async function createShipment(data: ShipmentFormData) {
     const { data: result } = await http.post(`/api/carrier/shipment/shipments`, data);
     return Shipment.fromJson(result);

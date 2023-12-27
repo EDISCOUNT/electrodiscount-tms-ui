@@ -20,6 +20,8 @@ export function encodeURLParams(data: { [i: string]: any }) {
                 }
                 params.append(key, item);
             });
+            // const entries = data[key].filter((item: any) => !(item === undefined || item === null || item === ''));
+            // params.append(key,entries);
         } else {
             const item = data[key];
             if (item === undefined || item === null || item === '') {
