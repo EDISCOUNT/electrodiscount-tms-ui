@@ -2,7 +2,7 @@
     <!-- {{ {filter, } }} -->
     <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers"
         :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="id"
-        :height="height ?? 'calc(100vh - 230px)'" @update:options="loadItems" :show-select="showSelect">
+        :height="height ?? 'calc(100vh - 290px)'" @update:options="loadItems" :show-select="showSelect" fixed-header>
 
 
         <template v-slot:item.items="{ item: { items } }">
@@ -16,7 +16,7 @@
                             {{ item.name }}
                         </span>
                         <span class="text-grey" v-else>
-                            N/A
+                            [PRODUCT NAME NOT AVAILABE]
                         </span>
                     </div>
                     <v-chip v-else-if="i == (items.length - 1)">
@@ -98,6 +98,10 @@ const headers = [
         //  align: 'end' 
     },
     {
+        title: 'Order ID', key: 'channelOrderId',
+        //  align: 'end' 
+    },
+    {
         title: 'Products', key: 'items',
         //  align: 'center' 
     },
@@ -149,7 +153,7 @@ watch(
             sortBy: {},
             filter: filter,
         })
-    }, {deep: true});
+    }, { deep: true });
 
 
 async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy: any, filter?: { [i: string]: any } }) {

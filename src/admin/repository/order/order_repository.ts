@@ -6,13 +6,27 @@ import Order from "@/model/order/order";
 import { encodeURLParams } from "@/utils/url";
 import Carrier from "@/model/carrier/carrier";
 
-export async function getPaginatedOrders({ page, limit, channel }: { page?: number, limit?: number, channel?: Channel | string } = {}) {
+export async function getPaginatedOrders({ page, limit, channel, criteria }: { page?: number, limit?: number, channel?: Channel | string, criteria?: { [i: string]: any } } = {}) {
     if (channel) {
         if (typeof (channel) !== 'string') {
             channel = channel.id;
         }
     }
-    const params = encodeURLParams({ page, limit, /*channel*/ })
+
+    criteria ??= {};
+    criteria = { ...criteria };
+    console.log("criteria: ", { criteria })
+    if ('status' in criteria) {
+        if (criteria['status'] == 0) {
+            delete criteria['status'];
+        }
+    }
+    const params = encodeURLParams({
+        ...criteria,
+        page,
+        limit
+    });
+
     // console.log('PARAMS: ', params);
     if (channel) {
         const { data } = await http.get(`/api/admin/channel/channels/${channel}/orders?${params}`);
@@ -60,8 +74,8 @@ export async function importShipment(order: Order, { carrier }: { carrier?: Carr
 }
 
 
-export async function bulkImportShipment(orders: (Order[])|(string[]), { channel, carrier }: { channel: Channel, carrier?: Carrier }) {
-    const ids = orders.map(order => (order instanceof Order)? order.channelOrderId : order);
+export async function bulkImportShipment(orders: (Order[]) | (string[]), { channel, carrier }: { channel: Channel, carrier?: Carrier }) {
+    const ids = orders.map(order => (order instanceof Order) ? order.channelOrderId : order);
     const channelId = channel?.id;
     const input: Record<string, any> = {
         orders: ids,

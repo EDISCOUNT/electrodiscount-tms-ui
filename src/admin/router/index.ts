@@ -24,7 +24,7 @@ const routes = [
   // },
 
   {
-    path: '',
+    path: 'dashbaord',
     name: 'admin:home',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -240,12 +240,12 @@ const routes = [
         component: () => import('@/admin/views/account/user/Edit.vue'),
         props: true
       },
-      {
-        path: ':id',
-        name: 'admin:account:user:show',
-        component: () => import('@/admin/views/account/user/Show.vue'),
-        props: true
-      },
+      // {
+      //   path: ':id',
+      //   name: 'admin:account:user:show',
+      //   component: () => import('@/admin/views/account/user/Show.vue'),
+      //   props: true
+      // },
     ]
   }
 ]

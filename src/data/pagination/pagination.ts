@@ -64,11 +64,11 @@ class PageInfo{
 //   }
 
 
-interface ConnectionBuilderInput<T extends Node> {
+interface ConnectionBuilderInput<T>/*<T extends Node>*/ {
     buildItem?: (input: JsonInput) => T;
 }
 
-export default class Pagination<T extends Node>{
+export default class Pagination<T>/*<T extends Node>*/{
    
     pageInfo: PageInfo;
     items: T[];
@@ -122,7 +122,7 @@ export default class Pagination<T extends Node>{
     toJson(): any {
         return {
             pageInfo: this.pageInfo.toJson(),
-            edges: this.items.map((x) => x.toString()),
+            edges: this.items.map((x) => String(x)),
         };
     }
 }

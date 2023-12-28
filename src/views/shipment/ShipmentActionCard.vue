@@ -46,8 +46,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'update', shipment: Shipment);
-    (e: 'updated', shipment: Shipment);
+    (e: 'update', shipment: Shipment): void;
+    (e: 'updated', shipment: Shipment): void;
 }>();
 
 
@@ -66,7 +66,7 @@ async function updateStatus() {
     try {
         isUpdating.value = true;
         const shipment = props.shipment;
-        const transition = selectedStatus.value;
+        const transition = selectedStatus.value!;
         const result = await applyTransition({ shipment, transition });
         emit('updated', result);
         notifier.toastSuccess("Shipment Updated Successfully!");

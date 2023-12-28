@@ -1,8 +1,8 @@
 <template>
     <v-menu>
         <template v-slot:activator="{ props }">
-            <slot name="activator" v-bind="{ props, to: { name: 'admin:shipment:index' } }">
-                <v-btn v-bind="props" color="primary" :elevation="0">
+            <slot name="activator" v-bind="{ props, to: { name: 'admin:shipment:create' } }">
+                <v-btn v-bind="props" color="primary" :elevation="0" variant="flat">
                     New <v-divider vertical />
                     <v-icon>mdi-menu-down</v-icon>
                 </v-btn>

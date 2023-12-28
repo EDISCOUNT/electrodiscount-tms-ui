@@ -11,14 +11,16 @@ export function getStatusColor(status: string | undefined): string {
     status = (status ?? '').toUpperCase();
     if (status) {
         const statusColorMap: Record<string, string> = {
-            "PENDING": "#FFA500", // Orange
-            "CANCELLED": "#FF0000", // Red
-            "COMPLETED": "#00FF00", // Green
-            "CREATED": "#0000FF", // Blue	
-            "DELIVERED": "#00FF00", // Green
-            "PROCESSING": "#FFA500", // Orange
-            "PICKED_UP": "#00FF00", // Green
-            "INTRANSIT": "#0000FF", // Blue
+            "OPEN":"orange",
+            "PENDING": "yellow", // Orange
+            "CANCELLED": "red", // Red
+            "COMPLETED": "green", // Green
+            "CREATED": "teal", // Blue	
+            "DELIVERED": "teal", // Green
+            "PROCESSING": "blue", // Orange
+            "PICKED_UP": "cyan", // Green
+            "INTRANSIT": "green", // Blue
+            "HANDLED":'green',
             // Add more status-color pairs as needed
         };
 

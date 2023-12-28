@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getPaginatedCarriers } from '@/admin/repository/carrier/carrier_repository';
+import { getPaginatedChannels } from '@/admin/repository/channel/channel_repository';
 import useSWRV from 'swrv';
 import { ref, watch, useAttrs } from 'vue';
 import { useNotifier } from 'vuetify-notifier';
@@ -50,8 +50,8 @@ const selected = ref<string[] | string>();
 const search = ref<string>();
 
 const { data: pagination, isValidating: loading, error } = useSWRV(
-    () => `/api/admin/catalog/carriers?search=${search.value}`,
-    () => getPaginatedCarriers({ search: search.value }),
+    () => `/api/admin/catalog/channels?search=${search.value}`,
+    () => getPaginatedChannels({ search: search.value }),
     {
         refreshInterval: 0,
         revalidateOnFocus: false,

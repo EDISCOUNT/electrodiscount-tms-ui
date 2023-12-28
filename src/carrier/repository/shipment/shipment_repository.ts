@@ -1,9 +1,23 @@
 import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
+import { encodeURLParams } from "@/utils/url";
 
-export async function getPaginatedShipments({ page, limit, }: { page?: number, limit?: number } = {}) {
-    const { data } = await http.get(`/api/carrier/shipment/shipments?page=${page ?? 1}&limit=${limit ?? 10}`);
+export async function getPaginatedShipments({ page, limit, criteria }: { page?: number, limit?: number, criteria?: { [i: string]: any } } = {}) {
+    criteria ??= {};
+    criteria = { ...criteria };
+    console.log("criteria: ", { criteria })
+    if ('status' in criteria) {
+        if (criteria['status'] == 0) {
+            delete criteria['status'];
+        }
+    }
+    const query = encodeURLParams({
+        ...criteria,
+        page,
+        limit
+    });
+    const { data } = await http.get(`/api/carrier/shipment/shipments?${query}`);
     const pagination = Pagination.fromJson<Shipment>({
         ...data,
         buildItem: (input) => Shipment.fromJson(input),

@@ -93,8 +93,8 @@
                             <v-icon>mdi-dimension</v-icon>
                         </template>
                         <template v-slot:title>
-                            <template v-if="shipment?.codeAmount">
-                                <strong>{{ shipment.codeAmount }}</strong>
+                            <template v-if="shipment?.codAmount">
+                                <strong>{{ shipment.codAmount }}</strong>
                             </template>
                             <span class="text-grey" v-else>N/A</span>
                         </template>

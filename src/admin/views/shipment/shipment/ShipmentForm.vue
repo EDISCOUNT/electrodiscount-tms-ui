@@ -83,8 +83,20 @@
                                                     placeholder="Enter the Order Id"
                                                     hint="Enter the ID of the order on the channel where the corresponding order was placed"
                                                     variant="outlined" density="compact"></v-text-field>
-                                                <v-text-field v-model="data.codAmount" label="COD Amount" variant="outlined"
-                                                    density="compact" append-inner-icon="mdi-currency-usd"></v-text-field>
+
+                                                <v-row>
+                                                    <v-col :cols="4">
+                                                        <v-combobox v-model="data.codCurrency" label="Currency"
+                                                            variant="outlined" density="compact"
+                                                            append-inner-icon="mdi-currency-usd"
+                                                            :items="['USD', 'GBP', 'EUR']"></v-combobox>
+                                                    </v-col>
+                                                    <v-col :cols="8">
+                                                        <v-text-field v-model="data.codAmount" label="COD Amount"
+                                                            variant="outlined" density="compact"
+                                                            append-inner-icon="mdi-currency-usd"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
                                             </v-col>
 
                                         </v-row>

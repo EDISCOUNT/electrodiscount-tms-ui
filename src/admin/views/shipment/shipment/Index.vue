@@ -1,10 +1,28 @@
 <template>
     <v-card height="100vh" color="secondary-bg" flat>
         <v-card-text class="pa-0 pa-sm-4">
-            <v-card class="" flat>
+            <v-card color="background" class="" flat>
                 <template v-slot:title>
-                    <span> Shipments</span>
+                    <v-toolbar color="transparent">
+                        <span> Shipments</span>
+                        <v-spacer/>
+                        <v-card-text v-if="selected?.length">
+                            <PrintShipmentManifestButton :shipments="selected" />
+                        </v-card-text>
+                        <v-card-text v-else class="py-0">
+                            <v-row class="pa-3" justify="space-between">
+                                <ShipmentStatusFilter v-model="filter.status" />
+                            </v-row>
+                        </v-card-text>
+                    </v-toolbar>
                 </template>
+                <!-- <template v-slot:title> -->
+                <!-- <div class="mt-2"> -->
+                <!-- <v-toolbar-items> -->
+                <ShipmentFilterBar v-model:rsql="filter.filter" class="mt-2 px-5" />
+                <!-- </v-toolbar-items> -->
+                <!-- </div> -->
+                <!-- </template> -->
 
                 <template v-slot:append>
                     <create-shipment-button />
@@ -14,18 +32,6 @@
 
 
             <v-card class="mt-4 fill-height" flat>
-                <v-card-text v-if="selected?.length">
-                    <PrintShipmentManifestButton :shipments="selected" />
-                </v-card-text>
-                <v-card-text v-else class="py-0">
-                    <v-row class="pa-3" justify="space-between">
-                        <div>
-                            Actions
-                            <!-- {{ {selected} }} -->
-                        </div>
-                        <ShipmentStatusFilter v-model="filter.status" />
-                    </v-row>
-                </v-card-text>
                 <v-card-text>
                     <shipment-table v-model="selected" :filter="filter" show-select />
                 </v-card-text>
@@ -42,9 +48,11 @@ import ShipmentStatusFilter from '@/views/shipment/filter/ShipmentStatusFilter.v
 import { reactive } from 'vue';
 import { ref } from 'vue';
 import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
+import ShipmentFilterBar from './partials/filtter/ShipmentFilterBar.vue';
 
 const filter = reactive({
     status: [] as string[],
+    filter: undefined as string | undefined,
 });
 
 

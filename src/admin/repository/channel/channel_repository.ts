@@ -1,9 +1,11 @@
 import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Channel from "@/model/channel/channel";
+import { encodeURLParams } from "@/utils/url";
 
-export async function getPaginatedChannels({ page, limit, }: { page?: number, limit?: number } = {}) {
-    const { data } = await http.get(`/api/admin/channel/channels?page=${page ?? 1}&limit=${limit ?? 10}`);
+export async function getPaginatedChannels({ page, limit, search, }: { page?: number, limit?: number, search?: string } = {}) {
+    const params = encodeURLParams({page, limit, search});
+    const { data } = await http.get(`/api/admin/channel/channels${params}`);
     const pagination = Pagination.fromJson<Channel>({
         ...data,
         buildItem: (input) => Channel.fromJson(input),

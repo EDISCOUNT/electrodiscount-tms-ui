@@ -6,22 +6,20 @@ import { encodeURLParams } from "@/utils/url";
 interface GetUserParams {
   page?: number;
   limit?: number;
-  filter?: String;
-  sort?: String;
+  filter?: string;
+  search?: string,
+  sort?: string;
 }
 
-interface CreateUserParams {
-  input: { [i: string]: any };
-}
 
 interface UtilityProps {
   // apollo?: ApolloClient<NormalizedCacheObject>;
 }
 
 
-export async function getPaginatedUsers({ page, limit, filter, sort }: GetUserParams = {}, { }: UtilityProps = {}) {
+export async function getPaginatedUsers({ page, limit, filter, sort, search }: GetUserParams = {}, { }: UtilityProps = {}) {
 
-  const params = encodeURLParams({page, limit, filter, sort});
+  const params = encodeURLParams({page, limit, filter, sort, search});
 
   const { data } = await http.get(`/api/admin/account/users?${params}`);
   const connection = Pagination.fromJson<User>({
@@ -41,15 +39,27 @@ export async function getUser({ id }: { id: string }, { }: UtilityProps = {}) {
 
 export interface UserUpdateInput extends UserFormData {
 }
+export interface UserCreationInput extends UserFormData {
+}
+
 
 interface UpdateUserParams {
   user: User;
   input: UserUpdateInput
 }
 
+interface CreateUserParams {
+  input: UserCreationInput
+}
+
 
 export async function updateUser({ user, input }: UpdateUserParams, { }: UtilityProps = {}) {
   const { data } = await http.patch(`/api/admin/account/users/${user.id}`, input);
+  return User.fromJson(data);
+}
+
+export async function createUser({  input }: CreateUserParams, { }: UtilityProps = {}) {
+  const { data } = await http.post(`/api/admin/account/users`, input);
   return User.fromJson(data);
 }
 

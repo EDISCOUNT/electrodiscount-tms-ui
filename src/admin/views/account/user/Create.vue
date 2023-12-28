@@ -12,8 +12,9 @@
 
 <script lang="ts" setup>
 import UserForm from './UserForm.vue';
+import { UserFormData } from '@/model/account/user';
 import { ref } from 'vue';
-import { createUser, UserFormData } from '@/admin/repository/account/user';
+import { createUser, } from '@/admin/repository/account/user';
 import { useRouter } from 'vue-router';
 
 
@@ -28,7 +29,7 @@ const isSaving = ref(false);
 async function save(data: UserFormData) {
   try {
     isSaving.value = true;
-    const result = await createUser(data);
+    const result = await createUser({ input: data});
     router.back();
   }
   catch (err) {

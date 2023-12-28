@@ -1,7 +1,7 @@
 <template>
     <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers"
         :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="channelOrderId"
-        :height="height ?? 'calc(100vh - 260px)'" @update:options="loadItems" fixed-header :show-select="showSelect">
+        :height="height ?? 'calc(100vh - 260px)'" @update:options="loadItems" fixed-header :show-select="criteria.status == 'open' && showSelect">
 
 
         <template v-slot:top>
@@ -18,7 +18,7 @@
                 </v-card-actions>
 
                 <v-spacer />
-                <ChannelOrderFilter />
+                <ChannelOrderFilter v-model="criteria.status" />
             </v-toolbar>
         </template>
 
@@ -66,8 +66,8 @@
                             N/A
                         </span>
                     </div>
-                    <v-chip v-else-if="i == (items.length - 1)">
-                        {{ items.length - 1 }} More
+                    <v-chip v-else-if="i == (items.length - 1)" size="small">
+                       + {{ items.length - 1 }} More
                     </v-chip>
                 </div>
             </template>
@@ -79,12 +79,32 @@
             <template v-if="fulfilments?.length">
                 <template v-for="(fulfilment, i) in fulfilments" :key="fulfilment.id ?? i">
                     <div v-if="i == 0">
+                        <v-menu width="700px">
+                            <template v-slot:activator="{props}">
+                        <v-chip v-bind="props" variant="text">
                         <span v-if="fulfilment.exactDeliveryDate">
                             {{ formatDate(fulfilment.exactDeliveryDate) }}
+                        </span>
+                        <span v-else-if="fulfilment.latestDeliveryDate">
+                            <span class="text-red text-h5">!</span>
+                            {{ formatDate(fulfilment.latestDeliveryDate) }}
                         </span>
                         <span class="text-grey" v-else>
                             N/A
                         </span>
+                        <v-icon>mdi-menu-down</v-icon>
+                        </v-chip>
+                        </template>
+                        <v-card flat>
+                            <template v-slot:title>
+                                <span>Fulfilment</span>
+                            </template>
+                            <v-card-text>
+                                <ShipmentFulfilmentCard :fulfilment="fulfilment"/>
+                            </v-card-text>
+                        </v-card>
+
+                        </v-menu>
                     </div>
                     <v-chip v-else-if="i == (fulfilments.length - 1)">
                         {{ fulfilments.length - 1 }} More
@@ -153,6 +173,8 @@ import BulkImportShipmentAction from '../import/BulkImportShipmentAction.vue';
 import ChannelOrderFilter from './filtter/ChannelOrderFilter.vue';
 import { getStatusColor } from '@/utils/color';
 import { formatDate } from '@/utils/format';
+import { reactive } from 'vue';
+import ShipmentFulfilmentCard from '@/views/shipment/ShipmentFulfilmentCard.vue';
 
 
 const props = defineProps<{
@@ -169,6 +191,10 @@ const emit = defineEmits<{
 
 const theme = useTheme();
 
+
+const criteria = reactive<{
+    status?: string
+}>({});
 
 
 
@@ -204,11 +230,26 @@ watch(() => props.modelValue, (value) => selected.value = value ?? []);
 watch(selected, (selected) => emit('update:model-value', selected));
 
 
+watch(
+    () => criteria,
+    (criteria) => {
+        loadItems({
+            itemsPerPage: itemsPerPage.value,
+            // sortBy: sortBy.value,
+            sortBy: {},
+            criteria,
+        })
+    }, { deep: true });
 
-async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
+
+
+async function loadItems({ page, itemsPerPage: limit, sortBy, criteria: _criteria }: { page?: number, itemsPerPage?: number, sortBy?: any, criteria?: { [i: string]: any } }) {
     try {
+
+        _criteria = _criteria ?? criteria;
+
         loading.value = true;
-        const pagination = await getPaginatedOrders({ page, limit, channel: props.channel });
+        const pagination = await getPaginatedOrders({ page, limit, channel: props.channel, criteria: _criteria });
         serverItems.value = [...pagination.items];
         totalItems.value = pagination.pageInfo.totalItems;
         itemsPerPage.value = pagination.pageInfo.perPage;
@@ -237,6 +278,6 @@ function previewOrder(order: any) {
 
 
 function onImport(data: any) {
-
+    loadItems({});
 }
 </script>

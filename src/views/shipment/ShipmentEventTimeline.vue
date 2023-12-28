@@ -9,7 +9,7 @@
             <v-card-text>
                 <v-timeline density="comfortable">
                     <v-timeline-item v-for="(event, i) in pagination.items" :key="event.id ?? i" :size="10">
-                        <template v-slot:opposite>
+                        <template v-if="event.createdAt" v-slot:opposite>
                             <span class="text-grey">
                                 {{ formatDate(event.createdAt) }}
                             </span>

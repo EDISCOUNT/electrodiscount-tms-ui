@@ -17,9 +17,11 @@
                 Completed
             </v-chip>
         </v-chip-group> -->
-        <v-chip-group v-model="currentItem">
-            <v-chip v-for="item in chips" :key="item" :href="'#tab-' + item">
-                {{ item }}
+        <!-- {{ { currentItem } }} -->
+        <v-chip-group v-model="currentItem" mandatory>
+            <v-chip v-for="item in chips" :key="item.value" :value="item.value" size="small"
+                :color="currentItem == item.value ? 'primary' : undefined" label>
+                {{ item.text }}
             </v-chip>
 
             <v-menu v-if="more.length" bottom left>
@@ -31,7 +33,7 @@
                 </template>
 
                 <v-list class="grey-lighten-3">
-                    <v-list-item v-for="item in more" :key="item" @click="addItem(item)">
+                    <v-list-item v-for="item in more" :key="item.value" @click="addItem(item)">
                         {{ item }}
                     </v-list-item>
                 </v-list>
@@ -41,16 +43,54 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted, onBeforeMount } from 'vue';
+import { watch } from 'vue';
 import { ref, nextTick } from 'vue';
 
+type Item = {
+    value: string;
+    text: string;
+}
+
+const props = defineProps<{
+    modelValue?: string;
+}>();
 
 
-const currentItem = ref<any>();
+const emit = defineEmits<{
+    (e: 'update:model-value', value?: string): void;
+}>();
 
 
-const items = ref(['All', 'Assigned', 'Unplanned', 'Completed']);
-const chips = ref<any[]>([]);
-const more = ref<any[]>([]);
+const currentItem = ref<any>('open');
+
+
+watch(
+    () => props.modelValue,
+    (value) => currentItem.value = value,
+);
+
+watch(currentItem, (value) => emit('update:model-value', value));
+// onBeforeMount(() => emit('update:model-value', currentItem.value));
+emit('update:model-value', currentItem.value);
+
+
+const items = ref([
+    {
+        value: 'open',
+        text: 'Open',
+    },
+    {
+        value: 'shipped',
+        text: 'Shipped',
+    },
+    {
+        value: 'all',
+        text: 'All',
+    },
+]);
+const chips = ref<Item[]>([]);
+const more = ref<Item[]>([]);
 
 function onResize() {
     const temp = items.value.slice()

@@ -1,7 +1,8 @@
 // Utilities
 import { defineStore } from 'pinia'
-import { RouteParams, RouteRecordName, useRouter } from 'vue-router';
+import { RouteParams, RouteRecordName, useRoute, useRouter } from 'vue-router';
 // import { useAxios } from '@/plugins/http';
+import LoginDialog from '@/layouts/login/LoginDIalog.vue';
 import { getCurrentUser } from '../admin/repository/account/user';
 import { getCurrentDriver } from '../admin/repository/account/driver';
 import User from '@/model/account/user';
@@ -10,6 +11,7 @@ import useSWRV from 'swrv';
 import Driver from '@/model/account/driver';
 import http from '../plugins/axios';
 import { BASE_URL } from '@/common/constants';
+import { useNotifier } from 'vuetify-notifier';
 
 
 export class UnAuthenticatedError extends Error {
@@ -23,7 +25,7 @@ export class UnAuthenticatedError extends Error {
 export const useConfigStore = defineStore('config', {
   state: () => ({
     // baseUrl: 'http://localhost:8000',
-    baseUrl:  BASE_URL,
+    baseUrl: BASE_URL,
   }),
 
   getters: {
@@ -38,7 +40,7 @@ export const useConfigStore = defineStore('config', {
 
       const baseUrl = (serverURL ?? '').replace(/(\/)+$/, '');
       const segment = String(url).replace(/^(\/)+/, '');
-      
+
       return baseUrl + '/' + segment;
     },
   },
@@ -69,6 +71,9 @@ const token = localStorage.getItem('token');
 
 export const useAccountStore = defineStore('account', () => {
 
+  const router = useRouter();
+  // const notifier = useNotifier();
+
   http.interceptors.request.use(function (config) {
     // console.log("ICOMMING REQUEST: ", config);
     const headers = config.headers;
@@ -83,6 +88,33 @@ export const useAccountStore = defineStore('account', () => {
     // Do something with request error
     return Promise.reject(error);
   });
+
+
+  http.interceptors.response.use(function (response) {
+    return response;
+  }, async function (error) {
+    const response = error?.response;
+
+    if (response) {
+      if (response.status == 401) {
+        const route = useRoute();
+        logout();
+
+        if (route) {
+          setTargetRoute({
+            name: route.name!.toString(),
+            params: route.params,
+          });
+        }
+        router.replace({ name: 'auth:login' });
+        
+      // await notifier.component(LoginDialog);
+      }
+    }
+
+    return Promise.reject(error);
+  });
+
 
   let _fetchUserPromise: Promise<User> | undefined;;
 
@@ -111,7 +143,7 @@ export const useAccountStore = defineStore('account', () => {
 
   async function fetchUser() {
     try {
-      if(!_fetchUserPromise){
+      if (!_fetchUserPromise) {
         _fetchUserPromise = getCurrentUser();
       }
       isFetchingUser.value = true;
@@ -120,14 +152,14 @@ export const useAccountStore = defineStore('account', () => {
     catch (err) {
       // throw err;
     }
-    finally{
+    finally {
       isFetchingUser.value = false;
       _fetchUserPromise = undefined;
     }
   }
 
-  async function getOrFetchUser(){
-    if(user.value){
+  async function getOrFetchUser() {
+    if (user.value) {
       return user.value;
     }
     return fetchUser();
@@ -153,11 +185,13 @@ export const useAccountStore = defineStore('account', () => {
     auth.value.token = token;
   }
 
-  function logout() {
+  async function logout() {
     localStorage.removeItem('token');
+    // authToken.value = null;
     auth.value.token = null;
     user.value = undefined;
     driver.value = undefined;
+    router.replace({ name: 'auth:login' });
   }
 
 
@@ -169,10 +203,10 @@ export const useAccountStore = defineStore('account', () => {
     if (!roles.length)
       return true;
     let userRoles = user.value?.roles ?? [];
-    if(!Array.isArray(userRoles)){
+    if (!Array.isArray(userRoles)) {
       userRoles = Object.values(userRoles);
     }
-    console.log("USER ROLES: ", {userRoles});
+    console.log("USER ROLES: ", { userRoles });
     if (includeAll)
       return roles.every(r => userRoles.includes(r));
     return roles.some(r => userRoles.includes(r));

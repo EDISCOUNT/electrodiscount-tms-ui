@@ -19,7 +19,7 @@ export default class Shipment {
   channel?: Channel;
   metadata?: Record<string, any>;
   items: ShipmentItem[];
-  fulfilment?: ShipmentFulfilment;
+  _fulfilment?: ShipmentFulfilment;
   additionalServices?: AdditionalService[];
   dimension?: ShipmentDimension;
 
@@ -31,6 +31,17 @@ export default class Shipment {
   //
   netWeight?: number;
   volumetricWeight?: number;
+
+
+  get fulfilment (): ShipmentFulfilment | undefined{
+
+  if(this._fulfilment){
+    return this._fulfilment;
+  }
+  else{
+    return this.items.map( item => item.fulfilment).find( fulfilment => fulfilment != undefined);
+  }
+}
 
   constructor({
     id,
@@ -92,7 +103,7 @@ export default class Shipment {
     this.carrier = carrier;
     this.channel = channel;
     this.metadata = metadata;
-    this.fulfilment = fulfilment;
+    this._fulfilment = fulfilment;
     this.additionalServices = additionalServices;
     this.dimension = dimension;
     //
@@ -218,7 +229,7 @@ export default class Shipment {
       "additionalServices": this.additionalServices?.map((x) => x.id),
       "carrier": this.carrier?.id,
       // "metadata": this.metadata ?? {},
-      "fulfilment": this.fulfilment?.toJson(),
+      "fulfilment": this._fulfilment?.toJson(),
       "dimension": this.dimension?.toJson(),
       //
       "type": this.type,
@@ -237,7 +248,7 @@ export interface ShipmentFormData {
   code?: string;
   items: ShipmentItemFormData[];
   originAddress?: AddressFormData;
-  destinationAddress?: string | AddressFormData;
+  destinationAddress?: AddressFormData;
   fulfilment?: ShipmentFulfilmentFormData;
   description?: string;
   additionalServices?: string[],

@@ -8,6 +8,9 @@
             <v-list-item v-if="user" prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" :title="user.fullName"
                 :subtitle="user.username" nav>
                 <template v-slot:append>
+                    <v-btn @click="() => logout()" icon="mdi-logout">
+
+                    </v-btn>
                 </template>
             </v-list-item>
             <v-divider></v-divider>
@@ -41,12 +44,19 @@
                             :to="{ name: 'admin:shipment:index' }" value="myfiles"></v-list-item>
                     </v-list-group> -->
 
+
+                    <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{ name: 'admin:home' }"
+                        value="dashboard"></v-list-item>
+
+                    <v-divider />
                     <create-shipment-button>
-                        <template v-slot:activator="{ props }">
-                            <v-list-item v-bind="props" prepend-icon="mdi-truck" title="Create Shipment">
-                                <!-- <template v-slot:append>
+                        <template v-slot:activator="{ props, to }">
+                            <!-- <v-list-item v-bind="props" prepend-icon="mdi-truck" title="Create Shipment">
+                                <template v-slot:append>
                                     <v-icon>mdi-menu-down</v-icon>
-                                </template> -->
+                                </template>
+                            </v-list-item> -->
+                            <v-list-item :to="to" prepend-icon="mdi-truck" title="Create Shipment">
                             </v-list-item>
                         </template>
                     </create-shipment-button>
@@ -79,12 +89,28 @@
 </template>
 
 <script lang="ts" setup>
-import { useUser } from '@/store/app';
+import { useAccountStore, useUser } from '@/store/app';
 import { useDisplay } from 'vuetify';
 import CreateShipmentButton from '../views/shipment/shipment/partials/CreateShipmentButton.vue';
+import { useNotifier } from 'vuetify-notifier';
 
 
 const { user, loading, error } = useUser();
+const { logout: doLogout } = useAccountStore();
 const { xs, sm } = useDisplay();
+
+const notifier = useNotifier();
+
+async function logout() {
+    try {
+        await doLogout();
+        notifier.toastSuccess("You have been logged out");
+        // window.location.href = '/admin/login';
+    }
+    catch (e) {
+        const message = (e as any).message;
+        notifier.toastError(message);
+    }
+}
 
 </script>

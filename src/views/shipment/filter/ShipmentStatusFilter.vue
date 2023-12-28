@@ -10,12 +10,13 @@
         :color="rselected.includes(0) ? 'primary' : undefined" :elevation="0">
         All
     </v-chip> -->
-    <v-chip-group v-model="selected" r-multiple variant="flat" show-arrows>
+    <v-chip-group v-model="selected" r-multiple variant="plain" mandatory show-arrows>
         <!-- <template v-slot:prepend>
             
         </template> -->
-        <v-chip r-class="mx-2" @click="() => selected = undefined" label
-            :color="(!selected) ? 'primary' : undefined" :elevation="0">
+        <!-- {{ {selected, rselected} }} -->
+        <v-chip r-class="mx-2" @click="() => selected = undefined" :value="0" label
+            :color="(selected == 0) ? 'primary' : undefined" :elevation="0">
             All
         </v-chip>
         <v-chip v-for="(status, i) in statuses" :key="status.value" r-class="mx-2" :value="status.value" label
@@ -33,10 +34,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:model-value', value: string[]): void;
+    (e: 'update:model-value', value: string | number | string[] | undefined): void;
 }>();
 
-const selected = ref<string[]>(props.modelValue ?? []);
+const selected = ref<number|string|string[]|undefined>(props.modelValue ?? []);
 
 const rselected = computed(() => Array.isArray(selected.value) ? selected.value : (selected.value ? [selected.value] : []));
 
@@ -47,7 +48,7 @@ watch(() => props.modelValue, (value) => {
     //     }
     //     selected.value = value;
     // }
-    selected.value = value;
+    selected.value = value?? [];
 });
 
 watch(selected, (v) => {

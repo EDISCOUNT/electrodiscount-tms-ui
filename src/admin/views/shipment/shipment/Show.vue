@@ -36,6 +36,7 @@
                 </template>
                 <template v-slot:append>
                   <PrintShipmentManifestButton :shipments="[(shipment.id as any)!]" />
+                  <ShipmentEmailDrawer :shipment="shipment"/>
                 </template>
                 <!-- <template v-slot:extension>
                   <v-btn icon @click="router.back()">
@@ -153,6 +154,10 @@
           </v-col>
 
         </v-row>
+
+        <v-btn color="primary" position="fixed" bottom="24px" right="24px" size="large" style="z-index: 5;" icon >
+          <v-icon>mdi-email</v-icon>
+        </v-btn>
       </v-card-text>
     </v-card>
 
@@ -185,6 +190,7 @@ import ShipmentItemList from '@/views/shipment/ShipmentItemList.vue';
 import ShipmentEventTimeline from '@/views/shipment/ShipmentEventTimeline.vue';
 import ShipmentStops from '@/views/shipment/ShipmentStops.vue';
 import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
+import ShipmentEmailDrawer from './email/ShipmentEmailDrawer.vue';
 
 const props = defineProps<{
   id: string,
