@@ -1,12 +1,18 @@
 <template>
     <Teleport to="body">
-    <v-navigation-drawer v-model="open" location="right" :width="500" temporary>
-        <ShipmentEmailPad :shipment="shipment"/>
-    </v-navigation-drawer>
+        <v-navigation-drawer v-model="open" location="right" :width="500" temporary>
+            <template v-slot:append>
+                <v-card flat>
+                    <v-card-text>
+            <ShipmentEmailPad :shipment="shipment" />
+                    </v-card-text>
+                </v-card>
+            </template>
+        </v-navigation-drawer>
     </Teleport>
     <v-btn @click="() => toggle()" color="primary">
-                Open Message Box
-            </v-btn>
+        Open Message Box
+    </v-btn>
 </template>
 <script lang="ts" setup>
 import Shipment from '@/model/shipment/shipment';
@@ -23,7 +29,7 @@ const emit = defineEmits<{
 }>();
 
 
-function toggle(){
+function toggle() {
     open.value = !open.value;
 }
 

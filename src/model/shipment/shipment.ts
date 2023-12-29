@@ -11,6 +11,7 @@ export default class Shipment {
   code: string;
   originAddress?: Address;
   destinationAddress?: Address;
+  billingAddress?: Address;
   sourceId: string;
   idOnSorce: any;
   status: string;
@@ -48,6 +49,7 @@ export default class Shipment {
     code,
     originAddress,
     destinationAddress,
+    billingAddress,
     sourceId,
     idOnSorce,
     status,
@@ -72,6 +74,7 @@ export default class Shipment {
     code: string;
     originAddress?: Address;
     destinationAddress?: Address;
+    billingAddress?: Address;
     sourceId: string;
     idOnSorce: any;
     status: string;
@@ -95,6 +98,7 @@ export default class Shipment {
     this.code = code;
     this.originAddress = originAddress;
     this.destinationAddress = destinationAddress;
+    this.billingAddress = billingAddress;
     this.sourceId = sourceId;
     this.idOnSorce = idOnSorce;
     this.status = status;
@@ -120,6 +124,7 @@ export default class Shipment {
     code,
     originAddress,
     destinationAddress,
+    billingAddress,
     sourceId,
     idOnSorce,
     status,
@@ -143,6 +148,7 @@ export default class Shipment {
     code?: string;
     originAddress?: any;
     destinationAddress?: Address;
+    billingAddress?: Address;
     sourceId?: string;
     idOnSorce?: any;
     status?: string;
@@ -167,6 +173,7 @@ export default class Shipment {
       code: code ?? this.code,
       originAddress: originAddress ?? this.originAddress,
       destinationAddress: destinationAddress ?? this.destinationAddress,
+      billingAddress: billingAddress ?? this.billingAddress,
       sourceId: sourceId ?? this.sourceId,
       idOnSorce: idOnSorce ?? this.idOnSorce,
       status: status ?? this.status,
@@ -194,6 +201,7 @@ export default class Shipment {
       code: json["code"],
       originAddress: json["originAddress"] != null ? Address.fromJson(json["originAddress"]) : undefined,
       destinationAddress: json["destinationAddress"] != null ? Address.fromJson(json["destinationAddress"]) : undefined,
+      billingAddress: json["billingAddress"] != null ? Address.fromJson(json["billingAddress"]) : undefined,
       sourceId: json["sourceId"],
       idOnSorce: json["idOnSorce"],
       status: json["status"],
