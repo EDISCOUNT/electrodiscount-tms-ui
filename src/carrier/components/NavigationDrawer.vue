@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer r-color="primary" expand-on-hover rail>
+    <v-app-bar flat>
 
         <!-- <v-container class="fill-height">
     <v-responsive class="align-center text-center fill-height"> -->
@@ -13,23 +13,17 @@
             <v-divider></v-divider>
         </template>
 
-        <v-container class="fill-height pa-0 ma-0">
-            <v-responsive class="align-center fill-height pa-0 ma-0">
 
+        <v-toolbar-items>
+            <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments"
+                :to="{ name: 'carrier:shipment:index' }" value="myfiles"></v-list-item>
 
-                <v-list density="compact" nav>
-                    <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments"
-                        :to="{ name: 'carrier:shipment:index' }" value="myfiles"></v-list-item>
-
-                    <template v-if="isGranted(['ROLE_ADMIN'])">
-                        <v-list-item prepend-icon="mdi-account" title="Goto Admin" :to="{ name: 'admin:home' }"
-                            value="admin-home"></v-list-item>
-                    </template>
-
-                </v-list>
-            </v-responsive>
-        </v-container>
-    </v-navigation-drawer>
+            <template v-if="isGranted(['ROLE_ADMIN'])">
+                <v-list-item prepend-icon="mdi-account" title="Goto Admin" :to="{ name: 'admin:home' }"
+                    value="admin-home"></v-list-item>
+            </template>
+        </v-toolbar-items>
+    </v-app-bar>
 </template>
 
 <script lang="ts" setup>

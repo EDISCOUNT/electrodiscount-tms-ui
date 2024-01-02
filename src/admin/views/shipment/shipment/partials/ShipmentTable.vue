@@ -1,8 +1,8 @@
 <template>
     <!-- {{ {filter, } }} -->
     <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers"
-        :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="id"
-        :height="height ?? 'calc(100vh - 290px)'" @update:options="loadItems" :show-select="showSelect" fixed-header>
+        :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="id" :height="height"
+        @update:options="loadItems" :show-select="showSelect" fixed-header>
 
 
         <template v-slot:item.items="{ item: { items } }">
@@ -25,6 +25,18 @@
                 </div>
             </template>
             <span v-else class="text-grey">N/A</span>
+        </template>
+
+
+        <template v-slot:item.status="{ item: { status } }">
+            <div v-if="status">
+                <v-chip :color="getStatusColor(status)">
+                    {{ status }}
+                </v-chip>
+            </div>
+            <span class="text-grey" v-else>
+                N/A
+            </span>
         </template>
 
 
@@ -69,6 +81,9 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { getPaginatedShipments } from '../../../../repository/shipment/shipment_repository';
+import { useDisplay } from 'vuetify';
+import { computed } from 'vue';
+import { getStatusColor } from '@/utils/color';
 
 
 const props = defineProps<{
@@ -85,6 +100,19 @@ const emit = defineEmits<{
 
 
 
+const { xs, smAndDown, sm, lg } = useDisplay();
+
+const height = computed(() => {
+
+    if (props.height) {
+        return props.height;
+    }
+
+    if (xs.value) {
+        return 'calc(100vh - 210px)';
+    }
+    return 'calc(100vh - 290px)'
+})
 
 const headers = [
     {
@@ -93,10 +121,10 @@ const headers = [
         // sortable: false,
         key: 'id',
     },
-    {
-        title: 'Code', key: 'code',
-        //  align: 'end' 
-    },
+    // {
+    //     title: 'Code', key: 'code',
+    //     //  align: 'end' 
+    // },
     {
         title: 'Order ID', key: 'channelOrderId',
         //  align: 'end' 
@@ -117,8 +145,12 @@ const headers = [
         title: 'Status', key: 'status',
         //  align: 'center'
     },
+    // {
+    //     title: 'Status', key: 'status',
+    //     //  align: 'center'
+    // },
     {
-        title: 'Channel', key: 'channel',
+        title: 'Fulfilment Type', key: 'fulfilmentType',
         // align: 'center'
     },
     {

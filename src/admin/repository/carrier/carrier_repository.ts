@@ -4,7 +4,7 @@ import Carrier from "@/model/carrier/carrier";
 import { encodeURLParams } from "@/utils/url";
 
 export async function getPaginatedCarriers({ page, limit, search }: { page?: number, limit?: number, search?: string } = {}) {
-    const params = encodeURLParams({page, limit, search});
+    const params = encodeURLParams({ page, limit, search });
     const { data } = await http.get(`/api/admin/carrier/carriers?${params}`);
     const pagination = Pagination.fromJson<Carrier>({
         ...data,
@@ -49,5 +49,7 @@ export interface CarrierFormData {
     // type: string;
     enabled: boolean;
     operatorUser?: string;
+    emailAddress?: string;
+    phoneNumber?: string;
     // metadata: { [i: string]: any };
 }

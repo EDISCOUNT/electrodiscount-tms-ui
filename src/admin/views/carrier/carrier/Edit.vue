@@ -43,6 +43,7 @@ import { onMounted, ref } from 'vue';
 import { getCarrier, updateCarrier, CarrierFormData } from '@/admin/repository/carrier/carrier_repository';
 import Carrier from '@/model/carrier/carrier';
 import { useRouter } from 'vue-router';
+import { useNotifier } from 'vuetify-notifier';
 
 const props = defineProps<{
   id: string,
@@ -54,6 +55,7 @@ const isSaving = ref(false);
 const isLoading = ref(false);
 
 const router = useRouter();
+const notifier = useNotifier();
 
 
 
@@ -73,6 +75,7 @@ async function save(data: CarrierFormData) {
   catch (err) {
     const message = (err as any).message as string;
     error.value = message;
+    notifier.toastError(message);
   }
   finally {
     isSaving.value = false;

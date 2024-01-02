@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div v-if="(pagination?.pageInfo.totalItems ?? 0) > 0">
         <v-row justify="space-around" class="pl-4">
 
             <v-menu>
                 <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" color="primary" class="mx-2" :elevation="0"
+                    <v-btn v-bind="{ ...props, ...attrs }" color="primary" class="mx-2" :elevation="0"
                         :disabled="isImportingShipping || !orderIds.length" variant="flat" :loading="isImportingShipping">
-                        Assign Carrier
+                        {{ assignLabel ?? 'Assign Carrier' }}
                         <v-icon>mdi-menu-down</v-icon>
                     </v-btn>
                 </template>
@@ -14,8 +14,8 @@
 
                     <v-card-actions class="px-5">
                         <v-btn @click="() => createShipment()" :loading="isImportingShipping" color="primary" :elevation="0"
-                            :disabled="!orderIds.length" variant="flat" block>
-                            Import Shipment
+                            :disabled="!orderIds.length" variant="flat" v-bind="attrs" block>
+                            {{ importLabel ?? 'Import Shipment' }}
                             <v-icon>mdi-import</v-icon>
                         </v-btn>
                     </v-card-actions>
@@ -76,9 +76,9 @@
 
         </v-row>
     </div>
-    <v-btn v-if="pagination?.pageInfo.totalItems === 0" @click="() => createShipment()" :loading="isImportingShipping"
-        color="primary" :elevation="0" :disabled="!orderIds.length" variant="flat">
-        Import Shipment
+    <v-btn v-else @click="() => createShipment()" :loading="isImportingShipping" color="primary" :elevation="0"
+        :disabled="!orderIds.length" variant="flat" v-bind="attrs">
+        {{ importLabel ?? 'Import Shipment' }}
         <v-icon>mdi-import</v-icon>
     </v-btn>
 </template>
@@ -88,10 +88,10 @@ import { getPaginatedCarriers } from "@/admin/repository/carrier/carrier_reposit
 import { getOrder, bulkImportShipment } from "@/admin/repository/order/order_repository";
 import Carrier from "@/model/carrier/carrier";
 import Channel from "@/model/channel/channel";
-import Order from "@/model/order/order";
 import Shipment from "@/model/shipment/shipment";
+import ShipmentFulfilmentType from "@/model/shipment/shipment_fulfilment_type";
 import useSWRV from "swrv";
-import { ref } from "vue";
+import { ref, useAttrs } from "vue";
 import { useNotifier } from "vuetify-notifier";
 
 const props = defineProps<{
@@ -99,6 +99,10 @@ const props = defineProps<{
     orderIds: string[],
     // id: number | string,
     // height?: number | string,
+    fulfilmentType?: ShipmentFulfilmentType;
+    // 
+    assignLabel?: string;
+    importLabel?: string;
 }>();
 
 const emit = defineEmits<{
@@ -108,6 +112,7 @@ const emit = defineEmits<{
 
 
 const notifier = useNotifier();
+const attrs = useAttrs();
 
 
 const { data: pagination, isValidating: loading, error } = useSWRV(
@@ -126,7 +131,11 @@ const createShipment = async ({ carrier }: { carrier?: Carrier } = {}) => {
     try {
         choosenCarrier.value = carrier;
         isImportingShipping.value = true;
-        await bulkImportShipment(props.orderIds, { channel: props.channel, carrier });
+        await bulkImportShipment(props.orderIds, {
+            channel: props.channel,
+            carrier,
+            fulfilmentType: props.fulfilmentType ?? ShipmentFulfilmentType.PICKUP_AND_DELIVERY
+        });
         emit('imported',);
         notifier.toast({
             title: 'Shipments imported',

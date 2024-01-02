@@ -5,6 +5,7 @@ import Shipment from "@/model/shipment/shipment";
 import Order from "@/model/order/order";
 import { encodeURLParams } from "@/utils/url";
 import Carrier from "@/model/carrier/carrier";
+import ShipmentFulfilmentType from "@/model/shipment/shipment_fulfilment_type";
 
 export async function getPaginatedOrders({ page, limit, channel, criteria }: { page?: number, limit?: number, channel?: Channel | string, criteria?: { [i: string]: any } } = {}) {
     if (channel) {
@@ -74,11 +75,12 @@ export async function importShipment(order: Order, { carrier }: { carrier?: Carr
 }
 
 
-export async function bulkImportShipment(orders: (Order[]) | (string[]), { channel, carrier }: { channel: Channel, carrier?: Carrier }) {
+export async function bulkImportShipment(orders: (Order[]) | (string[]), { channel, carrier, fulfilmentType = ShipmentFulfilmentType.PICKUP_AND_DELIVERY }: { channel: Channel, carrier?: Carrier, fulfilmentType: ShipmentFulfilmentType }) {
     const ids = orders.map(order => (order instanceof Order) ? order.channelOrderId : order);
     const channelId = channel?.id;
     const input: Record<string, any> = {
         orders: ids,
+        fulfilmentType,
         // channel: channelId,
     };
     if (carrier) {

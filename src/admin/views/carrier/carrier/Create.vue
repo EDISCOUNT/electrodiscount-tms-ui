@@ -15,12 +15,14 @@ import CarrierForm from './CarrierForm.vue';
 import { ref } from 'vue';
 import { createCarrier, CarrierFormData } from '@/admin/repository/carrier/carrier_repository';
 import { useRouter } from 'vue-router';
+import { useNotifier } from 'vuetify-notifier';
 
 
 
 const props = defineProps<{
 }>()
 const router = useRouter();
+const notifier = useNotifier();
 
 const isSaving = ref(false);
 
@@ -32,7 +34,8 @@ async function save(data: CarrierFormData) {
     router.back();
   }
   catch (err) {
-
+    const message = (err as any).message;
+    notifier.toastError(message);
   }
   finally {
     isSaving.value = false;

@@ -4,6 +4,7 @@ import Channel from "../channel/channel";
 import AdditionalService from "../order/additional_service";
 import ShipmentDimension, { ShipmentDimensionFormData } from "./shipment_dimension";
 import ShipmentFulfilment, { ShipmentFulfilmentFormData } from "./shipment_fulfilment";
+import ShipmentFulfilmentType from "./shipment_fulfilment_type";
 import ShipmentItem, { ShipmentItemFormData } from "./shipment_item";
 
 export default class Shipment {
@@ -32,6 +33,8 @@ export default class Shipment {
   //
   netWeight?: number;
   volumetricWeight?: number;
+  //
+  fulfilmentType?: ShipmentFulfilmentType;
 
 
   get fulfilment (): ShipmentFulfilment | undefined{
@@ -69,6 +72,8 @@ export default class Shipment {
     netWeight,
     volumetricWeight,
     //
+    fulfilmentType
+    //
   }: {
     id: number;
     code: string;
@@ -93,6 +98,7 @@ export default class Shipment {
     type?: string,
     netWeight?: number,
     volumetricWeight?: number,
+    fulfilmentType?: ShipmentFulfilmentType,
   }) {
     this.id = id;
     this.code = code;
@@ -117,6 +123,8 @@ export default class Shipment {
     this.type = type;
     this.netWeight = netWeight;
     this.volumetricWeight = volumetricWeight;
+    //
+    this.fulfilmentType = fulfilmentType;
   }
 
   copyWith({
@@ -143,6 +151,8 @@ export default class Shipment {
     type,
     netWeight,
     volumetricWeight,
+    //
+    fulfilmentType,
   }: {
     id?: number;
     code?: string;
@@ -167,6 +177,9 @@ export default class Shipment {
     type?: string,
     netWeight?: number,
     volumetricWeight?: number,
+    //
+    
+  fulfilmentType?: ShipmentFulfilmentType,
   }): Shipment {
     return new Shipment({
       id: id ?? this.id,
@@ -192,6 +205,8 @@ export default class Shipment {
       type: type ?? this.type,
       netWeight: netWeight ?? this.netWeight,
       volumetricWeight: volumetricWeight ?? this.volumetricWeight,
+      //
+      fulfilmentType: fulfilmentType?? this.fulfilmentType,
     });
   }
 
@@ -220,6 +235,8 @@ export default class Shipment {
       type: json["type"],
       netWeight: json["netWeight"],
       volumetricWeight: json["volumetricWeight"],
+      //
+      fulfilmentType: json['fulfilmentType'],
     });
   }
 
@@ -246,7 +263,8 @@ export default class Shipment {
       "netWeight": this.netWeight,
       "codAmount": this.codAmount,
       "codCurrency": this.codCurrency,
-
+      // 
+      "fulfilmentType": this.fulfilmentType,
     };
   }
 }
@@ -272,5 +290,7 @@ export interface ShipmentFormData {
   volumetricWeight?: number;
   //
   carrier?: string;
+  // 
+  fulfilmentType?: ShipmentFulfilmentType;
 }
 

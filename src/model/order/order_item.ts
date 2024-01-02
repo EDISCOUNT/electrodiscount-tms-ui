@@ -117,6 +117,7 @@ export default class OrderItem {
     }
 
     static fromJson(json: { [key: string]: any }): OrderItem {
+        // console.log("OrderItem fromJson", {json})
         return new OrderItem({
             id: json["id"],
             channelProductId: json["channelProductId"],

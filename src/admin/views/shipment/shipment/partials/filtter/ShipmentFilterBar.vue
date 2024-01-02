@@ -1,56 +1,37 @@
 <template>
-    <v-row>
-        <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
-            <v-text-field v-model="filter.code" label="Shipment Code" placeholder="Enter Shipment Code" variant="outlined" density="compact" clearable/>
-        </v-col>
-        <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
-            <CarrierInput v-model="filter.carriers" label="Carriers" placeholder="Filter by assigned carriers" variant="outlined" density="compact" multiple clearable/>
-        </v-col>
-        <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
-            <ChannelInput v-model="filter.channels" label="Channels" placeholder="Filter by source Channels" variant="outlined" density="compact" multiple clearable/>
-        </v-col>
-    </v-row>
+    <div>
+        <template v-if="xs">
+            <v-bottom-sheet v-model="open">
+                <v-card flat>
+                    <v-card-text>
+                        <ShipmentFilterBarForm v-model:rsql="rsql" />
+                    </v-card-text>
+                </v-card>
+            </v-bottom-sheet>
+            <v-btn @click="() => open = !open" color="primary" :elevation="0" variant="text">
+                <v-icon>mdi-filter</v-icon>
+                Open Filter
+            </v-btn>
+        </template>
+        <template v-else>
+            <ShipmentFilterBarForm v-model:rsql="rsql" />
+        </template>
+    </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, watch } from 'vue';
-import CarrierInput from '../CarrierInput.vue';
-import ChannelInput from '../ChannelInput.vue';
-import { computed } from 'vue';
-import { and, comparison, inList } from 'rsql-builder';
-import { like } from '@/utils/rsql';
-
-interface FilterOptions {
-    channels: string[];
-    carriers: string[];
-    code?: string,
-}
+import { reactive, watch, ref } from 'vue';
+import ShipmentFilterBarForm from './ShipmentFilterBarForm.vue';
+import { useDisplay } from 'vuetify';
 
 const emit = defineEmits<{
     (e: 'update:rsql', value?: string): void;
 }>();
 
-const filter = reactive<FilterOptions>({
-    carriers: [],
-    channels: [],
-});
+const open = ref(false);
+const rsql = ref<string>();
 
-
-const rsql = computed(() => {
-    let query = '';
-    if (filter.code) {
-        query = and(query, comparison('code', like(filter.code)));
-    }
-
-    if (filter.carriers.length > 0) {
-        query = and(query, comparison('carrier.id', inList(...filter.carriers)));
-    }
-    if (filter.channels.length > 0) {
-        query = and(query, comparison('channel.id', inList(...filter.channels)));
-    }
-    return query;
-});
-
+const { xs, sm, lg } = useDisplay();
 
 watch(rsql, (rsql) => emit('update:rsql', rsql));
 

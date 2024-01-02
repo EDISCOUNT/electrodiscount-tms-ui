@@ -247,7 +247,36 @@ const routes = [
       //   props: true
       // },
     ]
-  }
+  },
+
+  // >> CATLOG
+  // >> CATALOG >> PRODUCT
+  {
+    path: 'mailling/templates',
+    name: 'admin:mailing:template',
+    component: () => import('@/admin/layouts/mailing/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin:mailing:template:index',
+        component: () => import('@/admin/views/mailing/template/Index.vue')
+      },
+      {
+        path: 'create',
+        name: 'admin:mailing:template:create',
+        component: () => import('@/admin/views/mailing/template/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:mailing:template:edit',
+        component: () => import('@/admin/views/mailing/template/Edit.vue'),
+        props: true
+
+      },
+    ]
+  },
+
 ]
 
 const router = createRouter({

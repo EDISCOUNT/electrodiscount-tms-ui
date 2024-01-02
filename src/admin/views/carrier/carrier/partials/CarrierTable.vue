@@ -58,6 +58,8 @@ const headers = [
         key: 'name',
     },
     { title: 'Owner Operator', key: 'operatorUser', },
+    { title: 'Email Address', key: 'emailAddress', },
+    { title: 'Phone Number', key: 'phoneNumber', },
     { title: 'Status', key: 'enabled', },
     { title: 'Actions', key: 'actions', },
 ];

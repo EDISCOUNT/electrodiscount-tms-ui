@@ -35,10 +35,10 @@
                   </span>
                 </template>
                 <template v-slot:append>
-                  <v-btn color="primary">
-                    <v-icon>mdi-printer</v-icon>
-                    <span>Manifest</span>
-                  </v-btn>
+                  <PrintShipmentManifestButton :shipments="[(shipment.id as any)!]" />
+                  <EmailDrawer :shipment="shipment"/>
+                  <span class="mx-1"/>
+                  <SmsDrawer :shipment="shipment"/>
                 </template>
                 <!-- <template v-slot:extension>
                   <v-btn icon @click="router.back()">
@@ -156,6 +156,10 @@
           </v-col>
 
         </v-row>
+
+        <v-btn color="primary" position="fixed" bottom="24px" right="24px" size="large" style="z-index: 5;" icon >
+          <v-icon>mdi-email</v-icon>
+        </v-btn>
       </v-card-text>
     </v-card>
 
@@ -173,9 +177,8 @@
 </template>
 
 <script lang="ts" setup>
-import ShipmentForm from './ShipmentForm.vue';
 import { onMounted, ref } from 'vue';
-import { getShipment, updateShipment, } from '@/admin/repository/shipment/shipment_repository';
+import { getShipment, updateShipment, } from '@/carrier/repository/shipment/shipment_repository';
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 import { useRouter } from 'vue-router';
 import { useNotifier } from 'vuetify-notifier';
@@ -187,6 +190,9 @@ import ShipmentBasicInformationCard from '@/views/shipment/ShipmentBasicInformat
 import ShipmentItemList from '@/views/shipment/ShipmentItemList.vue';
 import ShipmentEventTimeline from '@/views/shipment/ShipmentEventTimeline.vue';
 import ShipmentStops from '@/views/shipment/ShipmentStops.vue';
+import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
+import EmailDrawer from '@/views/mailing/email/EmailDrawer.vue';
+import SmsDrawer from '@/views/texting/sms/SmsDrawer.vue';
 
 const props = defineProps<{
   id: string,
@@ -249,4 +255,6 @@ async function loadShipment() {
     isLoading.value = false;
   }
 }
+
+
 </script>

@@ -1,13 +1,7 @@
 <template>
-    <input type="file" ref="fileInput" style="display:none;" @change="onFileInput" multiple />
     <v-card flat>
-        <!-- <template v-slot:title>
-            <span>Message the Client</span>
-        </template> -->
-        <!-- {{ { addresses, data, } }} -->
-        <!-- {{ { data, } }} -->
         <v-card-text>
-            <v-combobox v-model="data.recipients" label="Recipients" placeholder="Enter the email address" r-variant="plain"
+            <v-combobox v-model="data.recipients" label="Recipients" placeholder="Enter the sms address" r-variant="plain"
                 r-density="compact" multiple>
 
                 <template v-slot:chip="{ item: { raw }, index }">
@@ -52,7 +46,7 @@
                                             <span class="text-h5">{{ raw.fullName }}</span>
                                         </template>
                                         <template v-slot:subtitle>
-                                            <span>{{ raw.emailAddress }}</span>
+                                            <span>{{ raw.phoneNumber }}</span>
                                         </template>
                                     </v-list-item>
                                 </v-card-text>
@@ -85,12 +79,12 @@
                                     </template>
                                     <v-tooltip>
                                         <template v-slot:activator="{ props }" location="bottom">
-                                            <v-btn v-bind="props" :href="`mailto:${raw.emailAddress}`" color="primary"
+                                            <v-btn v-bind="props" :href="`mailto:${raw.phoneNumber}`" color="primary"
                                                 :elevation="0" icon>
-                                                <v-icon>mdi-email</v-icon>
+                                                <v-icon>mdi-sms</v-icon>
                                             </v-btn>
                                         </template>
-                                        <small>Email: {{ raw.emailAddress }}</small>
+                                        <small>Email: {{ raw.phoneNumber }}</small>
                                     </v-tooltip>
                                 </v-card-actions>
                             </v-card>
@@ -98,32 +92,14 @@
 
                     </template>
                 </template>
-
             </v-combobox>
-            <!-- <v-divider class="mb-4" /> -->
-            <v-text-field v-model="data.subject" label="Subject" variant="outlined" density="compact" />
-            <v-textarea v-model="data.message" :rows="5" label="Messages" variant="outlined" />
-        </v-card-text>
-        <v-card-text v-if="data.attachments?.length">
-            <v-card max-height="200px" style="overflow-y: auto" flat>
-                <v-list lines="one" density="compact">
-                    <v-list-item v-for="(attachment, i) in data.attachments" :key="i" density="compact" class="py-0 my-0">
-                        <template v-slot:title>
-                            <span>{{ attachment.file?.name }}</span>
-                        </template>
-                        <template v-slot:append>
-                            <v-btn @click="() => data.attachments?.splice(i, 1)" :elevation="0">
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                        </template>
-                    </v-list-item>
-                </v-list>
-            </v-card>
+
+            <v-textarea v-model="data.message" :rows="5" label="Messages" variant="outlined"  :counter="160"/>
         </v-card-text>
         <v-card-actions>
-            <v-btn @click="() => selectFile()" color="primary">
-                <v-icon>mdi-attachment-plus</v-icon>
-            </v-btn>
+            <v-spacer />
+            <!-- <v-switch v-model="data.saveAsTemplate" label="Save as template" inset density="compact" size="x-small"
+                color="primary" class="my-0 py-0" /> -->
             <v-spacer />
             <v-btn @click="() => send()" color="primary" :loading="isSending" :elevation="0">
                 Send<v-icon>mdi-send</v-icon>
@@ -134,18 +110,23 @@
 
 <script lang="ts" setup>
 import Shipment from '@/model/shipment/shipment';
+import Order from '@/model/order/order';
 import Address from '@/model/addressing/address';
-import EmailMessage, { EmailMessageFormData } from '@/model/mailing/message';
-import { createEmailMessage } from '@/repository/mailing/message_repository';
+import SmsMessage, { SmsMessageFormData } from '@/model/texting/message';
+import { createSmsMessage } from '@/repository/texting/message_repository';
 import { ref, reactive, watch, computed } from 'vue';
+import { useNotifier } from 'vuetify-notifier';
+
 
 const props = defineProps<{
     shipment?: Shipment,
+    order?: Order,
     addresses?: (Address | string)[],
 }>();
 
 const emit = defineEmits<{
 }>();
+const notifier = useNotifier();
 
 const fileInput = ref<HTMLInputElement>();
 const isSending = ref(false);
@@ -166,8 +147,17 @@ const addresses = computed(() => {
         if (shipment.destinationAddress) {
             addresses.push(shipment.destinationAddress);
         }
-
     }
+    if (props.order) {
+        const order = props.order;
+        if (order.billingAddress) {
+            addresses.push(order.billingAddress);
+        }
+        if (order.shippingAddress) {
+            addresses.push(order.shippingAddress);
+        }
+    }
+
     if (props.addresses) {
         addresses.push(...props.addresses.filter(e => !!e));
     }
@@ -175,49 +165,25 @@ const addresses = computed(() => {
 });
 
 
-const data = reactive<EmailMessageFormData>({
+const data = reactive<SmsMessageFormData>({
     recipients: addresses.value,
-    ccRecipients: [] as (string | Address)[],
-    bccRecipients: [] as (string | Address)[],
-    subject: (undefined as any) as string ,
     message: (undefined as any) as string,
-    attachments: [] as FileEntry[],
 });
-
-
 
 
 async function send() {
     try {
         isSending.value = true;
-        const message = await createEmailMessage(data);
-
+        const message = await createSmsMessage(data);
+        notifier.toastSuccess("Message sent succesfully!");
     }
     catch (err) {
-
+        const message = (err as any).message as string;
+        notifier.toastError(message);
     }
     finally {
         isSending.value = false;
     }
-}
-
-
-function selectFile() {
-    fileInput.value?.click();
-}
-
-function onFileInput(evt: any) {
-    // console.log("evt: ", {evt});
-    const files = evt.target.files;
-    const attachments = [...(data.attachments?? []), ... Array.from<File>(files).map((file: File) => ({ file }))];
-    data.attachments = attachments;
-    fileInput.value!.value = '';
-}
-
-
-interface FileEntry {
-    file: File;
-    caption?: string;
 }
 
 </script>

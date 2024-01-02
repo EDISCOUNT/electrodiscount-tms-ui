@@ -32,6 +32,10 @@ export async function createEmailMessage(data: EmailMessageFormData) {
     if (data.message) {
         formData.append('message', data.message);
     }
+    formData.append('saveAsTemplate', Boolean(data.saveAsTemplate).toString());
+    if (data.label) {
+        formData.append('label', data.label);
+    }
     recipients?.forEach((address, index) => appendAddress(formData, `recipients[${index}]`, address));
     ccRecipients?.forEach((address, index) => appendAddress(formData, `ccRecipients[${index}]`, address));
     bccRecipients?.forEach((address, index) => appendAddress(formData, `bccRecipients[${index}]`, address));

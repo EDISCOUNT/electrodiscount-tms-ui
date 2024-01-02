@@ -1,6 +1,7 @@
 <template>
-    <v-card height="100vh" color="secondary-bg" flat>
-        <v-card-text class="pa-0 pa-sm-4">
+    <v-card r-height="100vh" r-color="secondary-bg" flat>
+        <v-divider/>
+        <v-card-text class="pa-0">
             <v-card class="" flat>
                 <template v-slot:title>
                     <span> Shipments</span>
@@ -10,6 +11,7 @@
                     <!-- <create-shipment-button /> -->
                 </template>
             </v-card>
+        <v-divider/>
 
 
           

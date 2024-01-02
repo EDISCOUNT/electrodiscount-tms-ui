@@ -1,7 +1,7 @@
 <template>
     <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers"
         :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="id"
-        :height="height ?? 'calc(100vh - 200px)'" @update:options="loadItems" :show-select="showSelect">
+        :height="height ?? 'calc(100vh - 210px)'" @update:options="loadItems" fixed-header :show-select="showSelect">
 
 
         <template v-slot:item.items="{ item: { items } }">
@@ -100,6 +100,10 @@ const headers = [
     {
         title: 'Status', key: 'status',
         //  align: 'center'
+    },
+    {
+        title: 'Fulfilment Type', key: 'fulfilmentType',
+        // align: 'center'
     },
 
     {

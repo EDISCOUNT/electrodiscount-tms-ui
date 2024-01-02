@@ -5,7 +5,7 @@
             <v-card v-if="pagination.pageInfo.totalItems" width="100%" color="transparent" flat>
                 <v-card-title class="pa-0 py-md-3">
                     <v-card class="pa-3" flat>
-                        <v-tabs v-model="tab" r-bg-color="primary" align-tabs="start">
+                        <v-tabs v-model="tab" r-bg-color="primary" align-tabs="start" mobile-breakpoint="xs">
                             <v-tab v-for="(channel) in pagination.items" :key="channel.id" :value="channel.id">
                                 <v-list-item>
                                     <template v-slot:prepend>
@@ -27,7 +27,7 @@
 
                 <v-card-text class="px-0">
                     <v-card flat>
-                        <v-window v-model="tab">
+                        <v-window v-model="tab" :touch="false">
                             <v-window-item v-for="(channel) in pagination.items" :key="channel.id" :value="channel.id">
                                 <channel-order-table :channel="channel" show-select height="calc(100vh - 230px)"/>
                             </v-window-item>

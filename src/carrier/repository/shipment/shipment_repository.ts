@@ -34,6 +34,14 @@ export async function getShipment(id: string) {
 
 
 
+export async function generatePacklist({ shipments }: { shipments: string[] }) {
+    const { data } = await http.post(`/api/carrier/shipment/shipments/operation/generate-packlist`, { shipments });
+    return data as { url: string };
+}
+
+
+
+
 export async function applyTransition({ shipment, transition }: { shipment: Shipment, transition: string }) {
     const { id } = shipment;
     const { data } = await http.post(`/api/carrier/shipment/shipments/${id}/apply-transition`,{transition});

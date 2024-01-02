@@ -1,7 +1,7 @@
 <template>
     <v-btn @click="() => printManifest()" :loading="isGenerating" color="primary">
         <v-icon>mdi-printer</v-icon>
-        <span>Manifest</span>
+        <span v-show="smAndUp">Manifest</span>
     </v-btn>
 </template>
 
@@ -9,6 +9,7 @@
 import { getShipment, updateShipment, generatePacklist, } from '@/admin/repository/shipment/shipment_repository';
 import { defineProps, ref } from 'vue';
 import { useNotifier } from 'vuetify-notifier';
+import { useDisplay } from 'vuetify';
 
 const props = defineProps<{
     shipments: (string)[],
@@ -17,6 +18,7 @@ const props = defineProps<{
 
 
 const notifier = useNotifier();
+const {smAndUp} = useDisplay();
 
 
 const isGenerating = ref(false);

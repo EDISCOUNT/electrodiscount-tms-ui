@@ -5,9 +5,13 @@
         <!-- {{ {order: props.order}  }} -->
         <template v-slot:append>
             <slot name="append">
-                <v-btn icon @click="() => close()" variant="flat">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
+                <v-row>
+                    <EmailDrawer :order="order" use-dialog />
+                    <v-spacer />
+                    <v-btn icon @click="() => close()" variant="flat">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                </v-row>
             </slot>
         </template>
 
@@ -39,7 +43,15 @@
                                     <div v-for="(item, i) in order.items" :key="item.id ?? i">
                                         <v-list-item lines="three">
                                             <template v-slot:title>
-                                                {{ item.product?.name }}
+                                                <span v-if="item.name">
+                                                    {{ item.name }}
+                                                </span>
+                                                <span v-else-if="item.product?.name">
+                                                    {{ item.product?.name }}
+                                                </span>
+                                                <span class="text-grey" v-else>
+                                                    N/A
+                                                </span>
                                             </template>
                                             <template v-slot:subtitle>
                                                 {{ item.quantity }} x {{ item.unitPrice }}
@@ -94,7 +106,9 @@
                     </v-col>
                 </v-row>
             </v-card-text>
-            <import-shipment-action :order="order" @imported="(shipment) => onImport(shipment)" />
+            <!-- <v-card-actions> -->
+            <import-shipment-action :order-ids="[order?.channelOrderId!]" :channel="order.channel!" @imported="(shipment) => onImport(shipment)" />
+            <!-- </v-card-actions> -->
         </template>
 
         <v-row justify="center" align="center" class="fill-height" v-else>
@@ -123,7 +137,8 @@ import AddressFormattedView from "@/admin/views/addressing/partials/AddressForma
 import { getOrder, importShipment } from "@/admin/repository/order/order_repository";
 import useSWRV from "swrv";
 import Shipment from "@/model/shipment/shipment";
-import ImportShipmentAction from "../import/ImportShipmentAction.vue";
+import ImportShipmentAction from "../import/BulkImportShipmentActionBar.vue";
+import EmailDrawer from '@/views/mailing/email/EmailDrawer.vue';
 
 
 const props = defineProps<{
@@ -156,7 +171,7 @@ const height = computed(() => {
 
 
 
-function onImport(shipment: Shipment) {
+function onImport(shipment?: Shipment|Shipment[]) {
 
     close();
 }

@@ -7,6 +7,8 @@ export default class Carrier {
     name: string;
     enabled: boolean;
     logo?: string;
+    emailAddress?: string;
+    phoneNumber?: string;
     shortDescription?: string;
     description?: string;
     operatorUser?: User;
@@ -19,6 +21,8 @@ export default class Carrier {
         name: string;
         enabled?: boolean;
         logo?: string,
+        emailAddress?: string;
+        phoneNumber?: string;
         shortDescription?: string;
         description?: string;
         operatorUser?: User;
@@ -30,6 +34,8 @@ export default class Carrier {
         this.name = data.name;
         this.enabled = data.enabled ?? false;
         this.logo = data.logo;
+        this.emailAddress = data.emailAddress;
+        this.phoneNumber = data.phoneNumber;
         this.shortDescription = data.shortDescription;
         this.description = data.description;
         this.createdAt = data.createdAt;
@@ -46,6 +52,8 @@ export default class Carrier {
             logo: input.logo,
             shortDescription: input.shortDescription,
             description: input.description,
+            emailAddress: input.emailAddress,
+            phoneNumber: input.phoneNumber,
             operatorUser: input.operatorUser ? User.fromJson(input.operatorUser) : undefined,
             createdAt: input.createdAt,
             updatedAt: input.updatedAt

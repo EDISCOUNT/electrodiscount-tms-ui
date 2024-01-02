@@ -45,4 +45,7 @@ export interface EmailMessageFormData {
     ccRecipients?: (string | EmailAddress | Address)[];
     bccRecipients?: (string | EmailAddress | Address)[];
     attachments?: EmailAttachmentFormData[];
+    //
+    label?: string;
+    saveAsTemplate?: boolean;
 }

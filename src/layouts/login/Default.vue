@@ -77,6 +77,7 @@ async function login() {
                 router.replace({ name: 'admin:home' });
             }
 
+            router.replace({ name: 'carrier:home' });
             console.log("Redirecting to Home",);
         }
     }

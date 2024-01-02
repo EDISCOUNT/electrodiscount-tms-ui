@@ -6,18 +6,32 @@
         <v-form ref="form">
             <v-card-text>
                 <v-text-field v-model="data.code" label="Code" variant="outlined" density="compact" :rules="[
-                    (v) => !!v || 'Code is required',
-                    (v) => (v && v.length >= 6) || 'Code must be at least 6 characters',
+                    required(),
+                    length({ min: 6 }),
 
                 ]"></v-text-field>
                 <v-text-field v-model="data.name" label="Name" variant="outlined" density="compact" :rules="[
-                    (v) => !!v || 'Name is required',
-                    (v) => (v && v.length <= 50) || 'Name must be less than 50 characters',
+                    required(),
+                    length({ max: 50 }),
                 ]"></v-text-field>
+
+                <v-text-field v-model="data.emailAddress" label="EMail Address" type="email" variant="outlined"
+                    density="compact" :rules="[
+                        required(),
+                        // length({ max: 50 }),
+                        email(),
+                    ]"></v-text-field>
+
+                <v-text-field v-model="data.phoneNumber" label="Phone Number" type="tel" variant="outlined"
+                    density="compact" :rules="[
+                        required(),
+                        length({ max: 50 }),
+                    ]"></v-text-field>
 
                 <v-card flat>
                     <v-card-text class="pa-0">
-                        <CarrierUserOperatorInput v-model="data.operatorUser" variant="outlined" density="compact" label="Operator User Account" clearable/>
+                        <CarrierUserOperatorInput v-model="data.operatorUser" variant="outlined" density="compact"
+                            label="Operator User Account" clearable />
                     </v-card-text>
                 </v-card>
                 <v-switch v-model="data.enabled" label="Enabled" color="primary" inset></v-switch>
@@ -36,6 +50,7 @@ import { defineProps, reactive, ref, watch } from "vue";
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 import CarrierUserOperatorInput from './partials/CarrierUserOperatorInput.vue';
+import { email, required, length } from '@/common/form/validation';
 
 const props = defineProps<{
     type?: string;
@@ -58,6 +73,8 @@ const { xs, smAndDown, mdAndUp } = useDisplay();
 const data = reactive<CarrierFormData>({
     code: props.carrier?.code ?? '',
     name: props.carrier?.name ?? '',
+    emailAddress: props.carrier?.emailAddress,
+    phoneNumber: props.carrier?.phoneNumber,
     enabled: props.carrier?.enabled ?? false,
     operatorUser: props.carrier?.operatorUser?.id,
 

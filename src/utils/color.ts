@@ -11,6 +11,8 @@ export function getStatusColor(status: string | undefined): string {
     status = (status ?? '').toUpperCase();
     if (status) {
         const statusColorMap: Record<string, string> = {
+            "ASSIGNED":"pink",
+            "READY":"blue",
             "OPEN":"orange",
             "PENDING": "yellow", // Orange
             "CANCELLED": "red", // Red

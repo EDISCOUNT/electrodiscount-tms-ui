@@ -82,6 +82,9 @@
                     <v-divider />
                     <v-list-item prepend-icon="mdi-account" title="Users" :to="{ name: 'admin:account:user:index' }"
                         value="users"></v-list-item>
+                        <v-divider/>
+                        <v-list-item prepend-icon="mdi-email" title="Email Templates" :to="{ name: 'admin:mailing:template:index' }"
+                        value="email_message_template"></v-list-item>
                 </v-list>
             </v-responsive>
         </v-container>

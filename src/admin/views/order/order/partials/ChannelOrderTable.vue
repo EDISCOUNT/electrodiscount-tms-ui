@@ -66,7 +66,7 @@
                             N/A
                         </span>
                     </div>
-                    <v-chip v-else-if="i == (items.length - 1)" size="small">
+                    <v-chip v-else-if="i == (items.length - 1)" size="x-small">
                        + {{ items.length - 1 }} More
                     </v-chip>
                 </div>
@@ -106,7 +106,7 @@
 
                         </v-menu>
                     </div>
-                    <v-chip v-else-if="i == (fulfilments.length - 1)">
+                    <v-chip v-else-if="i == (fulfilments.length - 1)" size="x-small">
                         {{ fulfilments.length - 1 }} More
                     </v-chip>
                 </template>
@@ -130,7 +130,7 @@
             <!-- <v-btn color="primary" :to="{ name: 'admin:order:edit', params: { id: item.id } }">
                 <v-icon>mdi-pencil</v-icon>
             </v-btn> -->
-            <v-btn @click="() => previewOrder(item)" color="primary" :elevation="0" variant="flat" size="small">
+            <v-btn @click="() => previewOrder(item)" color="primary" :elevation="0" variant="flat" size="x-small">
                 More
                 <v-icon>mdi-eye</v-icon>
             </v-btn>
@@ -157,7 +157,7 @@
             <!-- <v-card-title>
             </v-card-title> -->
             <v-card-text>
-                <order-preview :order="previewDialogOrder" @close="() => previewDialogOpen = !previewDialogOpen" />
+                <order-preview v-if="previewDialogOrder" :order="previewDialogOrder" @close="() => previewDialogOpen = !previewDialogOpen" />
             </v-card-text>
         </v-card>
     </v-bottom-sheet>
@@ -169,7 +169,7 @@ import { ref, watch } from 'vue';
 import { useTheme } from 'vuetify/lib/framework.mjs';
 import { getPaginatedOrders } from '../../../../repository/order/order_repository';
 import OrderPreview from './OrderPreview.vue';
-import BulkImportShipmentAction from '../import/BulkImportShipmentAction.vue';
+import BulkImportShipmentAction from "../import/BulkImportShipmentActionBar.vue";
 import ChannelOrderFilter from './filtter/ChannelOrderFilter.vue';
 import { getStatusColor } from '@/utils/color';
 import { formatDate } from '@/utils/format';
@@ -201,16 +201,11 @@ const criteria = reactive<{
 const headers = [
     { title: 'ID', key: 'id', value: 'channelOrderId', },
     // { title: 'Code', key: 'code', },
-    {
-        title: 'Total',
-
-        sortable: true,
-        key: 'total',
-    },
-    { title: 'Products', key: 'items', },
-    { title: 'Shipping Address', key: 'shippingAddress', sortable: false },
     { title: 'Status', key: 'status', },
     { title: 'Delivery Date', key: 'expiresAt', },
+    { title: 'Shipping Address', key: 'shippingAddress', sortable: false },
+    // {   title: 'Total', sortable: true, key: 'total',  },
+    { title: 'Products', key: 'items', },
     { title: 'Created At', key: 'createdAt', },
     { title: 'Actions', key: 'actions', sortable: false },
 ];

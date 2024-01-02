@@ -42,7 +42,35 @@ const routes = [
 
       },
     ]
-  }
+  },
+
+  // >> CATLOG
+  // >> CATALOG >> PRODUCT
+  {
+    path: 'mailling/templates',
+    name: 'carrier:mailing:template',
+    component: () => import('@/carrier/layouts/mailing/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'carrier:mailing:template:index',
+        component: () => import('@/carrier/views/mailing/template/Index.vue')
+      },
+      {
+        path: 'create',
+        name: 'carrier:mailing:template:create',
+        component: () => import('@/carrier/views/mailing/template/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'carrier:mailing:template:edit',
+        component: () => import('@/carrier/views/mailing/template/Edit.vue'),
+        props: true
+
+      },
+    ]
+  },
 ]
 
 const router = createRouter({

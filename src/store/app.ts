@@ -178,6 +178,7 @@ export const useAccountStore = defineStore('account', () => {
     const { data: { token } } = await http.post('/api/login_check', { username, password });
     loginInWithToken(token);
     const user = await fetchUser();
+    return user;
   }
 
   function loginInWithToken(token: string) {
@@ -196,6 +197,7 @@ export const useAccountStore = defineStore('account', () => {
 
 
   function isGranted(roles: string | string[], { includeAll }: { includeAll?: boolean } = {}) {
+    // console.log("USER FOR PERMISSION CHELCK: ", {user: user.value});
     if (!roles)
       return true;
     if (!Array.isArray(roles))

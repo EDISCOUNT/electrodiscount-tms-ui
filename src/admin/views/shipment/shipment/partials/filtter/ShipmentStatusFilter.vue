@@ -17,7 +17,7 @@
                 Completed
             </v-chip>
         </v-chip-group> -->
-        <v-chip-group v-model="currentItem">
+        <v-chip-group v-model="currentItem" :column="smAndDown">
             <v-chip v-for="item in chips" :key="item.value">
                 {{ item.text }}
             </v-chip>
@@ -42,8 +42,11 @@
 
 <script lang="ts" setup>
 import { ref, nextTick } from 'vue';
+import { useDisplay } from 'vuetify';
 
 
+
+const { xs, smAndDown, sm, lg } = useDisplay();
 
 const currentItem = ref<any>();
 
