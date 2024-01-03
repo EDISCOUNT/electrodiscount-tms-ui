@@ -76,6 +76,7 @@
 
 
         <template v-slot:item.expiresAt="{ item: { fulfilments } }">
+            <!-- {{ {fulfilments} }} -->
             <template v-if="fulfilments?.length">
                 <template v-for="(fulfilment, i) in fulfilments" :key="fulfilment.id ?? i">
                     <div v-if="i == 0">

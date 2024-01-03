@@ -1,5 +1,7 @@
 import Address from "../addressing/address";
 import Channel from "../channel/channel";
+import Shipment from "../shipment/shipment";
+import ShipmentFulfilment from "../shipment/shipment_fulfilment";
 import OrderItem from "./order_item";
 
 export default class Order {
@@ -21,6 +23,7 @@ export default class Order {
     billingAddress?: Address;
     channelOrderId?: string;
     channelOrderCreatedAt?: Date;
+    _fulfilment?: ShipmentFulfilment;
 
     get total(): number {
 
@@ -38,9 +41,14 @@ export default class Order {
 
 
     get fulfilments() {
-        return this.items
+        const fulfilments = this.items
             .filter((item) => item.fulfilment != null)
             .map((item) => item.fulfilment!);
+
+        if (this._fulfilment) {
+            fulfilments.unshift(this._fulfilment);
+        }
+        return fulfilments;
     }
 
     constructor({
@@ -59,6 +67,7 @@ export default class Order {
         billingAddress,
         channelOrderId,
         channelOrderCreatedAt,
+        fulfilment,
     }: {
         id: any;
         code: any;
@@ -75,6 +84,7 @@ export default class Order {
         billingAddress?: Address;
         channelOrderId?: string;
         channelOrderCreatedAt?: Date;
+        fulfilment?: ShipmentFulfilment;
     }) {
         this.id = id;
         this.code = code;
@@ -91,6 +101,7 @@ export default class Order {
         this.billingAddress = billingAddress;
         this.channelOrderId = channelOrderId;
         this.channelOrderCreatedAt = channelOrderCreatedAt;
+        this._fulfilment = fulfilment;
     }
 
     copyWith({
@@ -109,6 +120,7 @@ export default class Order {
         billingAddress,
         channelOrderId,
         channelOrderCreatedAt,
+        fulfilment,
     }: {
         id?: any;
         code?: any;
@@ -125,6 +137,7 @@ export default class Order {
         billingAddress?: Address;
         channelOrderId?: string;
         channelOrderCreatedAt?: Date;
+        fulfilment?: ShipmentFulfilment;
     }): Order {
         return new Order({
             id: id ?? this.id,
@@ -142,6 +155,7 @@ export default class Order {
             billingAddress: billingAddress ?? this.billingAddress,
             channelOrderId: channelOrderId ?? this.channelOrderId,
             channelOrderCreatedAt: channelOrderCreatedAt ?? this.channelOrderCreatedAt,
+            fulfilment: fulfilment ?? this._fulfilment,
         });
     }
 
@@ -162,6 +176,7 @@ export default class Order {
             billingAddress: json['billingAddress'] != null ? Address.fromJson(json['billingAddress']) : undefined,
             channelOrderId: json["channelOrderId"],
             channelOrderCreatedAt: json["channelOrderCreatedAt"] != null ? new Date(json["channelOrderCreatedAt"]) : undefined,
+            fulfilment: json['fulfilment'] != null ? ShipmentFulfilment.fromJson(json['fulfilment']) : undefined,
         });
     }
 

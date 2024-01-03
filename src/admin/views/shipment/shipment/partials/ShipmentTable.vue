@@ -28,6 +28,47 @@
         </template>
 
 
+        <template v-slot:item.expiresAt="{ item: { fulfilments } }">
+            <!-- {{ {fulfilments} }} -->
+            <template v-if="fulfilments?.length">
+                <template v-for="(fulfilment, i) in fulfilments" :key="fulfilment.id ?? i">
+                    <div v-if="i == 0">
+                        <v-menu width="700px">
+                            <template v-slot:activator="{ props }">
+                                <v-chip v-bind="props" variant="text">
+                                    <span v-if="fulfilment.exactDeliveryDate">
+                                        {{ formatDate(fulfilment.exactDeliveryDate) }}
+                                    </span>
+                                    <span v-else-if="fulfilment.latestDeliveryDate">
+                                        <span class="text-red text-h5">!</span>
+                                        {{ formatDate(fulfilment.latestDeliveryDate) }}
+                                    </span>
+                                    <span class="text-grey" v-else>
+                                        N/A
+                                    </span>
+                                    <v-icon>mdi-menu-down</v-icon>
+                                </v-chip>
+                            </template>
+                            <v-card flat>
+                                <template v-slot:title>
+                                    <span>Fulfilment</span>
+                                </template>
+                                <v-card-text>
+                                    <ShipmentFulfilmentCard :fulfilment="fulfilment" />
+                                </v-card-text>
+                            </v-card>
+
+                        </v-menu>
+                    </div>
+                    <v-chip v-else-if="i == (fulfilments.length - 1)" size="x-small">
+                        {{ fulfilments.length - 1 }} More
+                    </v-chip>
+                </template>
+            </template>
+            <span v-else class="text-grey">N/A</span>
+        </template>
+
+
         <template v-slot:item.status="{ item: { status } }">
             <div v-if="status">
                 <v-chip :color="getStatusColor(status)">
@@ -84,6 +125,8 @@ import { getPaginatedShipments } from '../../../../repository/shipment/shipment_
 import { useDisplay } from 'vuetify';
 import { computed } from 'vue';
 import { getStatusColor } from '@/utils/color';
+import { formatDate } from '@/utils/format';
+import ShipmentFulfilmentCard from '@/views/shipment/ShipmentFulfilmentCard.vue';
 
 
 const props = defineProps<{
@@ -141,6 +184,7 @@ const headers = [
         title: 'Carrier', key: 'carrier',
         // align: 'center' 
     },
+    { title: 'Delivery Date', key: 'expiresAt', },
     {
         title: 'Status', key: 'status',
         //  align: 'center'

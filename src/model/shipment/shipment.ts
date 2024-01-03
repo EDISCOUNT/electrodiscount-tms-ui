@@ -47,6 +47,17 @@ export default class Shipment {
   }
 }
 
+get fulfilments() {
+  const fulfilments = this.items
+      .filter((item) => item.fulfilment != null)
+      .map((item) => item.fulfilment!);
+
+  if (this._fulfilment) {
+      fulfilments.unshift(this._fulfilment);
+  }
+  return fulfilments;
+}
+
   constructor({
     id,
     code,
