@@ -4,7 +4,7 @@
             <v-bottom-sheet v-model="open">
                 <v-card flat>
                     <v-card-text>
-                        <ShipmentFilterBarForm v-model:rsql="rsql" />
+                        <ShipmentFilterBarForm v-model:rsql="rsql" :code="code" />
                     </v-card-text>
                 </v-card>
             </v-bottom-sheet>
@@ -14,7 +14,7 @@
             </v-btn>
         </template>
         <template v-else>
-            <ShipmentFilterBarForm v-model:rsql="rsql" />
+            <ShipmentFilterBarForm v-model:rsql="rsql"  :code="code"/>
         </template>
     </div>
 </template>
@@ -26,6 +26,10 @@ import { useDisplay } from 'vuetify';
 
 const emit = defineEmits<{
     (e: 'update:rsql', value?: string): void;
+}>();
+
+const props = defineProps<{
+    code?: string;
 }>();
 
 const open = ref(false);

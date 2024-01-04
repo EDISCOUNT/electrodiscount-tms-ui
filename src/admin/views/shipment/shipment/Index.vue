@@ -8,13 +8,13 @@
                         <v-spacer />
                         <v-card-text v-if="selected?.length">
                             <PrintShipmentManifestButton :shipments="selected" />
-                           <BulkUpdateShipmentStatusButton @updated="() => refreshTable()" :shipments="selected"/>
+                            <BulkUpdateShipmentStatusButton @updated="() => refreshTable()" :shipments="selected" />
                         </v-card-text>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
                                 <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" />
-                                <ShipmentFilterBar v-model:rsql="filter.filter" v-else />
-                                <BarcodeScannerButton/>
+                                <ShipmentFilterBar v-model:rsql="filter.filter" :code="filter.code" v-else />
+                                <BarcodeScannerButton v-model:result="filter.code" autoclose />
                             </v-row>
                         </v-card-text>
                     </v-toolbar>
@@ -60,6 +60,7 @@ import BulkUpdateShipmentStatusButton from '@/views/shipment/BulkUpdateShipmentS
 const filter = reactive({
     status: [] as string[],
     filter: undefined as string | undefined,
+    code: undefined as string | undefined,
 });
 
 
@@ -73,7 +74,7 @@ const selected = ref<string[]>([]);
 
 
 
-function refreshTable(){
+function refreshTable() {
     table.value?.refresh();
 }
 </script>

@@ -2,6 +2,7 @@ import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 import { encodeURLParams } from "@/utils/url";
+import { ShipmentDocumentFileAttachmentFormData } from "@/model/shipment/shipment_document_attachment";
 
 export async function getPaginatedShipments({ page, limit, criteria }: { page?: number, limit?: number, criteria?: { [i: string]: any } } = {}) {
     criteria ??= {};
@@ -41,14 +42,21 @@ export async function generatePacklist({ shipments }: { shipments: string[] }) {
 }
 
 
-export async function applyTransition({ shipment, transition, attachments }: { shipment: Shipment, transition: string, attachments?: AttachmentFormData[] }) {
+export async function applyTransition({ shipment, transition, attachments, description }: { shipment: Shipment, transition: string, attachments?: ShipmentDocumentFileAttachmentFormData[], description?: string }) {
     const { id } = shipment;
     const formData = new FormData();
     formData.append('transition', transition);
-    attachments?.forEach(({ file, caption }, index) => {
+    if (description) {
+        formData.append(`description`, description);
+    }
+    attachments?.forEach(({ src: file, caption, type, meta }, index) => {
         formData.append(`attachments[${index}][file]`, file);
+        formData.append(`attachments[${index}][type]`, type);
         if (caption) {
             formData.append(`attachments[${index}][caption]`, caption);
+        }
+        if (meta) {
+            formData.append(`attachments[${index}][meta]`, JSON.stringify(meta));
         }
     })
     const { data } = await http.post(`/api/admin/shipment/shipments/${id}/apply-transition`, formData);
