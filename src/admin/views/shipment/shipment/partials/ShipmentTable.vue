@@ -109,6 +109,10 @@
             </span>
         </template>
 
+        <template v-slot:item.fulfilmentType="{ item: { fulfilmentType } }">
+            <small>{{fulfilmentType}}</small>
+        </template>
+
         <template v-slot:item.actions="{ item: { id } }">
             <v-btn color="primary" :to="{ name: 'admin:shipment:show', params: { id } }" :disabled="loading" :elevation="0"
                 variant="flat" size="small" rounded>
@@ -184,6 +188,10 @@ const headers = [
         title: 'Carrier', key: 'carrier',
         // align: 'center' 
     },
+    {
+        title: 'Channel', key: 'channel',
+        // align: 'center' 
+    },
     { title: 'Delivery Date', key: 'expiresAt', },
     {
         title: 'Status', key: 'status',
@@ -232,8 +240,9 @@ watch(
     }, { deep: true });
 
 
-async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy: any, filter?: { [i: string]: any } }) {
+async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy?: any, filter?: { [i: string]: any } }) {
     try {
+        console.log("SORT BY: ", { sortBy });
         const criteria = {
             ...(filter ?? props.filter ?? {}),
         };
@@ -252,6 +261,16 @@ async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?:
     finally {
         loading.value = false;
     }
-
 }
+
+
+
+async function refresh() {
+    await loadItems({});
+}
+
+
+defineExpose({
+    refresh,
+})
 </script>

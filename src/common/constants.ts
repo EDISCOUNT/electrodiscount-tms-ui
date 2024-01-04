@@ -5,5 +5,5 @@ export const STRIPE_PUBLISHABLE_KEY =
 
     export const BASE_URL = 'https://parcelplanner.eu';
 // export const BASE_URL = 'https://srv407806.hstgr.cloud';
-// export const BASE_URL = 'http://srv407806.hstgr.cloud';
+// export const BASE_URL = 'http://192.168.33.6:8000';
 // export const BASE_URL = 'http://localhost:8000';

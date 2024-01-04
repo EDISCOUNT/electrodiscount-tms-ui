@@ -41,10 +41,37 @@ export async function generatePacklist({ shipments }: { shipments: string[] }) {
 }
 
 
-export async function applyTransition({ shipment, transition }: { shipment: Shipment, transition: string }) {
+export async function applyTransition({ shipment, transition, attachments }: { shipment: Shipment, transition: string, attachments?: AttachmentFormData[] }) {
     const { id } = shipment;
-    const { data } = await http.post(`/api/admin/shipment/shipments/${id}/apply-transition`, { transition });
+    const formData = new FormData();
+    formData.append('transition', transition);
+    attachments?.forEach(({ file, caption }, index) => {
+        formData.append(`attachments[${index}][file]`, file);
+        if (caption) {
+            formData.append(`attachments[${index}][caption]`, caption);
+        }
+    })
+    const { data } = await http.post(`/api/admin/shipment/shipments/${id}/apply-transition`, formData);
     return Shipment.fromJson(data);
+}
+
+
+export async function bulkApplyTransition({ shipments:_shipments, transition, attachments }: { shipments: (Shipment|string|number)[], transition: string, attachments?: AttachmentFormData[] }) {
+    const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment)? shipment.id : shipment)?.map(e => String(e));
+    const formData = new FormData();
+    formData.append('transition', transition);
+    attachments?.forEach(({ file, caption }, index) => {
+        formData.append(`attachments[${index}][file]`, file);
+        if (caption) {
+            formData.append(`attachments[${index}][caption]`, caption);
+        }
+    })
+    shipments.forEach((id,index) => {
+        formData.append(`shipments[${index}]`, id);
+    });
+    const { data } = await http.post(`/api/admin/shipment/shipments/apply-transition`, formData);
+    // return Shipment.fromJson(data);
+    return data as string[];
 }
 
 
@@ -61,6 +88,11 @@ export async function updateShipment(id: string, data: ShipmentFormData) {
 }
 
 
+
+export interface AttachmentFormData {
+    file: File;
+    caption?: string;
+}
 
 
 

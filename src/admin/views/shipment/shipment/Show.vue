@@ -36,9 +36,9 @@
                 </template>
                 <template v-slot:append>
                   <PrintShipmentManifestButton :shipments="[(shipment.id as any)!]" />
-                  <EmailDrawer :shipment="shipment"/>
-                  <span class="mx-1"/>
-                  <SmsDrawer :shipment="shipment"/>
+                  <EmailDrawer :shipment="shipment" />
+                  <span class="mx-1" />
+                  <SmsDrawer :shipment="shipment" />
                 </template>
                 <!-- <template v-slot:extension>
                   <v-btn icon @click="router.back()">
@@ -55,7 +55,7 @@
           </v-col>
 
           <v-col :cols="12" :md="8">
-            <v-card flat>
+            <v-card min-height="300px" flat>
               <template v-slot:prepend>
                 <v-icon>mdi-book</v-icon>
               </template>
@@ -67,17 +67,19 @@
                 <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
               </v-card-text>
             </v-card>
-            <v-card class="mt-4" flat>
-              <template v-slot:prepend>
-                <v-icon>mdi-package</v-icon>
-              </template>
-              <template v-slot:title>
-                Basic Information
-              </template>
-              <v-divider />
-              <v-card-text>
-                <ShipmentBasicInformationCard :shipment="shipment" />
-              </v-card-text>
+            <v-card class="fill-height" color="transparent" flat>
+              <v-card class="mt-4" min-height="300px" flat>
+                <template v-slot:prepend>
+                  <v-icon>mdi-package</v-icon>
+                </template>
+                <template v-slot:title>
+                  Basic Information
+                </template>
+                <v-divider />
+                <v-card-text>
+                  <ShipmentBasicInformationCard :shipment="shipment" />
+                </v-card-text>
+              </v-card>
             </v-card>
           </v-col>
           <v-col :cols="12" :md="4">
@@ -157,7 +159,7 @@
 
         </v-row>
 
-        <v-btn color="primary" position="fixed" bottom="24px" right="24px" size="large" style="z-index: 5;" icon >
+        <v-btn color="primary" position="fixed" bottom="24px" right="24px" size="large" style="z-index: 5;" icon>
           <v-icon>mdi-email</v-icon>
         </v-btn>
       </v-card-text>

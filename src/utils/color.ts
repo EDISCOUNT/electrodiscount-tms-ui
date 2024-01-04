@@ -13,8 +13,8 @@ export function getStatusColor(status: string | undefined): string {
         const statusColorMap: Record<string, string> = {
             "ASSIGNED":"pink",
             "READY":"blue",
-            "OPEN":"orange",
-            "PENDING": "yellow", // Orange
+            "OPEN":'blue',//"orange",
+            "PENDING": 'blue', //"yellow", // Orange
             "CANCELLED": "red", // Red
             "COMPLETED": "green", // Green
             "CREATED": "teal", // Blue	

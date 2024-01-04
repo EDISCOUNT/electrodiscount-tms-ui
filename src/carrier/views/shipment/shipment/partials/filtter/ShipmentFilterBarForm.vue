@@ -2,26 +2,26 @@
     <div>
     <!-- {{ { rsql: filter.datesRsql } }} -->
     <v-row>
-        <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
+        <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
             <ShipmentFulfilmentDateFilter v-model:rsql="filter.datesRsql" label="Dates"
                 placeholder="Select fulfilment dates" variant="outlined" density="compact" multiple clearable />
         </v-col>
-        <v-col :cols="12" :sm="2" r-:md="4" r-:lg="3">
+        <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
             <v-text-field v-model="filter.code" label="Shipment Code" placeholder="Enter Shipment Code" variant="outlined"
                 density="compact" clearable />
         </v-col>
-        <v-col :cols="12" :sm="2" r-:md="4" r-:lg="3">
+        <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
             <v-text-field v-model="filter.channelOrderId" label="Order ID" placeholder="Enter Order Id" variant="outlined"
                 density="compact" clearable />
         </v-col>
-        <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
+        <!-- <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
             <CarrierInput v-model="filter.carriers" label="Carriers" placeholder="Filter by assigned carriers"
                 variant="outlined" density="compact" multiple clearable />
         </v-col>
         <v-col :cols="12" :sm="2" r-:md="4" r-:lg="3">
             <ChannelInput v-model="filter.channels" label="Channels" placeholder="Filter by source Channels"
                 variant="outlined" density="compact" multiple clearable />
-        </v-col>
+        </v-col> -->
 
         <v-col v-if="xs" :cols="12" :sm="4" r-:md="4" r-:lg="3">
             <ShipmentStatusFilter />

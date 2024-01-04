@@ -4,15 +4,17 @@
             <v-card color="background" class="" flat>
                 <template v-slot:title>
                     <v-toolbar color="transparent">
-                        <span> Shipments</span>
+                        <span v-if="smAndUp"> Shipments</span>
                         <v-spacer />
                         <v-card-text v-if="selected?.length">
                             <PrintShipmentManifestButton :shipments="selected" />
+                           <BulkUpdateShipmentStatusButton @updated="() => refreshTable()" :shipments="selected"/>
                         </v-card-text>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
                                 <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" />
                                 <ShipmentFilterBar v-model:rsql="filter.filter" v-else />
+                                <BarcodeScannerButton/>
                             </v-row>
                         </v-card-text>
                     </v-toolbar>
@@ -34,7 +36,7 @@
 
             <v-card class="mt-4 fill-height" flat>
                 <v-card-text>
-                    <shipment-table v-model="selected" :filter="filter" show-select />
+                    <shipment-table v-model="selected" :filter="filter" ref="table" show-select />
                 </v-card-text>
             </v-card>
 
@@ -52,6 +54,8 @@ import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.
 import ShipmentFilterBar from './partials/filtter/ShipmentFilterBar.vue';
 import { useColorScheme } from '@/utils/color';
 import { useDisplay } from 'vuetify';
+import BarcodeScannerButton from '@/components/BarcodeScannerButton.vue';
+import BulkUpdateShipmentStatusButton from '@/views/shipment/BulkUpdateShipmentStatusButton.vue';
 
 const filter = reactive({
     status: [] as string[],
@@ -59,9 +63,17 @@ const filter = reactive({
 });
 
 
+const table = ref<typeof ShipmentTable>();
+
 const { secondaryBg } = useColorScheme();
-const { xs, md, smAndDown, mdAndUp } = useDisplay();
+const { xs, md, smAndDown, smAndUp, mdAndUp } = useDisplay();
 
 
 const selected = ref<string[]>([]);
+
+
+
+function refreshTable(){
+    table.value?.refresh();
+}
 </script>

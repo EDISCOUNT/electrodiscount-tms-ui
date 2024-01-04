@@ -1,5 +1,5 @@
 <template>
-    <v-btn :to="{ name: 'admin:mailing:template:create' }" color="primary" variant="flat" :elevation="0">
+    <v-btn :to="{ name: 'carrier:mailing:template:create' }" color="primary" variant="flat" :elevation="0">
         <v-icon>mdi-plus-circle</v-icon>
         New Template
     </v-btn>

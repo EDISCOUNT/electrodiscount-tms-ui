@@ -3,10 +3,12 @@
         <!-- <v-card-title>
             Update Shipment Status
         </v-card-title> -->
-        <v-card-text>
-            <!-- {{ { status } }} -->
+        <v-form ref="form">
+            <v-card-text>
 
-            <!-- <v-card @click="() => selectStatus(status.value)" v-for="(status, i) in possibleStatuses" :key="status.value"
+                <!-- {{ { status } }} -->
+
+                <!-- <v-card @click="() => selectStatus(status.value)" v-for="(status, i) in possibleStatuses" :key="status.value"
                 :color="status.value == selectedStatus ? 'primary' : 'grey'" class="my-2" variant="outlined" flat>
                 <v-list-item>
                     <template v-slot:title>
@@ -15,21 +17,32 @@
                 </v-list-item>
             </v-card> -->
 
-            <v-radio-group v-model="selectedStatus">
-                <v-radio v-for="(status, i) in statuses" :key="status.value" :label="status.text"
-                    :disabled="isLoading || !possibleStatuses.some(e => e.value == status.value)"
-                    :value="status.value"></v-radio>
-            </v-radio-group>
+                <v-radio-group v-model="selectedStatus">
+                    <v-radio v-for="(status, i) in statuses" :key="status.value" :label="status.text"
+                        :disabled="isLoading || !possibleStatuses.some(e => e.value == status.value)"
+                        :value="status.value"></v-radio>
+                </v-radio-group>
+            </v-card-text>
+            <v-divider />
+            <v-card-text v-if="isDelivery">
+                <v-file-input v-model="attachments" chips multiple label="Add file Attachments" variant="outlined" :rules="[
+                    (v) => (selectedStatus != 'delivered') || v?.length > 0 || 'This filed is required'
+                ]"></v-file-input>
+                <span v-if="selectedStatus == 'delivered'">
+                    You must provide a file attachment to proceed
+                </span>
 
-        </v-card-text>
-        <v-card-actions>
-            <slot name="action" v-bind="{ selectedStatus, status, shipment, statuses, possibleStatuses, }">
-                <v-btn @click="() => updateStatus()" color="primary" :elevation="0" variant="flat"
-                    :disabled="!selectedStatus" :loading="isLoading" block>
-                    Update
-                </v-btn>
-            </slot>
-        </v-card-actions>
+            </v-card-text>
+            <!-- <v-divider/> -->
+            <v-card-actions>
+                <slot name="action" v-bind="{ selectedStatus, status, shipment, statuses, possibleStatuses, }">
+                    <v-btn @click="() => updateStatus()" color="primary" :elevation="0" variant="flat"
+                        :disabled="!selectedStatus" :loading="isLoading" block>
+                        Update
+                    </v-btn>
+                </slot>
+            </v-card-actions>
+        </v-form>
     </v-card>
 </template>
 
@@ -39,6 +52,7 @@ import { applyTransition } from '@/admin/repository/shipment/shipment_repository
 import { formatDate } from '@/utils/format'
 import { computed, ref, defineProps } from 'vue';
 import { useNotifier } from 'vuetify-notifier';
+import { VForm } from 'vuetify/lib/components/index.mjs';
 
 const props = defineProps<{
     shipment: Shipment;
@@ -53,23 +67,31 @@ const emit = defineEmits<{
 
 const notifier = useNotifier();
 
+const form = ref<VForm>();
+
 const status = computed(() => props.shipment?.status);
 const selectedStatus = ref<string>();
+const attachments = ref<File[]>();
 function selectStatus(status: string) {
     selectedStatus.value = status;
 }
+const isDelivery = computed(() => selectedStatus.value == 'delivered');
 // selectedStatus
 
 const isUpdating = ref(false);
 
 async function updateStatus() {
     try {
+        const { valid, errors } = await form.value!.validate();
+        if (!valid) {
+            throw new Error(errors.toString());
+        }
         isUpdating.value = true;
         const shipment = props.shipment;
         const transition = selectedStatus.value!;
-        const result = await applyTransition({ shipment, transition });
+        const result = await applyTransition({ shipment, transition, attachments: attachments.value?.map(file => ({ file })) });
         emit('updated', result);
-        notifier.toastSuccess("Shipment Updated Successfully!");
+        notifier.toastSuccess("Shipment Status Updated Successfully!");
     }
     catch (err) {
         const message = (err as Error).message;
@@ -115,7 +137,7 @@ const possibleStatuses = computed(() => {
             return statuses.filter((e) => ['completed'].includes(e.value));
 
         default:
-                return [];
+            return [];
     }
 });
 

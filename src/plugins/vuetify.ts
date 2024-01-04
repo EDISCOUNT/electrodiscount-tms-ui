@@ -11,13 +11,19 @@ import * as components from 'vuetify/components' //option
 import * as directives from 'vuetify/directives' //option
 
 // Composables
-import { createVuetify } from 'vuetify'
+import { createVuetify, useTheme } from 'vuetify';
+
+
+
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
-export default createVuetify({
+const vuetify = createVuetify({
   components,
   directives,
   theme: {
+    // defaultTheme: 'dark',
+    defaultTheme: prefersDark ? 'dark' : 'light',
     themes: {
       light: {
         colors: {
@@ -28,4 +34,17 @@ export default createVuetify({
       },
     },
   },
-})
+});
+
+export default vuetify;
+
+
+
+const updateTheme = () => {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  vuetify.theme.global.name.value = prefersDark ? 'dark' : 'light';
+}
+// Call the function initially
+updateTheme();
+// Add a listener to the media query change event
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);

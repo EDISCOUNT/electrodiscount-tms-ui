@@ -8,6 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import NavigationDrawer from '@/admin/components/NavigationDrawer.vue';
+import NavigationDrawer from '@/carrier/components/NavigationDrawer.vue';
 
 </script>

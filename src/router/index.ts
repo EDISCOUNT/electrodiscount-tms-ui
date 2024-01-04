@@ -27,7 +27,9 @@ const routes = [
       //
       {
         path: '',
-        redirect: { name: 'admin:home' },
+        component: () => import(/* webpackChunkName: "home" */ '@/components/Home.vue'),
+        roles: ['ROLE_USER',],
+        // redirect: { name: 'carrier:home' },
       },
       //
       {
@@ -46,7 +48,7 @@ const routes = [
         name: 'Admin',
         children: adminRoutes,
         meta: {
-          isProtected: true,
+          // isProtected: true,
           roles: ['ROLE_ADMIN'],
         }
       },

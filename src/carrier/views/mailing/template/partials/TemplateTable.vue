@@ -21,7 +21,7 @@
 
         <template v-slot:item.actions="{ item: { id } }">
 
-            <v-btn color="primary" :to="{ name: 'admin:mailing:template:edit', params: { id } }" :elevation="0"
+            <v-btn color="primary" :to="{ name: 'carrier:mailing:template:edit', params: { id } }" :elevation="0"
                 size="small">
                 <v-icon>mdi-pencil</v-icon>
                 Edit

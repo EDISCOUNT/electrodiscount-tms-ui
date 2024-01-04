@@ -71,10 +71,14 @@ async function login() {
             console.log("Redirecting to target route", route);
         } else {
             if (accountStore.isGranted('ROLE_CARRIER_OPERATOR')) {
+                console.log("IS CARRIER");
                 router.replace({ name: 'carrier:home' });
+                return;
             }
             else if (accountStore.isGranted('ROLE_ADMIN')) {
+                console.log("IS ADMIN");
                 router.replace({ name: 'admin:home' });
+                return;
             }
 
             router.replace({ name: 'carrier:home' });

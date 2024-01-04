@@ -1,36 +1,39 @@
 <template>
-    <v-card :height="height ?? '200px'" flat>
-        <template v-slot:title>
-            <slot name="title">
-                <v-row v-if="loading" justify="center" align="center" class="py-5">
-                    <v-progress-circular indeterminate />
-                </v-row>
-                <span class="text-h4">
-                    0
-                    <!-- {{ pagination?.pageInfo?.totalRows }} -->
-                </span>
-            </slot>
-        </template>
-        <template v-slot:subtitle>
-            <slot name="subtitle">
-                Items Count
-            </slot>
-        </template>
-        <v-card-text>
-            <slot name="default"></slot>
-        </v-card-text>
+    <v-card flat>
+        <v-list-item r-:height="height ?? '200px'" flat>
+            <template v-slot:prepend>
+                <v-avatar color="primary">
+
+                    <v-progress-circular v-if="loading" indeterminate />
+                    <span class="text-h4" v-else>
+                        <!-- 0 -->
+                        {{ pagination?.pageInfo?.totalItems }}
+                    </span>
+                </v-avatar>
+            </template>
+            <template v-slot:title>
+                <slot name="title">
+
+                </slot>
+            </template>
+            <template v-slot:subtitle>
+                <slot name="subtitle">
+                    Items Count
+                </slot>
+            </template>
+        </v-list-item>
     </v-card>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup generic="T">
 import Pagination from '@/data/pagination';
 import useSWRV from 'swrv';
 
 
 const props = defineProps<{
     height?: string;
-    url: string;
-    fetcher: () => Promise<Pagination<any>>
+    uri: string;
+    fetcher: () => Promise<Pagination<T>>
 }>();
 
 const slots = defineSlots<{
@@ -40,8 +43,8 @@ const slots = defineSlots<{
 }>();
 
 const { data: pagination, isValidating: loading } = useSWRV(
-    () => props.url,
+    () => props.uri,
     () => props.fetcher(),
-    );
+);
 
 </script>

@@ -75,12 +75,13 @@ export async function importShipment(order: Order, { carrier }: { carrier?: Carr
 }
 
 
-export async function bulkImportShipment(orders: (Order[]) | (string[]), { channel, carrier, fulfilmentType = ShipmentFulfilmentType.PICKUP_AND_DELIVERY }: { channel: Channel, carrier?: Carrier, fulfilmentType: ShipmentFulfilmentType }) {
+export async function bulkImportShipment(orders: (Order[]) | (string[]), { channel, carrier, fulfilmentType = ShipmentFulfilmentType.PICKUP_AND_DELIVERY, notify = false }: { channel: Channel, carrier?: Carrier, fulfilmentType: ShipmentFulfilmentType, notify: boolean; }) {
     const ids = orders.map(order => (order instanceof Order) ? order.channelOrderId : order);
     const channelId = channel?.id;
     const input: Record<string, any> = {
         orders: ids,
         fulfilmentType,
+        notify,
         // channel: channelId,
     };
     if (carrier) {

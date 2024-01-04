@@ -19,9 +19,16 @@
                             <v-icon>mdi-import</v-icon>
                         </v-btn>
                     </v-card-actions>
-
-                    <v-card-text r-class="pa-0">
-                        <v-card-subtitle>
+                    <v-divider/>
+                    <v-card-text class="r-py-0 pb-0">
+                        <v-row justify="center" align="center">
+                            <v-switch inset v-model="notifyCarrier" label="Notify Carrier" color="primary" class="mx-5" r-hint="Notify the carrier by email of their new assignment"
+                                @click.stop="() => null" />
+                        </v-row>
+                    </v-card-text>
+                    <v-divider/>
+                    <v-card-text class="pt-0-r">
+                        <v-card-subtitle class="pt-0 mt-0">
                             Import and assign to carrier
                         </v-card-subtitle>
                         <v-list v-if="pagination">
@@ -127,6 +134,7 @@ const { data: pagination, isValidating: loading, error } = useSWRV(
 
 const isImportingShipping = ref(false);
 const choosenCarrier = ref<Carrier>();
+const notifyCarrier = ref(true);
 const createShipment = async ({ carrier }: { carrier?: Carrier } = {}) => {
     try {
         choosenCarrier.value = carrier;
@@ -134,7 +142,8 @@ const createShipment = async ({ carrier }: { carrier?: Carrier } = {}) => {
         await bulkImportShipment(props.orderIds, {
             channel: props.channel,
             carrier,
-            fulfilmentType: props.fulfilmentType ?? ShipmentFulfilmentType.PICKUP_AND_DELIVERY
+            fulfilmentType: props.fulfilmentType ?? ShipmentFulfilmentType.PICKUP_AND_DELIVERY,
+            notify: notifyCarrier.value,
         });
         emit('imported',);
         notifier.toast({
