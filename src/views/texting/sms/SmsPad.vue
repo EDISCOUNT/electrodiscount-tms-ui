@@ -19,7 +19,7 @@
                     </template>
 
                     <template v-if="(raw instanceof Address)">
-                        <v-menu width="400px" open-on-hover>
+                        <v-menu width="400px" :close-on-content-click="false" open-on-hover>
                             <template v-slot:activator="{ props }">
                                 <v-chip class="px-1" v-bind="props" close>
                                     <template v-slot:prepend>

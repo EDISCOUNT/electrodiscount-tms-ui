@@ -19,9 +19,38 @@
                         </v-chip>
                     </template>
                 </template>
+
+
+                <template v-slot:append-inner>
+                    <v-menu>
+                        <template v-slot:activator="{ props }">
+                            <v-icon v-bind="props">mdi-chevron-down</v-icon>
+                        </template>
+                        <v-card flat>
+                            <!-- <v-list>
+
+                            </v-list> -->
+                            <v-card-text>
+                                <v-switch v-for="(field, i) in ['latestDeliveryDate', 'exactDeliveryDate', 'expiryDate']"
+                                    v-model="_fields" @click.stop="() => undefined" key="field" :value="field" :label="field"
+                                    class="ma-0 pa-0 shrink"
+                                    color="primary"
+                                    inset
+                                    multiple/>
+                            </v-card-text>
+                        </v-card>
+                    </v-menu>
+                </template>
             </v-combobox>
         </template>
-        <v-date-picker v-model="values" multiple />
+        <v-card flat>
+            <v-card-title>
+                <!-- {{ { dates } }} -->
+            </v-card-title>
+            <v-card-text class="pa-0">
+                <v-date-picker v-model="values" show-adjacent-months multiple />
+            </v-card-text>
+        </v-card>
     </v-menu>
 </template>
 <script lang="ts" setup>
@@ -31,6 +60,15 @@ import { formatDateNamed } from '@/utils/format/date';
 import { sameday } from '@/utils/rsql';
 import { Comparison, comparison, or } from 'rsql-builder';
 import { computed, ref, useAttrs, watch } from 'vue';
+import DateFnsAdapter from '@date-io/date-fns'
+
+const adapter = new DateFnsAdapter();
+function toLocalDate(date: string | Date) {
+    const lDate = new Date(date).toLocaleString();
+    const nDate = new Date(lDate);
+    return nDate;
+}
+
 
 
 const props = defineProps<{
@@ -50,27 +88,41 @@ const attrs = useAttrs();
 
 
 const values = ref<(string | Date)[]>();
+const dates = computed(
+    () => values.value?.map(e => toLocalDate(e))
+);
 
-watch(values, (values) => {
-    emit('update:model-value', values);
-    emit('update:rsql', buildRsql(values));
-},{deep: true});
+const _fields = ref<('latestDeliveryDate' | 'exactDeliveryDate' | 'expiryDate')[]>(['exactDeliveryDate']);
+
+
+const fields = computed(() => {
+    return props.fields ?? _fields.value;
+});
+const itemsFields = computed(() => {
+    return props.itemsFields ?? _fields.value;
+});
+
+
+watch(_fields, (fields) => emitValues(dates.value?? []));
+watch(dates, (values) => {
+    // const out = values?.map(e => new Date(e));
+    emitValues(values?? []);
+   
+}, { deep: true });
 watch(
     () => props.modelValue,
     (dates) => values.value = dates
 );
 
 
+function emitValues(values: (Date)[]){
+    emit('update:model-value', values);
+    emit('update:rsql', buildRsql(values));
+}
+
 const isOpen = ref(false);
 
 
-
-const fields = computed(() => {
-    return props.fields ?? ['latestDeliveryDate', 'exactDeliveryDate', 'expiryDate']
-});
-const itemsFields = computed(() => {
-    return props.itemsFields ?? ['latestDeliveryDate', 'exactDeliveryDate', 'expiryDate']
-});
 
 
 function buildRsql(dates?: (string | Date)[]) {

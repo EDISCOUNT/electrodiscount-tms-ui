@@ -39,7 +39,7 @@ import { and, comparison, inList } from 'rsql-builder';
 import { like } from '@/utils/rsql';
 import { useDisplay } from 'vuetify';
 import ShipmentStatusFilter from '@/views/shipment/filter/ShipmentStatusFilter.vue';
-import ShipmentFulfilmentDateFilter from './ShipmentFulfilmentDateFilter.vue';
+import ShipmentFulfilmentDateFilter from '@/views/shipment/filter/ShipmentFulfilmentDateFilter.vue';
 
 interface FilterOptions {
     channels: string[];

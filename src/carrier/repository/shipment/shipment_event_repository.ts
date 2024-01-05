@@ -5,7 +5,7 @@ import Shipment from "@/model/shipment/shipment";
 
 export async function getPaginatedShipmentEvents({ shipment, page, limit, }: { shipment: Shipment, page?: number, limit?: number }) {
     try {
-        const { data } = await http.get(`/api/admin/shipment/shipments/${shipment.id!}/events?page=${page ?? 1}&limit=${limit ?? 10}`);
+        const { data } = await http.get(`/api/carrier/shipment/shipments/${shipment.id!}/events?page=${page ?? 1}&limit=${limit ?? 10}`);
         const pagination = Pagination.fromJson<ShipmentEvent>({
             ...data,
             buildItem: (input) => ShipmentEvent.fromJson(input),
@@ -20,6 +20,6 @@ export async function getPaginatedShipmentEvents({ shipment, page, limit, }: { s
 
 
 export async function getShipmentEventById(id: string, shipment: Shipment) {
-    const { data } = await http.get(`/api/admin/shipment/shipments/${shipment.id!}/events/${id}`);
+    const { data } = await http.get(`/api/carrier/shipment/shipments/${shipment.id!}/events/${id}`);
     return data;
 }

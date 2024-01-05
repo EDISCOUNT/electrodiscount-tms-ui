@@ -38,8 +38,8 @@
                     <v-divider class="my-3" />
                 </template>
                 <template v-if="isCancelation || isHold">
-                    <v-textarea v-model="description" label="Reason" placeholder="Enter reasaon"
-                        variant="outlined" density="compact" :counter="255">
+                    <v-textarea v-model="description" label="Reason" placeholder="Enter reasaon" variant="outlined"
+                        density="compact" :counter="255">
                     </v-textarea>
                 </template>
                 <template v-else>
@@ -52,7 +52,7 @@
             <v-card-actions>
                 <slot name="action" v-bind="{ selectedStatus, status, shipment, statuses, possibleStatuses, }">
                     <v-btn @click="() => updateStatus()" color="primary" :elevation="0" variant="flat"
-                        :disabled="!selectedStatus" :loading="isLoading" block>
+                        :disabled="(possibleStatuses.length == 0) || !selectedStatus" :loading="isLoading" block>
                         Update
                     </v-btn>
                 </slot>
@@ -63,17 +63,23 @@
 
 <script lang="ts" setup>
 import Shipment from '@/model/shipment/shipment';
-import { applyTransition } from '@/admin/repository/shipment/shipment_repository';
 import { ShipmentDocumentFileAttachmentFormData } from '@/model/shipment/shipment_document_attachment';
-import { formatDate } from '@/utils/format'
 import { computed, ref, defineProps } from 'vue';
 import { useNotifier } from 'vuetify-notifier';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import ShipmentDocumentDrawer from './document/ShipmentDocumentDrawer.vue';
 
+interface ShipmentTransitionArgs {
+    shipment: Shipment;
+    transition: string;
+    description?: string;
+    attachments?: ShipmentDocumentFileAttachmentFormData[];
+}
+
 const props = defineProps<{
     shipment: Shipment;
     loading?: boolean;
+    applyTransition(input: ShipmentTransitionArgs): Promise<Shipment>,
 }>();
 
 const emit = defineEmits<{
@@ -109,7 +115,7 @@ async function updateStatus() {
         isUpdating.value = true;
         const shipment = props.shipment;
         const transition = selectedStatus.value!;
-        const result = await applyTransition({ shipment, transition, attachments: attachments.value, description: description.value });
+        const result = await props.applyTransition({ shipment, transition, attachments: attachments.value, description: description.value });
         emit('updated', result);
         notifier.toastSuccess("Shipment Status Updated Successfully!");
     }
@@ -134,6 +140,7 @@ const statuses = [
     { text: 'On Hold', value: 'onhold' },
     { text: 'Pickup/In Transit', value: 'intransit' },
     { text: 'Delivered', value: 'delivered' },
+    { text: 'Rejected by Customer', value: 'rejected' },
     // { text: 'Completed', value: 'completed' },
     { text: 'Cancelled', value: 'cancelled' },
 ];
@@ -147,6 +154,8 @@ const possibleStatuses = computed(() => {
         //
         case 'processing':
             return statuses.filter((e) => ['ready', 'intransit', 'onhold', 'cancelled',].includes(e.value));
+        case 'onhold':
+            return statuses.filter((e) => ['ready', 'intransit', 'cancelled',].includes(e.value));
         //
         case 'ready':
             return statuses.filter((e) => ['intransit', 'onhold', 'cancelled',].includes(e.value));

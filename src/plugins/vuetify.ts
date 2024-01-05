@@ -9,6 +9,9 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 import * as components from 'vuetify/components' //option
 import * as directives from 'vuetify/directives' //option
+import DateFnsAdapter from '@date-io/date-fns'
+import enUS from 'date-fns/locale/en-US'
+import svSE from 'date-fns/locale/sv'
 
 // Composables
 import { createVuetify, useTheme } from 'vuetify';
@@ -32,6 +35,14 @@ const vuetify = createVuetify({
           'secondary-bg': '#E3F2FD',
         },
       },
+    },
+  },
+  // DATE
+  date: {
+    adapter: DateFnsAdapter,
+    locale: {
+      en: enUS,
+      sv: svSE,
     },
   },
 });

@@ -7,163 +7,119 @@
         <!-- {{ { addresses, data, } }} -->
         <!-- {{ { addresses, } }} -->
         <!-- {{ { data, } }} -->
-<!-- 
+        <!-- 
         <template v-slot:title>
             <v-tabs>
                 <v-tab value="email">EMail</v-tab>
                 <v-tab value="sms">SMS</v-tab>
             </v-tabs>
         </template> -->
+        <v-card r-color="pink" max-height="calc(100vh - 80px)" style="overflow-y: auto;" flat>
 
-        <v-card-text>
-            <v-combobox v-model="data.recipients" label="Recipients" placeholder="Enter the email address" r-variant="plain"
-                r-density="compact" multiple>
-
-                <template v-slot:chip="{ item: { raw }, index }">
-                    <template v-if="typeof (raw) === 'string'">
-                        <v-chip class="px-1" close>
-                            <template v-if="raw.length > 0" v-slot:prepend>
-                                <v-avatar color="primary">
-                                    <span class="text-h6">
-                                        {{ raw.slice(0, 1).toUpperCase() }}
-                                    </span>
-                                </v-avatar>
-                            </template>
-                            <span class="mx-1">{{ raw }}</span>
-                        </v-chip>
+            <v-card-text>
+                <EmailRecipientField v-model="data.recipients">
+                    <template v-slot:append-inner="{ addresses }">
+                        <v-row v-if="addresses.length > 0" class="px-2">
+                            <v-btn @click="() => toggleCc()" v-if="!showMap.cc" variant="text" class="pa-0" :elevation="0"
+                                size="x-small">
+                                CC
+                            </v-btn>
+                            <v-btn @click="() => toggleBcc()" v-if="!showMap.bcc" variant="text" class="pa-0" :elevation="0"
+                                size="x-small">
+                                BCC
+                            </v-btn>
+                        </v-row>
                     </template>
 
-                    <template v-if="(raw instanceof Address)">
-                        <v-menu width="400px" open-on-hover>
+                </EmailRecipientField>
+                <EmailRecipientField v-show="showMap.cc" v-model="data.ccRecipients" label="CC">
+                    <template v-slot:append-inner="{ addresses }">
+                        <v-row v-if="addresses.length > 0" class="px-5">
+                            <v-btn @click="() => toggleBcc()" v-if="!showMap.bcc" variant="text" class="pa-0" :elevation="0"
+                                size="x-small">
+                                BCC
+                            </v-btn>
+                            <v-btn v-show="addresses.length == 0" @click="() => toggleCc()" variant="text" class="pa-0"
+                                :elevation="0" size="x-small">
+                                CLOSE
+                            </v-btn>
+                        </v-row>
+                    </template>
+                </EmailRecipientField>
+                <EmailRecipientField v-show="showMap.bcc" v-model="data.bccRecipients" label="BCC">
+                    <template v-slot:append-inner="{ addresses }">
+                        <v-row v-if="addresses.length > 0" class="px-5">
+                            <v-btn @click="() => toggleCc()" v-if="!showMap.bcc" variant="text" class="pa-0" :elevation="0"
+                                size="x-small">
+                                CC
+                            </v-btn>
+                            <v-btn v-show="addresses.length == 0" @click="() => toggleBcc()" variant="text" class="pa-0"
+                                :elevation="0" size="x-small">
+                                Close
+                                <!-- <v-icon>mdi-close</v-icon> -->
+                            </v-btn>
+                        </v-row>
+                    </template>
+                </EmailRecipientField>
+                <!-- <v-divider class="mb-4" /> -->
+                <v-text-field v-model="data.subject" label="Subject" variant="outlined" density="compact">
+
+                    <template v-slot:append-inner>
+
+                        <v-menu :close-on-content-click="false" v-model="isTemplateDialogOpen" width="500px">
                             <template v-slot:activator="{ props }">
-                                <v-chip class="px-1" v-bind="props" close>
-                                    <template v-slot:prepend>
-                                        <v-avatar color="primary">
-                                            <span class="text-h6">
-                                                {{ raw.fullName.slice(0, 1).toUpperCase() }}
-                                            </span>
-                                        </v-avatar>
-                                    </template>
-                                    <span class="mx-1">{{ raw.fullName }}</span>
-                                </v-chip>
+                                <v-btn v-bind="props" :elevation="0" icon>
+                                    <v-icon>mdi-history</v-icon>
+                                </v-btn>
                             </template>
-                            <v-card flat>
-                                <v-card-text>
-                                    <v-list-item>
-                                        <template v-slot:prepend>
-                                            <v-avatar color="primary" :size="50">
-                                                <span class="text-h5">
-                                                    {{ raw.fullName.slice(0, 1).toUpperCase() }}
-                                                </span>
-                                            </v-avatar>
-                                        </template>
-                                        <template v-slot:title>
-                                            <span class="text-h5">{{ raw.fullName }}</span>
-                                        </template>
-                                        <template v-slot:subtitle>
-                                            <span>{{ raw.emailAddress }}</span>
-                                        </template>
-                                    </v-list-item>
-                                </v-card-text>
-                                <v-divider></v-divider>
-                                <v-card-actions>
-                                    <v-btn color="primary" r-:elevation="0">
-                                        Open Detail View
+                            <v-card min-height="400px" flat>
+                                <template v-slot:title>
+                                    Select Email template to reuse
+                                </template>
+                                <template v-slot:append>
+                                    <v-btn @click="() => closeTemplateDialog()" :elevation="0" icon>
+                                        <v-icon>mdi-close</v-icon>
                                     </v-btn>
-                                    <v-spacer />
-
-                                    <template v-if="raw.phoneNumber">
-
-                                        <v-tooltip>
-                                            <template v-slot:activator="{ props }" position="bottom">
-                                                <v-btn v-bind="props" :href="`tel:${raw.phoneNumber}`" color="primary"
-                                                    :elevation="0" icon>
-                                                    <v-icon>mdi-phone</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <small>Call: {{ raw.phoneNumber }}</small>
-                                        </v-tooltip>
-                                        <v-tooltip>
-                                            <template v-slot:activator="{ props }" position="bottom">
-                                                <v-btn v-bind="props" color="primary" :elevation="0" icon>
-                                                    <v-icon>mdi-message</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <small>Send SMS</small>
-                                        </v-tooltip>
-                                    </template>
-                                    <v-tooltip>
-                                        <template v-slot:activator="{ props }" location="bottom">
-                                            <v-btn v-bind="props" :href="`mailto:${raw.emailAddress}`" color="primary"
-                                                :elevation="0" icon>
-                                                <v-icon>mdi-email</v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <small>Email: {{ raw.emailAddress }}</small>
-                                    </v-tooltip>
-                                </v-card-actions>
+                                </template>
+                                <v-card-text>
+                                    <TemplateInput @input="(template) => onselectTemplate(template)"
+                                        prepend-inner-icon="mdi-magnify"
+                                        placeholder="Start typing to search for templates..." variant="outlined"
+                                        density="compact" />
+                                </v-card-text>
                             </v-card>
                         </v-menu>
-
                     </template>
-                </template>
 
-            </v-combobox>
-            <!-- <v-divider class="mb-4" /> -->
-            <v-text-field v-model="data.subject" label="Subject" variant="outlined" density="compact">
-
-                <template v-slot:append-inner>
-
-                    <v-menu :close-on-content-click="false" v-model="isTemplateDialogOpen" width="500px">
-                        <template v-slot:activator="{ props }">
-                            <v-btn v-bind="props" :elevation="0" icon>
-                                <v-icon>mdi-history</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-card min-height="400px" flat>
+                </v-text-field>
+                <!-- <v-textarea v-model="data.message" :rows="5" label="Messages" variant="outlined" /> -->
+                <EmailForm v-model="data.message" />
+            </v-card-text>
+            <v-card-text v-if="data.attachments?.length">
+                <v-card max-height="200px" style="overflow-y: auto" flat>
+                    <v-list lines="one" density="compact">
+                        <v-list-item v-for="(attachment, i) in data.attachments" :key="i" density="compact"
+                            class="py-0 my-0">
                             <template v-slot:title>
-                                Select Email template to reuse
+                                <span>{{ attachment.file?.name }}</span>
                             </template>
                             <template v-slot:append>
-                                <v-btn @click="() => closeTemplateDialog()" :elevation="0" icon>
+                                <v-btn @click="() => data.attachments?.splice(i, 1)" :elevation="0">
                                     <v-icon>mdi-close</v-icon>
                                 </v-btn>
                             </template>
-                            <v-card-text>
-                                <TemplateInput @input="(template) => onselectTemplate(template)"
-                                    prepend-inner-icon="mdi-magnify" placeholder="Start typing to search for templates..."
-                                    variant="outlined" density="compact" />
-                            </v-card-text>
-                        </v-card>
-                    </v-menu>
-                </template>
-
-            </v-text-field>
-            <!-- <v-textarea v-model="data.message" :rows="5" label="Messages" variant="outlined" /> -->
-            <EmailForm v-model="data.message" />
-        </v-card-text>
-        <v-card-text v-if="data.attachments?.length">
-            <v-card max-height="200px" style="overflow-y: auto" flat>
-                <v-list lines="one" density="compact">
-                    <v-list-item v-for="(attachment, i) in data.attachments" :key="i" density="compact" class="py-0 my-0">
-                        <template v-slot:title>
-                            <span>{{ attachment.file?.name }}</span>
-                        </template>
-                        <template v-slot:append>
-                            <v-btn @click="() => data.attachments?.splice(i, 1)" :elevation="0">
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                        </template>
-                    </v-list-item>
-                </v-list>
-            </v-card>
-        </v-card-text>
+                        </v-list-item>
+                    </v-list>
+                </v-card>
+            </v-card-text>
+        </v-card>
         <v-card-actions>
             <v-btn @click="() => selectFile()" color="primary">
                 <v-icon>mdi-attachment-plus</v-icon>
             </v-btn>
             <v-spacer />
-            <v-switch v-model="data.saveAsTemplate" label="Save as template" inset density="compact" color="primary" class="my-0 py-0" />
+            <v-switch v-model="data.saveAsTemplate" label="Save as template" inset density="compact" color="primary"
+                class="my-0 py-0" />
             <v-spacer />
             <v-btn @click="() => send()" color="primary" :loading="isSending" :elevation="0">
                 Send<v-icon>mdi-send</v-icon>
@@ -180,6 +136,7 @@ import EmailMessage, { EmailMessageFormData } from '@/model/mailing/message';
 import { createEmailMessage } from '@/repository/mailing/message_repository';
 import { ref, reactive, watch, computed } from 'vue';
 import EmailForm from './EmailForm.vue';
+import EmailRecipientField from './EmailRecipientField.vue';
 import TemplateInput from '../template/partials/TemplateInput.vue';
 import EmailMessageTemplate from '@/model/mailing/message_template';
 import { useNotifier } from 'vuetify-notifier';
@@ -197,6 +154,8 @@ const notifier = useNotifier();
 
 const fileInput = ref<HTMLInputElement>();
 const isSending = ref(false);
+
+
 
 const addresses = computed(() => {
     const addresses: (Address | string)[] = [];
@@ -226,6 +185,16 @@ const addresses = computed(() => {
     if (props.addresses) {
         addresses.push(...props.addresses.filter(e => !!e));
     }
+
+
+    const _addresses: (Address | string)[] = [];
+
+    for (const address of addresses) {
+        if (_addresses.some(_address => {
+
+        }));
+    }
+
     return addresses;
 });
 
@@ -268,6 +237,21 @@ async function send() {
     }
 }
 
+
+
+const showMap = reactive({
+    cc: false,
+    bcc: false
+});
+
+
+function toggleCc() {
+    showMap.cc = !showMap.cc;
+}
+
+function toggleBcc() {
+    showMap.bcc = !showMap.bcc;
+}
 
 
 function onselectTemplate(template?: EmailMessageTemplate) {

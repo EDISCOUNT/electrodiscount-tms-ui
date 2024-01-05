@@ -1,4 +1,6 @@
-export default class ShipmentEvent{
+import ShipmentDocumentAttachment from "./shipment_document_attachment";
+
+export default class ShipmentEvent {
     id?: string;
     code?: string;
     type?: string;
@@ -7,10 +9,11 @@ export default class ShipmentEvent{
     description?: string;
     eventOccuredAt?: Date;
     createdAt?: Date;
+    attachments: ShipmentDocumentAttachment[];
     metadata?: Record<string, any>;
 
 
-    constructor({ id, code, type, title, subtitle, description, eventOccuredAt, createdAt, metadata }: { id?: string; code?: string; type?: string; title: string; subtitle?: string; description?: string; eventOccuredAt?: Date; createdAt?: Date; metadata?: Record<string, any>; }) {
+    constructor({ id, code, type, title, subtitle, description, eventOccuredAt, createdAt, attachments, metadata }: { id?: string; code?: string; type?: string; title: string; subtitle?: string; description?: string; eventOccuredAt?: Date; createdAt?: Date; attachments?: ShipmentDocumentAttachment[]; metadata?: Record<string, any>; }) {
         this.id = id;
         this.code = code;
         this.type = type;
@@ -19,6 +22,7 @@ export default class ShipmentEvent{
         this.description = description;
         this.eventOccuredAt = eventOccuredAt;
         this.createdAt = createdAt;
+        this.attachments = attachments ?? [];
         this.metadata = metadata;
     }
 
@@ -31,8 +35,9 @@ export default class ShipmentEvent{
             title: json.title,
             subtitle: json.subtitle,
             description: json.description,
-            eventOccuredAt: json.eventOccuredAt? new Date(json.eventOccuredAt) : undefined,
-            createdAt: json.createdAt? new Date(json.createdAt) : undefined,
+            eventOccuredAt: json.eventOccuredAt ? new Date(json.eventOccuredAt) : undefined,
+            createdAt: json.createdAt ? new Date(json.createdAt) : undefined,
+            attachments: json.attachments?.map((e: any) => ShipmentDocumentAttachment.fromJson(e)) ?? [],
             metadata: json.metadata,
         });
     }

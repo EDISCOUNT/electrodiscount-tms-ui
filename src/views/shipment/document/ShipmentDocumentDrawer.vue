@@ -6,15 +6,22 @@
     </slot>
     <!-- {{ {attachments: attachments?.length} }} -->
 
-    <v-bottom-sheet v-model="isOpen" inset>
+    <v-dialog v-model="isOpen" max-width="800px" inset>
         <v-card flat>
+
             <v-card-text>
-                <ShipmentDocumentForm v-model:attachments="attachments" :attachments="attachments" :shipment="shipment" :type="type"
-                    :submitting="submitting">
+                <ShipmentDocumentForm v-model:attachments="attachments" :attachments="attachments" :shipment="shipment"
+                    :type="type" :submitting="submitting">
+                    <template v-slot:append>
+                        <v-btn @click="() => toggle()" :elevation="0" variant="text">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                    </template>
+
                 </ShipmentDocumentForm>
             </v-card-text>
         </v-card>
-    </v-bottom-sheet>
+    </v-dialog>
 </template>
 
 <script  lang="ts" setup>

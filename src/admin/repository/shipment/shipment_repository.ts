@@ -64,17 +64,30 @@ export async function applyTransition({ shipment, transition, attachments, descr
 }
 
 
-export async function bulkApplyTransition({ shipments:_shipments, transition, attachments }: { shipments: (Shipment|string|number)[], transition: string, attachments?: AttachmentFormData[] }) {
-    const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment)? shipment.id : shipment)?.map(e => String(e));
+
+
+interface BulkApplyShipmentTransitionInput {
+    shipments: (Shipment | string | number)[],
+    description?: string,
+    transition: string,
+    attachments?: ShipmentDocumentFileAttachmentFormData[]
+}
+
+export async function bulkApplyTransition({ shipments: _shipments, description, transition, attachments }: BulkApplyShipmentTransitionInput) {
+    const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment) ? shipment.id : shipment)?.map(e => String(e));
     const formData = new FormData();
     formData.append('transition', transition);
-    attachments?.forEach(({ file, caption }, index) => {
+    if (description) {
+        formData.append('description', description);
+    }
+    attachments?.forEach(({ src: file, type, caption }, index) => {
+        formData.append(`attachments[${index}][type]`, type);
         formData.append(`attachments[${index}][file]`, file);
         if (caption) {
             formData.append(`attachments[${index}][caption]`, caption);
         }
     })
-    shipments.forEach((id,index) => {
+    shipments.forEach((id, index) => {
         formData.append(`shipments[${index}]`, id);
     });
     const { data } = await http.post(`/api/admin/shipment/shipments/apply-transition`, formData);

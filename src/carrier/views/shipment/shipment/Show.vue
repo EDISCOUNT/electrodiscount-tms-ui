@@ -90,7 +90,11 @@
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentActionCard :shipment="shipment" @updated="(shipment) => onUpdateShipment(shipment)" />
+                <ShipmentActionCard
+                :shipment="shipment"
+                @updated="(shipment) => onUpdateShipment(shipment)"
+                :apply-transition="applyTransition"
+                />
               </v-card-text>
             </v-card>
           </v-col>
@@ -150,7 +154,9 @@
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentEventTimeline :shipment="shipment" />
+                <ShipmentEventTimeline 
+                :get-paginated-shipment-events="getPaginatedShipmentEvents"
+                :shipment="shipment" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -178,7 +184,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { getShipment, updateShipment, } from '@/carrier/repository/shipment/shipment_repository';
+import { applyTransition, getShipment, updateShipment, } from '@/carrier/repository/shipment/shipment_repository';
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 import { useRouter } from 'vue-router';
 import { useNotifier } from 'vuetify-notifier';
@@ -193,6 +199,7 @@ import ShipmentStops from '@/views/shipment/ShipmentStops.vue';
 import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
 import EmailDrawer from '@/views/mailing/email/EmailDrawer.vue';
 import SmsDrawer from '@/views/texting/sms/SmsDrawer.vue';
+import { getPaginatedShipmentEvents } from '@/carrier/repository/shipment/shipment_event_repository';
 
 const props = defineProps<{
   id: string,

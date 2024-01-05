@@ -1,17 +1,22 @@
 <template>
-    <!-- {{ { attachments } }} -->
+ 
+    <v-card flat>
+        <template v-slot:append>
+            <slot name="append" />
+        </template>
+        <template v-slot:title>
+            <span>Proof of Delivery</span>
+        </template>
+        <template v-slot:subtitle>
+            <span>File Attachments</span>
+        </template>
+           <!-- {{ { attachments } }} -->
     <SignaturePadDialog v-model:open="isSignatureDIalogOpen" @save="(attachment) => addSignature(attachment)" />
 
 
-    <input ref="fileInput" accept="image/*" type="file" style="display:none;" @change="(evt) => onFileInput(evt)"
-        multiple />
-    <v-card flat>
-        <v-card-title>
-            Proof of Delivery
-        </v-card-title>
-        <v-card-subtitle>
-            File Attachments
-        </v-card-subtitle>
+<input ref="fileInput" accept="image/*" type="file" style="display:none;" @change="(evt) => onFileInput(evt)"
+    multiple />
+    
         <v-card-text class="px-0">
             <v-sheet height="500px" style="overflow-y: auto;" class="pa-4" color="secondary-bg">
                 <v-row justify="start">
@@ -138,7 +143,7 @@ watch(attachments, (attachments) => {
 }, { deep: true });
 
 onMounted(() => {
-    attachments.value = props.attachments?? [];
+    attachments.value = props.attachments ?? [];
 });
 
 function submit() {

@@ -49,11 +49,22 @@ class ArrayOperation extends Operation {
 }
 
 
-
-
 function nomalizeDateTimeInput(input: DateTimeInput){
     if(input instanceof Date){
-        return input.toISOString();
+        const date = input;
+
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+      
+        const datestring =  `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000Z`;
+        // console.log("DATE STRING: ", {datestring});
+        return datestring;
+        // return input.toISOString();
+        // return String(input);
     }
     return input;
 }

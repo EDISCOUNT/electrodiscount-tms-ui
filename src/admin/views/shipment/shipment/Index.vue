@@ -6,10 +6,15 @@
                     <v-toolbar color="transparent">
                         <span v-if="smAndUp"> Shipments</span>
                         <v-spacer />
-                        <v-card-text v-if="selected?.length">
-                            <PrintShipmentManifestButton :shipments="selected" />
-                            <BulkUpdateShipmentStatusButton @updated="() => refreshTable()" :shipments="selected" />
-                        </v-card-text>
+                        <v-row v-if="selected?.length" class="px-md-5">
+                            <BulkUpdateShipmentStatusButton
+                            @updated="() => refreshTable()"
+                            :shipments="selected"
+                            :apply-transition="bulkApplyTransition"
+                             />
+                            <v-spacer />
+                            <PrintShipmentManifestButton :shipments="selected" variant="outlined" />
+                        </v-row>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
                                 <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" />
@@ -56,6 +61,7 @@ import { useColorScheme } from '@/utils/color';
 import { useDisplay } from 'vuetify';
 import BarcodeScannerButton from '@/components/BarcodeScannerButton.vue';
 import BulkUpdateShipmentStatusButton from '@/views/shipment/BulkUpdateShipmentStatusButton.vue';
+import { bulkApplyTransition } from '@/admin/repository/shipment/shipment_repository';
 
 const filter = reactive({
     status: [] as string[],
