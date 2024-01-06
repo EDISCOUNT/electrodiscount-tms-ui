@@ -29,7 +29,7 @@
             <!-- <v-stepper-item v-else-if="isOnHold" color="orange" :value="3" title="On Hold">
             </v-stepper-item> -->
 
-            <v-stepper-item v-else :value="3" :complete="value >= 3" title="Delivered/Completed">
+            <v-stepper-item v-else :value="3" :complete="value >= 3" title="Delivery Completed">
                 <template v-slot:subtitle>
                     <template v-if="shipment.bookedAt">
                         {{ formatDate(shipment.bookedAt) }}

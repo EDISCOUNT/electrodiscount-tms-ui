@@ -18,10 +18,14 @@
                             <v-icon>mdi-content-save</v-icon>
                             Save
                         </v-btn>
-                        <v-btn color="primary" :elevation="0" class="mx-2" :loading="loading" variant="outlined">
+                        <v-btn v-if="shipment" :to="{name: 'admin:shipment:show', params:{id: shipment.id}}" color="primary" :elevation="0" class="mx-2" variant="outlined">
+                            View
+                            <v-icon>mdi-arrow-right</v-icon>
+                        </v-btn>
+                        <!-- <v-btn color="primary" :elevation="0" class="mx-2" :loading="loading" variant="outlined">
                             Options
                             <v-icon>mdi-menu-down</v-icon>
-                        </v-btn>
+                        </v-btn> -->
                     </template>
                 </v-card>
             </v-card-title>
@@ -53,8 +57,11 @@
                                                     density="compact"></v-text-field>
                                             </v-col>
                                             <v-col cols="12" md="6">
-                                                <v-select v-model="data.type" label="Shipment Type" variant="outlined"
-                                                    density="compact"></v-select>
+                                                <v-select v-model="data.fulfilmentType" label="Fulfilment Type" variant="outlined"
+                                                    density="compact" :items="[
+                                                        'PICKUP_AND_DELIVERY',
+                                                        'DROPSHIPPING',
+                                                    ]"></v-select>
                                             </v-col>
 
                                             <v-col cols="12" md="6">
@@ -178,8 +185,8 @@
                                 </v-card-text>
                                 <v-divider /> -->
                                 <v-card-text>
-                                    <v-textarea v-model="data.description" :rows="4" label="Description" variant="outlined"
-                                        density="compact"></v-textarea>
+                                    <v-textarea v-model="data.deliveryNote" :rows="4" label="Description" variant="outlined"
+                                        density="compact" clearable></v-textarea>
                                 </v-card-text>
                             </v-card>
                         </v-col>
@@ -295,11 +302,12 @@
 
                             <v-card class="fill-height mt-4" flat>
                                 <v-card-title>
-                                    Description
+                                    Delivery Note
                                 </v-card-title>
                                 <v-card-text>
-                                    <v-textarea v-model="data.description" :rows="8" label="Description" variant="outlined"
-                                        density="compact"></v-textarea>
+                                    <v-textarea v-model="data.deliveryNote" :rows="8" label="Delivery Note"
+                                        placeholder="Enter a not to appear on Manifest/Packlist" variant="outlined"
+                                        density="compact" clearable></v-textarea>
                                 </v-card-text>
                             </v-card>
                         </v-col>

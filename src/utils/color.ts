@@ -53,7 +53,7 @@ console.log(`Status: No status provided, Color: ${color2}`);
 export function useColorScheme() {
     const { xs } = useDisplay();
     const theme = useTheme();
-    console.log("THEME:", theme);
+    // console.log("THEME:", theme);
     const inlineBg = computed(() => theme.current.value.dark ? 'black' : 'grey-lighten-4');
     const secondaryBg = computed(() => xs.value ? '' : 'secondary-bg');
     return { secondaryBg, inlineBg }

@@ -287,7 +287,7 @@ export interface ShipmentFormData {
   originAddress?: AddressFormData;
   destinationAddress?: AddressFormData;
   fulfilment?: ShipmentFulfilmentFormData;
-  description?: string;
+  deliveryNote?: string;
   additionalServices?: string[],
   metadata?: { [i: string]: any };
   bookedAt?: Date | string;

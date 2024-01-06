@@ -35,10 +35,17 @@
                   </span>
                 </template>
                 <template v-slot:append>
+
                   <PrintShipmentManifestButton :shipments="[(shipment.id as any)!]" />
                   <EmailDrawer :shipment="shipment" />
                   <span class="mx-1" />
                   <SmsDrawer :shipment="shipment" />
+
+                  <v-btn :to="{ name: 'admin:shipment:edit', params: { id: shipment.id } }" color="primary" :elevation="0"
+                    class="mx-2" variant="plain">
+                    Edit
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
                 </template>
                 <!-- <template v-slot:extension>
                   <v-btn icon @click="router.back()">
@@ -92,11 +99,8 @@
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentActionCard
-                :shipment="shipment"
-                @updated="(shipment) => onUpdateShipment(shipment)"
-                :apply-transition="applyTransition"
-                />
+                <ShipmentActionCard :shipment="shipment" @updated="(shipment) => onUpdateShipment(shipment)"
+                  :apply-transition="applyTransition" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -156,10 +160,8 @@
               </template>
               <v-divider />
               <v-card-text>
-                
-                <ShipmentEventTimeline 
-                :get-paginated-shipment-events="getPaginatedShipmentEvents"
-                :shipment="shipment" />
+
+                <ShipmentEventTimeline :get-paginated-shipment-events="getPaginatedShipmentEvents" :shipment="shipment" />
               </v-card-text>
             </v-card>
           </v-col>

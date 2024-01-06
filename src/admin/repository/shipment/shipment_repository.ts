@@ -7,7 +7,7 @@ import { ShipmentDocumentFileAttachmentFormData } from "@/model/shipment/shipmen
 export async function getPaginatedShipments({ page, limit, criteria }: { page?: number, limit?: number, criteria?: { [i: string]: any } } = {}) {
     criteria ??= {};
     criteria = { ...criteria };
-    console.log("criteria: ", { criteria })
+    // console.log("criteria: ", { criteria })
     if ('status' in criteria) {
         if (criteria['status'] == 0) {
             delete criteria['status'];

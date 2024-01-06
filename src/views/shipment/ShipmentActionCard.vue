@@ -25,7 +25,7 @@
             </v-card-text>
             <v-divider />
             <v-card-text>
-                <template v-if="isDelivery">
+                <div v-show="isDelivery">
                     <!-- <v-file-input v-model="attachments" chips multiple label="Add file Attachments" variant="outlined"
                         :rules="[
                             (v) => (selectedStatus != 'delivered') || v?.length > 0 || 'This filed is required'
@@ -43,7 +43,7 @@
                         </template>
                     </ShipmentDocumentDrawer>
                     <v-divider class="my-3" />
-                </template>
+                </div>
                 <template v-if="isCancelation || isHold">
                     <v-textarea v-model="description" label="Reason" placeholder="Enter reasaon" variant="outlined"
                         density="compact" :counter="255">
@@ -122,7 +122,7 @@ async function updateStatus() {
         isUpdating.value = true;
         const shipment = props.shipment;
         const transition = selectedStatus.value!;
-        const result = await props.applyTransition({ shipment, transition, attachments: attachments.value, description: description.value });
+        const result = await props.applyTransition({ shipment, transition, attachments: isDelivery.value? attachments.value :  undefined, description: description.value });
         emit('updated', result);
         attachments.value = [];
         description.value = undefined;

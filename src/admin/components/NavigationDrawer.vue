@@ -30,7 +30,7 @@
             </v-list-item>
         </v-toolbar-items>
     </v-app-bar>
-    <v-navigation-drawer v-model="isOpen" :color="isDark ? undefined : 'primary'" :expand-on-hover="!sm" :rail="!xs">
+    <v-navigation-drawer v-model="isOpen" :color="isDark ? undefined : 'primary'" :expand-on-hover="smAndUp" :rail="!xs" :permanent="smAndUp">
 
         <!-- <v-container class="fill-height">
     <v-responsive class="align-center text-center fill-height"> -->
@@ -165,7 +165,7 @@ import AvatarImage from '@/assets/images/avatar.png';
 
 const { user, loading, error } = useUser();
 const { logout: doLogout } = useAccountStore();
-const { xs, sm } = useDisplay();
+const { xs, sm, smAndUp } = useDisplay();
 const theme = useTheme();
 const notifier = useNotifier();
 

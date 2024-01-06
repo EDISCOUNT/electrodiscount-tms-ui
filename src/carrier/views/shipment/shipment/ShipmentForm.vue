@@ -178,7 +178,7 @@
                                 </v-card-text>
                                 <v-divider /> -->
                                 <v-card-text>
-                                    <v-textarea v-model="data.description" :rows="4" label="Description" variant="outlined"
+                                    <v-textarea v-model="data.deliveryNote" :rows="4" label="Description" variant="outlined"
                                         density="compact"></v-textarea>
                                 </v-card-text>
                             </v-card>
@@ -298,7 +298,7 @@
                                     Description
                                 </v-card-title>
                                 <v-card-text>
-                                    <v-textarea v-model="data.description" :rows="8" label="Description" variant="outlined"
+                                    <v-textarea v-model="data.deliveryNote" :rows="8" label="Description" variant="outlined"
                                         density="compact"></v-textarea>
                                 </v-card-text>
                             </v-card>

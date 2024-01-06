@@ -1,5 +1,5 @@
 <template>
-    <!-- <v-app-bar flat>
+    <v-app-bar flat>
         <template v-if="xs" v-slot:prepend>
             <v-btn @click="() => toggleNavbar()" :elevation="0" icon>
                 <v-icon>mdi-menu</v-icon>
@@ -68,10 +68,10 @@
                 </template>
             </v-list-item>
         </v-toolbar-items>
-    </v-app-bar> -->
+    </v-app-bar>
 
 
-    <v-bottom-navigation r-v-model="value" r-bg-color="color" mode="shift">
+    <!-- <v-bottom-navigation r-v-model="value" r-bg-color="color" mode="shift">
         <v-btn :to="{ name: 'carrier:home' }" v-if="isGranted(['ROLE_CARRIER_OPERATOR'])" exact>
             <v-icon>mdi-home</v-icon>
             <span>Home</span>
@@ -114,7 +114,7 @@
             <span v-if="isDark">Light</span>
             <span v-else>Dark</span>
         </v-btn>
-    </v-bottom-navigation>
+    </v-bottom-navigation> -->
 
 
     <v-navigation-drawer v-if="xs" v-model="isOpen" :color="isDark ? undefined : 'primary'">
