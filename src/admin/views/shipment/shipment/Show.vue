@@ -203,7 +203,7 @@ import ShipmentStops from '@/views/shipment/ShipmentStops.vue';
 import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
 import EmailDrawer from '@/views/mailing/email/EmailDrawer.vue';
 import SmsDrawer from '@/views/texting/sms/SmsDrawer.vue';
-import { getPaginatedShipmentEvents } from '@/carrier/repository/shipment/shipment_event_repository';
+import { getPaginatedShipmentEvents } from '@/admin/repository/shipment/shipment_event_repository';
 
 const props = defineProps<{
   id: string,

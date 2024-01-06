@@ -16,7 +16,7 @@
 
 <input ref="fileInput" accept="image/*" type="file" style="display:none;" @change="(evt) => onFileInput(evt)"
     multiple />
-    
+
         <v-card-text class="px-0">
             <v-sheet height="500px" style="overflow-y: auto;" class="pa-4" color="secondary-bg">
                 <v-row justify="start">
@@ -127,7 +127,7 @@ watch(
     () => props.attachments,
     (input) => {
         updatingAttachments = true;
-        attachments.value = input;
+        attachments.value = input?? [];
         setTimeout(() => {
             updatingAttachments = false;
         }, 10);
@@ -158,7 +158,7 @@ function submit() {
     }
     catch (err) {
         const text = (err as any).message;
-        createSnackbar({ text });
+        notifier.toastError(text);
     }
     finally {
 

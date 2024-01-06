@@ -6,7 +6,7 @@
             </v-btn>
         </template>
         <v-toolbar-items>
-            <v-list-item v-if="user" prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" :title="user.fullName"
+            <v-list-item v-if="user" :prepend-avatar="AvatarImage" :title="user.fullName"
                 :subtitle="user.username" nav>
                 <template v-slot:append>
                     <v-menu>
@@ -36,7 +36,7 @@
     <v-responsive class="align-center text-center fill-height"> -->
 
         <template v-slot:prepend>
-            <v-list-item v-if="user" prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" :title="user.fullName"
+            <v-list-item v-if="user" :prepend-avatar="AvatarImage" :title="user.fullName"
                 :subtitle="user.username" nav>
                 <template v-slot:append>
                     <v-tooltip>
@@ -160,6 +160,7 @@ import { useDisplay, useTheme } from 'vuetify';
 import CreateShipmentButton from '../views/shipment/shipment/partials/CreateShipmentButton.vue';
 import { useNotifier } from 'vuetify-notifier';
 import { computed, ref, onMounted } from 'vue';
+import AvatarImage from '@/assets/images/avatar.png';
 
 
 const { user, loading, error } = useUser();

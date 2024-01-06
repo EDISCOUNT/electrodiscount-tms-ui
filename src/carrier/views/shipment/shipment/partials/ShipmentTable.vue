@@ -156,9 +156,9 @@ const height = computed(() => {
     }
 
     if (xs.value) {
-        return 'calc(100vh - 210px)';
+        return 'calc(100vh - 240px)';
     }
-    return 'calc(100vh - 290px)'
+    return 'calc(100vh - 330px)'
 })
 
 const headers = [

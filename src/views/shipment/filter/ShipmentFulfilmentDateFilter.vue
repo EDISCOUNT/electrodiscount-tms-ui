@@ -32,11 +32,8 @@
                             </v-list> -->
                             <v-card-text>
                                 <v-switch v-for="(field, i) in ['latestDeliveryDate', 'exactDeliveryDate', 'expiryDate']"
-                                    v-model="_fields" @click.stop="() => undefined" key="field" :value="field" :label="field"
-                                    class="ma-0 pa-0 shrink"
-                                    color="primary"
-                                    inset
-                                    multiple/>
+                                    v-model="_fields" @click.stop="() => undefined" key="field" :value="field"
+                                    :label="field" class="ma-0 pa-0 shrink" color="primary" inset multiple />
                             </v-card-text>
                         </v-card>
                     </v-menu>
@@ -44,11 +41,18 @@
             </v-combobox>
         </template>
         <v-card flat>
-            <v-card-title>
-                <!-- {{ { dates } }} -->
-            </v-card-title>
-            <v-card-text class="pa-0">
-                <v-date-picker v-model="values" show-adjacent-months multiple />
+            <!-- <v-card-title>
+                {{ { dates } }}
+            </v-card-title> -->
+            <v-card-text r-class="pa-0">
+                <v-row>
+                    <v-col>
+                        <v-date-picker v-model="values" show-adjacent-months multiple />
+                    </v-col>
+                    <v-col>
+                        <v-card class="fill-height" color="secondary-bg" width="100%" flat/>
+                    </v-col>
+                </v-row>
             </v-card-text>
         </v-card>
     </v-menu>
@@ -103,11 +107,11 @@ const itemsFields = computed(() => {
 });
 
 
-watch(_fields, (fields) => emitValues(dates.value?? []));
+watch(_fields, (fields) => emitValues(dates.value ?? []));
 watch(dates, (values) => {
     // const out = values?.map(e => new Date(e));
-    emitValues(values?? []);
-   
+    emitValues(values ?? []);
+
 }, { deep: true });
 watch(
     () => props.modelValue,
@@ -115,7 +119,7 @@ watch(
 );
 
 
-function emitValues(values: (Date)[]){
+function emitValues(values: (Date)[]) {
     emit('update:model-value', values);
     emit('update:rsql', buildRsql(values));
 }

@@ -9,7 +9,9 @@
                 </template>
             </v-stepper-item>
             <v-divider></v-divider>
-            <v-stepper-item :value="2" :complete="value > 2" title="Pick up/In Transit">
+            <v-stepper-item v-if="isOnHold" :value="2" :complete="value > 2" title="On Hold" color="orange">
+            </v-stepper-item>
+            <v-stepper-item  v-else :value="2" :complete="value > 2" title="Pick up/In Transit">
                 <template v-slot:subtitle>
                     <template v-if="shipment.bookedAt">
                         {{ formatDate(shipment.bookedAt) }}
@@ -24,10 +26,10 @@
             <v-stepper-item v-if="isCancelled || isRejected" color="red" :value="3" :title="shipment.status">
             </v-stepper-item>
 
-            <v-stepper-item v-else-if="isOnHold" color="orange" :value="3" title="On Hold">
-            </v-stepper-item>
+            <!-- <v-stepper-item v-else-if="isOnHold" color="orange" :value="3" title="On Hold">
+            </v-stepper-item> -->
 
-            <v-stepper-item :value="3" :complete="value >= 3" title="Delivered">
+            <v-stepper-item v-else :value="3" :complete="value >= 3" title="Delivered/Completed">
                 <template v-slot:subtitle>
                     <template v-if="shipment.bookedAt">
                         {{ formatDate(shipment.bookedAt) }}
@@ -36,17 +38,7 @@
                     </span>
                 </template>
             </v-stepper-item>
-            <v-divider></v-divider>
-
-            <v-stepper-item :value="4" :complete="value >= 4" title="Completed">
-                <template v-slot:subtitle>
-                    <template v-if="shipment.bookedAt">
-                        {{ formatDate(shipment.bookedAt) }}
-                    </template>
-                    <span class="text-grey" v-else>
-                    </span>
-                </template>
-            </v-stepper-item>
+           
             <!-- <v-divider></v-divider> -->
         </v-stepper-header>
     </v-stepper>
@@ -70,9 +62,9 @@ const statusMap = {
     'intransit': 2,
     'onhold': 2,
     'delivered': 3,
-    'rejected': 4,
-    'cancelled': 4,
-    'completed': 4,
+    'rejected': 3,//4,
+    'cancelled': 3,//4,
+    'completed': 3, //4,
 }
 
 

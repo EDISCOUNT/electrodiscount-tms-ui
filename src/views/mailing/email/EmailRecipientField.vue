@@ -106,19 +106,20 @@
 
 <script lang="ts" setup>
 import Address from '@/model/addressing/address';
+import EmailAddress from '@/model/mailing/email_address';
 import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
-    modelValue?: (Address | string)[],
+    modelValue?: (Address | EmailAddress | string)[],
 }>();
 
 
 const emit = defineEmits<{
-    (e: 'update:model-value', addresses: (Address | string)[]): void;
+    (e: 'update:model-value', addresses: (Address | EmailAddress | string)[]): void;
 }>();
 
 
-const addresses = ref<(Address | string)[]>([]);
+const addresses = ref<(Address | EmailAddress | string)[]>([]);
 
 
 let isUpdating = false;
@@ -134,7 +135,7 @@ watch(addresses, (addresses) => {
 watch(() => props.modelValue, updateAddresses);
 onMounted(() => updateAddresses(props.modelValue));
 
-function updateAddresses(value?: (Address | string)[]) {
+function updateAddresses(value?: (Address | EmailAddress | string)[]) {
     isUpdating = true;
     console.log("INPUTTING<<<<<<<<<<<<<<<<<<<<")
     addresses.value = value ?? [];

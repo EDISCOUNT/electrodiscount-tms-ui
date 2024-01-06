@@ -5,7 +5,7 @@
     <v-responsive class="align-center text-center fill-height"> -->
 
         <template v-slot:prepend>
-            <v-list-item v-if="user" prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" :title="user.fullName"
+            <v-list-item v-if="user" prepend-avatar="AvatarImage" :title="user.fullName"
                 :subtitle="user.username" nav>
                 <template v-slot:append>
                 </template>
@@ -34,6 +34,7 @@
 
 <script lang="ts" setup>
 import { useAccountStore, useUser } from '@/store/app';
+import AvatarImage from '@/assets/images/avatar.png';
 
 const { isGranted } = useAccountStore();
 const { user, loading, error } = useUser();

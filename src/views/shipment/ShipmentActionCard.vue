@@ -34,7 +34,14 @@
                         You must provide a file attachment to proceed
                     </span> -->
 
-                    <ShipmentDocumentDrawer v-model:attachments="attachments" :shipment="shipment" />
+                    <ShipmentDocumentDrawer v-model:attachments="attachments" :shipment="shipment">
+                        <template v-slot:activator="{ attachments, toggle }">
+                            <v-file-input @update:focused="(focused) => focused && toggle()"
+                                :model-value="attachments.map(e => e.src)" :rules="[
+                                    (v) => (selectedStatus != 'delivered') || v?.length > 0 || 'This filed is required'
+                                ]" label="File Attachments(POD)" variant="outlined" multiple chips readonly />
+                        </template>
+                    </ShipmentDocumentDrawer>
                     <v-divider class="my-3" />
                 </template>
                 <template v-if="isCancelation || isHold">
@@ -117,10 +124,13 @@ async function updateStatus() {
         const transition = selectedStatus.value!;
         const result = await props.applyTransition({ shipment, transition, attachments: attachments.value, description: description.value });
         emit('updated', result);
+        attachments.value = [];
+        description.value = undefined;
+        selectedStatus.value = undefined;
         notifier.toastSuccess("Shipment Status Updated Successfully!");
     }
     catch (err) {
-        const message = (err as Error).message;
+        const message = String((err as Error).message);
         notifier.toastError(message);
     }
     finally {
@@ -150,12 +160,12 @@ const possibleStatuses = computed(() => {
         case 'new':
             return statuses.filter((e) => ['assigned', 'processing', 'onhold', 'cancelled',].includes(e.value));
         case 'assigned':
-            return statuses.filter((e) => ['processing', 'ready', 'onhold', 'cancelled',].includes(e.value));
+            return statuses.filter((e) => ['processing', 'ready', 'intransit', 'onhold', 'cancelled',].includes(e.value));
         //
         case 'processing':
             return statuses.filter((e) => ['ready', 'intransit', 'onhold', 'cancelled',].includes(e.value));
         case 'onhold':
-            return statuses.filter((e) => ['ready', 'intransit', 'cancelled',].includes(e.value));
+            return statuses.filter((e) => ['ready','rejected', 'intransit', 'cancelled',].includes(e.value));
         //
         case 'ready':
             return statuses.filter((e) => ['intransit', 'onhold', 'cancelled',].includes(e.value));

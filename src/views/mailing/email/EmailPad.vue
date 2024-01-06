@@ -14,7 +14,7 @@
                 <v-tab value="sms">SMS</v-tab>
             </v-tabs>
         </template> -->
-        <v-card r-color="pink" max-height="calc(100vh - 80px)" style="overflow-y: auto;" flat>
+        <v-card r-color="pink" max-height="calc(100vh - 150px)" style="overflow-y: auto;" flat>
 
             <v-card-text>
                 <EmailRecipientField v-model="data.recipients">
@@ -191,8 +191,10 @@ const addresses = computed(() => {
 
     for (const address of addresses) {
         if (_addresses.some(_address => {
+            return false;
+        })){
 
-        }));
+        }
     }
 
     return addresses;

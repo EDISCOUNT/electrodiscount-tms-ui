@@ -17,7 +17,7 @@
                             <v-row class="pa-3" justify="space-between">
                                 <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" />
                                 <ShipmentFilterBar v-model:rsql="filter.filter" v-else />
-                                <BarcodeScannerButton/>
+                                <!-- <BarcodeScannerButton/> -->
                             </v-row>
                         </v-card-text>
                     </v-toolbar>
@@ -31,7 +31,8 @@
                 <!-- </template> -->
 
                 <template v-slot:append>
-                    <create-shipment-button />
+                    <!-- <create-shipment-button /> -->
+                    <BarcodeScannerButton/>
                 </template>
             </v-card>
 
