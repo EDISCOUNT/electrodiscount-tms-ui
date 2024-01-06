@@ -110,15 +110,24 @@
         </template>
 
         <template v-slot:item.fulfilmentType="{ item: { fulfilmentType } }">
-            <small>{{fulfilmentType}}</small>
+            <small>{{ fulfilmentType }}</small>
         </template>
 
         <template v-slot:item.actions="{ item: { id } }">
-            <v-btn color="primary" :to="{ name: 'admin:shipment:show', params: { id } }" :disabled="loading" :elevation="0"
-                variant="flat" size="small" rounded>
-                View
-                <v-icon>mdi-eye</v-icon>
-            </v-btn>
+            <v-card-actions>
+                <v-btn color="primary" :to="{ name: 'admin:shipment:show', params: { id } }" :disabled="loading"
+                    :elevation="0" variant="flat" size="small" rounded>
+                    View
+                    <v-icon>mdi-eye</v-icon>
+                </v-btn>
+
+                <v-btn color="primary" :to="{ name: 'admin:shipment:edit', params: { id } }" :disabled="loading"
+                    :elevation="0" variant="flat" size="small" rounded>
+                    Edit
+                    <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+
+            </v-card-actions>
         </template>
     </v-data-table-server>
 </template>
@@ -166,6 +175,7 @@ const headers = [
         title: 'ID',
         // align: 'start',
         // sortable: false,
+        sortable: true,
         key: 'id',
     },
     // {
@@ -174,27 +184,36 @@ const headers = [
     // },
     {
         title: 'Order ID', key: 'channelOrderId',
+        sortable: true,
         //  align: 'end' 
     },
     {
         title: 'Products', key: 'items',
+        sortable: false,
         //  align: 'center' 
     },
     {
         title: 'Destination', key: 'destinationAddress',
+        sortable: false,
         //  align: 'center' 
     },
     {
         title: 'Carrier', key: 'carrier',
+        sortable: false,
         // align: 'center' 
     },
     {
         title: 'Channel', key: 'channel',
+        sortable: false,
         // align: 'center' 
     },
-    { title: 'Delivery Date', key: 'expiresAt', },
+    {
+        title: 'Delivery Date', key: 'expiresAt',
+        sortable: false,
+    },
     {
         title: 'Status', key: 'status',
+        sortable: false,
         //  align: 'center'
     },
     // {
@@ -203,10 +222,12 @@ const headers = [
     // },
     {
         title: 'Fulfilment Type', key: 'fulfilmentType',
+        sortable: false,
         // align: 'center'
     },
     {
         title: 'Actions', key: 'actions',
+        sortable: false,
         //  align: 'end' 
     },
 ];

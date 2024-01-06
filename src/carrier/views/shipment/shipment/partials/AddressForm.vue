@@ -48,7 +48,7 @@
                     <v-col :cols="12" :md="6">
                         <v-text-field v-model="addressInfo.company" label="Company"
                             placeholder="Enter company or place name" variant="outlined" density="compact" :rules="[
-                                v => !!v || 'Field is required',
+                                // v => !!v || 'Field is required',
                             ]" />
                     </v-col>
 

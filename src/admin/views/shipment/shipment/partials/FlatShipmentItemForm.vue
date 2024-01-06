@@ -1,6 +1,7 @@
 <template>
     <!--  -->
     <v-card flat>
+        {{ {data, product, item} }}
         <v-card-text class="pa-0">
             <!-- <v-card color="grey-lighten-4" flat>
                 <v-card-text>

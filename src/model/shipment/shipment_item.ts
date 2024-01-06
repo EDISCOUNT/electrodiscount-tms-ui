@@ -77,6 +77,7 @@ export default class ShipmentItem {
     }
 
     toJson(): ShipmentItemFormData {
+        // console.log("SHIPMENT ITEM: ", {this: this});
         return {
             "product": this.product?.id,
             "quantity": this.quantity,
