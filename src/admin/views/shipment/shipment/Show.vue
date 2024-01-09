@@ -135,7 +135,7 @@
             </v-card>
           </v-col>
 
-          <v-col :cols="12" :md="8">
+          <v-col :cols="12" :md="6">
             <v-card class="fill-height" flat>
               <template v-slot:prepend>
                 <v-icon>mdi-package</v-icon>
@@ -150,7 +150,7 @@
             </v-card>
           </v-col>
 
-          <v-col :cols="12" :md="4">
+          <v-col :cols="12" :md="6">
             <v-card class="fill-height" flat>
               <template v-slot:prepend>
                 <v-icon>mdi-history</v-icon>

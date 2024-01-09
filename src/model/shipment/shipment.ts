@@ -27,6 +27,7 @@ export default class Shipment {
 
 
   bookedAt?: Date | undefined;
+  deliveredAt?: Date | undefined;
   codAmount?: number;
   codCurrency?: string;
   type?: string;
@@ -77,6 +78,7 @@ get fulfilments() {
     dimension,
     //
     bookedAt,
+    deliveredAt,
     codAmount,
     codCurrency,
     type,
@@ -104,6 +106,7 @@ get fulfilments() {
     dimension?: ShipmentDimension;
     //
     bookedAt?: Date,
+    deliveredAt?: Date,
     codAmount?: number,
     codCurrency?: string,
     type?: string,
@@ -129,6 +132,7 @@ get fulfilments() {
     this.dimension = dimension;
     //
     this.bookedAt = bookedAt;
+    this.deliveredAt = deliveredAt;
     this.codAmount = codAmount;
     this.codCurrency = codCurrency;
     this.type = type;
@@ -157,6 +161,7 @@ get fulfilments() {
     dimension,
     //
     bookedAt,
+    deliveredAt,
     codAmount,
     codCurrency,
     type,
@@ -183,6 +188,7 @@ get fulfilments() {
     dimension?: ShipmentDimension,
     //
     bookedAt?: Date,
+    deliveredAt?: Date,
     codAmount?: number,
     codCurrency?: string,
     type?: string,
@@ -211,6 +217,7 @@ get fulfilments() {
       dimension: dimension ?? this.dimension,
       //
       bookedAt: bookedAt ?? this.bookedAt,
+      deliveredAt: deliveredAt?? this.deliveredAt,
       codAmount: codAmount ?? this.codAmount,
       codCurrency: codCurrency ?? this.codCurrency,
       type: type ?? this.type,
@@ -241,6 +248,7 @@ get fulfilments() {
       dimension: json["dimension"] ? ShipmentDimension.fromJson(json["dimension"]) : undefined,
       //
       bookedAt: json["bookedAt"] != null ? new Date(json["bookedAt"]) : undefined,
+      deliveredAt: json["deliveredAt"] != null ? new Date(json["deliveredAt"]) : undefined,
       codAmount: json["codAmount"],
       codCurrency: json["codCurrency"],
       type: json["type"],

@@ -6,7 +6,7 @@ export default class Carrier {
     code: string;
     name: string;
     enabled: boolean;
-    logo?: string;
+    logoImage?: CarrierLogoData;
     emailAddress?: string;
     phoneNumber?: string;
     shortDescription?: string;
@@ -20,7 +20,7 @@ export default class Carrier {
         code: string;
         name: string;
         enabled?: boolean;
-        logo?: string,
+        logoImage?: CarrierLogoData,
         emailAddress?: string;
         phoneNumber?: string;
         shortDescription?: string;
@@ -33,7 +33,7 @@ export default class Carrier {
         this.code = data.code;
         this.name = data.name;
         this.enabled = data.enabled ?? false;
-        this.logo = data.logo;
+        this.logoImage = data.logoImage;
         this.emailAddress = data.emailAddress;
         this.phoneNumber = data.phoneNumber;
         this.shortDescription = data.shortDescription;
@@ -49,7 +49,7 @@ export default class Carrier {
             code: input.code,
             name: input.name,
             enabled: input.enabled,
-            logo: input.logo,
+            logoImage: input.logoImage,
             shortDescription: input.shortDescription,
             description: input.description,
             emailAddress: input.emailAddress,
@@ -59,4 +59,10 @@ export default class Carrier {
             updatedAt: input.updatedAt
         });
     }
+}
+
+
+export interface CarrierLogoData{
+    url: string;
+    reference: string;
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-card height="100vh" color="secondary-bg" style="overflow-y: auto;" flat>
+  <v-card height="100vh" color="secondary-bg" flat>
 
     <v-row justify="center" align="center" class="fill-height" v-if="isLoading">
       <v-card width="400px" flat>
@@ -19,7 +19,7 @@
           </v-alert>
         </v-card-text>
         <v-card-text>
-          <carrier-form @save="(data) => save(data)" @update:logo="onLogoChange" :carrier="carrier" :loading="isSaving" :uploading="isUploading" />
+          <carrier-form @save="(data) => save(data)" :carrier="carrier" :loading="isSaving" />
         </v-card-text>
       </v-card>
     </v-row>
@@ -40,8 +40,8 @@
 <script lang="ts" setup>
 import CarrierForm from './CarrierForm.vue';
 import { onMounted, ref } from 'vue';
-import { getCarrier, updateCarrier, CarrierFormData, updateCarrierLogo } from '@/admin/repository/carrier/carrier_repository';
-import Carrier, { CarrierLogoData } from '@/model/carrier/carrier';
+import { getCarrier, updateCarrier, CarrierFormData } from '@/admin/repository/carrier/carrier_repository';
+import Carrier from '@/model/carrier/carrier';
 import { useRouter } from 'vue-router';
 import { useNotifier } from 'vuetify-notifier';
 
@@ -52,7 +52,6 @@ const props = defineProps<{
 const carrier = ref<Carrier | null>(null);
 const error = ref<string | null>(null);
 const isSaving = ref(false);
-const isUploading = ref(false);
 const isLoading = ref(false);
 
 const router = useRouter();
@@ -80,32 +79,6 @@ async function save(data: CarrierFormData) {
   }
   finally {
     isSaving.value = false;
-  }
-}
-
-
-
-function onLogoChange(image?: CarrierLogoData){
-  if(image instanceof File){
-    uploadImage(image);
-  }
-}
-
-async function uploadImage(image: File) {
-  try {
-    error.value = null;
-    isUploading.value = true;
-    const result = await updateCarrierLogo(props.id, image);
-    // router.back();
-    carrier.value = result;
-  }
-  catch (err) {
-    const message = (err as any).message as string;
-    error.value = message;
-    notifier.toastError(message);
-  }
-  finally {
-    isUploading.value = false;
   }
 }
 

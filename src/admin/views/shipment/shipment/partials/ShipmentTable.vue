@@ -1,6 +1,6 @@
 <template>
     <!-- {{ {filter, } }} -->
-    <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers"
+    <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers as any"
         :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="id" :height="height"
         @update:options="loadItems" :show-select="showSelect" fixed-header>
 
@@ -99,6 +99,15 @@
             </span>
         </template>
 
+        <template v-slot:item.deliveryDate="{ item: { deliveryDate } }">
+            <div v-if="deliveryDate">
+                {{ formatDate(deliveryDate) }}
+            </div>
+            <span class="text-grey" v-else>
+                N/A
+            </span>
+        </template>
+
         <template v-slot:item.carrier="{ item: { carrier } }">
             <!-- {{ {carrier} }} -->
             <div v-if="carrier">
@@ -156,7 +165,7 @@ const emit = defineEmits<{
 
 
 
-const { xs, smAndDown, sm, lg } = useDisplay();
+const { xs, smAndDown, smAndUp, mdAndUp, sm, lg } = useDisplay();
 
 const height = computed(() => {
 
@@ -167,7 +176,7 @@ const height = computed(() => {
     if (xs.value) {
         return 'calc(100vh - 210px)';
     }
-    return 'calc(100vh - 290px)'
+    return 'calc(100vh - 315px)'
 })
 
 const headers = [
@@ -176,6 +185,7 @@ const headers = [
         // align: 'start',
         // sortable: false,
         sortable: true,
+        fixed: smAndUp,
         key: 'id',
     },
     // {
@@ -185,31 +195,49 @@ const headers = [
     {
         title: 'Order ID', key: 'channelOrderId',
         sortable: true,
+        fixed: smAndUp,
         //  align: 'end' 
     },
     {
         title: 'Products', key: 'items',
         sortable: false,
+        fixed: mdAndUp,
         //  align: 'center' 
+        minWidth: '400px',
+        align: 'center',
     },
     {
         title: 'Destination', key: 'destinationAddress',
         sortable: false,
+        minWidth: '300px',
+        align: 'center',
         //  align: 'center' 
     },
     {
         title: 'Carrier', key: 'carrier',
         sortable: false,
         // align: 'center' 
+        minWidth: '200px',
+        align: 'center'
     },
     {
         title: 'Channel', key: 'channel',
         sortable: false,
+        minWidth: '200px',
+        align: 'center',
         // align: 'center' 
     },
     {
-        title: 'Delivery Date', key: 'expiresAt',
+        title: 'Expected Delivery Date', key: 'expiresAt',
         sortable: false,
+        minWidth: '150px',
+        align: 'center',
+    },
+    {
+        title: 'Delivery Date', key: 'deliveryDate',
+        sortable: false,
+        minWidth: '120px',
+        align: 'center',
     },
     {
         title: 'Status', key: 'status',
@@ -223,6 +251,8 @@ const headers = [
     {
         title: 'Fulfilment Type', key: 'fulfilmentType',
         sortable: false,
+        minWidth: '150px',
+        align: 'center',
         // align: 'center'
     },
     {
@@ -265,7 +295,7 @@ async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?:
     try {
         console.log("SORT BY: ", { sortBy });
         const criteria = {
-            ...(filter ?? props.filter ?? {}),
+            ...{ ...(filter ?? props.filter ?? {}), status: undefined },
         };
 
         loading.value = true;

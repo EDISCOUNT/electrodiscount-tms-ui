@@ -1,8 +1,9 @@
 <template>
-    <EntityPageCount :fetcher="() => getPaginatedShipments({ criteria, limit: 1 })"
-        :uri="`/api/admin/shipment/shipments?filter=${criteria.filter}`">
+    <!-- {{ criteria }} -->
+    <EntityPageCount :fetcher="() => countShipments({ criteria })"
+        :uri="`/api/admin/shipment/shipments?status=${status}&filter=${criteria.filter}`">
         <template v-slot:default="{ pagination, loading }">
-            <v-badge color="primary" :content="pagination?.pageInfo?.totalItems ?? 0" floating>
+            <v-badge color="primary" :content="pagination?.count?? 0" floating>
                 <!-- <v-icon icon="mdi-post"></v-icon> -->
                 <span class="text-grey">
                     {{ status }}
@@ -13,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getPaginatedShipments } from '@/admin/repository/shipment/shipment_repository';
+import { getPaginatedShipments, countShipments } from '@/admin/repository/shipment/shipment_repository';
 import EntityPageCount from './EntityPageCount.vue';
 import Carrier from '@/model/carrier/carrier';
 import { computed } from 'vue';
@@ -21,7 +22,9 @@ import { and, comparison, eq } from 'rsql-builder';
 
 const props = defineProps<{
     status: string;
-    carrier: Carrier | string;
+    carrier: Carrier;
+    filter?: string;
+    criteria?: {[i:string]: any};
 }>();
 
 
@@ -31,8 +34,9 @@ const criteria = computed(() => {
 
     return {
         filter: and(
-            comparison('status', eq(props.status)),
             comparison('carrier.id', eq(carrierId)),
+            comparison('status', eq(props.status)),
+            ...(props.filter? [props.filter] : []),
         )
     }
 

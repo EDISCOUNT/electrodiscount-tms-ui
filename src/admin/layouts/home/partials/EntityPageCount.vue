@@ -29,8 +29,8 @@
                 <v-col cols="3">
                     <v-card class="fill-height" flat>
                         <v-row align="center" justify="center" class="fill-height">
-                            <span class="text-h4" v-if="pagination?.pageInfo">
-                                {{ pagination?.pageInfo?.totalItems ?? 0 }}
+                            <span class="text-h4" v-if="pagination">
+                                {{ pagination.count ?? 0 }}
                             </span>
                             <v-progress-circular v-else-if="loading" indeterminate />
                         </v-row>
@@ -54,7 +54,6 @@
 </template>
 
 <script lang="ts" setup generic="T">
-import Pagination from '@/data/pagination';
 import { useColorScheme } from '@/utils/color';
 import useSWRV from 'swrv';
 
@@ -62,7 +61,7 @@ import useSWRV from 'swrv';
 const props = defineProps<{
     height?: string;
     uri: string;
-    fetcher: () => Promise<Pagination<T>>
+    fetcher: () => Promise<{count: number}>
 }>();
 
 const slots = defineSlots<{

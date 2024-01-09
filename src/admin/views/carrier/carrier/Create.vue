@@ -1,5 +1,5 @@
 <template>
-  <v-card height="100vh" color="secondary-bg" flat>
+  <v-card height="100vh" color="secondary-bg"  style="overflow-y: auto;" flat>
     <v-row justify="center" align="center" class="fill-height">
       <v-card flat>
         <v-card-text>

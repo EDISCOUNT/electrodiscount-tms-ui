@@ -8,19 +8,24 @@
         </v-card-title> -->
         <v-card-text class="pa-0">
             <v-card r-color="secondary-bg" flat>
-                <v-slide-group>
+                <v-slide-group v-model="model" multiple>
                     <v-slide-group-item v-for="(carrier, i) in pagination.items" :key="carrier.id">
-                        <v-card class="ma-2" :color="isDark? /*'black'*/ 'grey-darken-4' : 'grey-lighten-5'" flat>
+                        <v-card :class="['ma-2',]" flat>
                             <template v-slot:prepend>
                                 <slot name="prepend">
-                                    <v-avatar color="white" :size="50">
+                                    <v-avatar color="white" :size="60">
                                         <v-icon size="50">mdi-truck</v-icon>
                                     </v-avatar>
                                 </slot>
                             </template>
+                            <template v-slot:append>
+                                <v-btn :to="{ name: 'admin:carrier:show', params: { id: carrier.id } }" variant="text" size="x-small" icon>
+                                    <v-icon>mdi-arrow-right</v-icon>
+                                </v-btn>
+                            </template>
                             <template v-slot:title>
                                 <slot name="title">
-                                    <span class="text-h5">
+                                    <span class="text-h6">
                                         {{ carrier.name }}
                                     </span>
                                 </slot>
@@ -49,20 +54,25 @@
                                 </v-col> -->
                                 <v-col :cols="12" :md="12">
                                     <v-card-text>
-                                        <v-row>
-                                            <v-col cols="4">
+                                        <v-row class="px-2">
+                                            <v-col cols="3">
                                                 <!-- <v-card flat> -->
-                                                    <CarrierShipmentStatusCount :carrier="carrier" status="assigned" />
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="assigned" />
                                                 <!-- </v-card> -->
                                             </v-col>
-                                            <v-col cols="4">
+                                            <v-col cols="3">
                                                 <!-- <v-card flat> -->
-                                                    <CarrierShipmentStatusCount :carrier="carrier" status="intransit" />
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="intransit" />
                                                 <!-- </v-card> -->
                                             </v-col>
-                                            <v-col cols="4">
+                                            <v-col cols="3">
                                                 <!-- <v-card flat> -->
-                                                    <CarrierShipmentStatusCount :carrier="carrier" status="delivered" />
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="onhold" />
+                                                <!-- </v-card> -->
+                                            </v-col>
+                                            <v-col cols="3">
+                                                <!-- <v-card flat> -->
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="delivered" />
                                                 <!-- </v-card> -->
                                             </v-col>
                                         </v-row>
@@ -70,7 +80,7 @@
                                 </v-col>
                             </v-row>
                         </v-card>
-                        <v-divider class="my-5 mx-3" v-if="pagination?.items.length != (i + 1)" vertical/>
+                        <v-divider class="my-5 mx-3" v-if="pagination?.items.length != (i + 1)" vertical />
                     </v-slide-group-item>
                 </v-slide-group>
             </v-card>
@@ -86,11 +96,13 @@ import { getPaginatedCarriers } from '@/admin/repository/carrier/carrier_reposit
 import useSWRV from 'swrv';
 import CarrierShipmentStatusCount from './CarrierShipmentStatusCount.vue';
 import { useTheme } from 'vuetify';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 
 const props = defineProps<{
     code?: string;
+    filter?: string;
+    criteria?: {[i:string]: any};
 }>();
 
 
@@ -109,7 +121,10 @@ const { data: pagination, isValidating: loading, error } = useSWRV(
 );
 
 
-const  theme = useTheme();
+const model = ref<any>();
+
+
+const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 
 </script>

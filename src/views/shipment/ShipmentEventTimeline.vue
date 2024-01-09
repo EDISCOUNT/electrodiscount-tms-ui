@@ -11,23 +11,29 @@
                     <v-timeline-item v-for="(event, i) in pagination.items" :key="event.id ?? i" :size="10"
                         style="padding: 0;">
                         <template v-if="event.createdAt" v-slot:opposite>
-                            <span class="text-grey">
-                                {{ formatDate(event.createdAt) }}
-                            </span>
+                            <v-chip variant="text">
+                                <span class="text-grey">
+                                    {{ formatDate(event.createdAt) }}
+                                </span>
+                            </v-chip>
                         </template>
                         <v-card color="secondary-bg" width="100%" flat>
                             <!-- <v-spacer/> -->
                             <!-- <v-toolbar/> -->
-                            <template v-slot:title>
-                                <v-list-item flat>
-                                    <template v-slot:title>
+                            <!-- <template v-slot:title>
+                                <v-list-item flat> -->
+                                    <!-- <template v-slot:title> -->
+                                    <v-card-title>
                                         {{ event.title }}
-                                    </template>
-                                    <template v-slot:subtitle>
+                                    </v-card-title>
+                                    <!-- </template> -->
+                                    <!-- <template v-slot:subtitle> -->
+                                    <v-card-text>
                                         {{ event.subtitle }}
-                                    </template>
-                                </v-list-item>
-                            </template>
+                                    </v-card-text>
+                                    <!-- </template> -->
+                                <!-- </v-list-item> -->
+                            <!-- </template> -->
                             <v-card-text class="pa-2">
                                 <!-- {{ { attachments: event.attachments } }} -->
                                 <v-row justify="start" class="py-5">

@@ -13,15 +13,19 @@ export function ilike(value: any): Operation {
 }
 
 export function sameday(value: DateTimeInput): Operation {
-    return new Operation(nomalizeDateTimeInput(value), "=sameday=");
+    return new Operation(toDateString(value), "=sameday=");
 }
 
 export function sameweek(value: DateTimeInput): Operation {
-    return new Operation(nomalizeDateTimeInput(value), "=sameweek=");
+    return new Operation(toDateString(value), "=sameweek=");
 }
 
 export function samemonth(value: DateTimeInput): Operation {
-    return new Operation(nomalizeDateTimeInput(value), "=samemonth=");
+    return new Operation(toDateString(value), "=samemonth=");
+}
+
+export function sameyear(value: DateTimeInput): Operation {
+    return new Operation(toDateString(value), "=sameyear=");
 }
 
 export function between(a: any, b: any): Operation {
@@ -49,7 +53,7 @@ class ArrayOperation extends Operation {
 }
 
 
-function nomalizeDateTimeInput(input: DateTimeInput){
+export function toDateString(input: DateTimeInput){
     if(input instanceof Date){
         const date = input;
 

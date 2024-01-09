@@ -27,6 +27,23 @@ export async function getPaginatedShipments({ page, limit, criteria }: { page?: 
 }
 
 
+export async function countShipments({ criteria }: { criteria?: { [i: string]: any } } = {}) {
+    criteria ??= {};
+    criteria = { ...criteria };
+    // console.log("criteria: ", { criteria })
+    if ('status' in criteria) {
+        if (criteria['status'] == 0) {
+            delete criteria['status'];
+        }
+    }
+    const query = encodeURLParams({
+        ...criteria,
+    });
+    const { data } = await http.get(`/api/admin/shipment/shipments/count?${query}`);
+    return data as { count: number };
+}
+
+
 
 export async function getShipment(id: string) {
     const { data } = await http.get(`/api/admin/shipment/shipments/${id}`);
@@ -38,6 +55,12 @@ export async function getShipment(id: string) {
 
 export async function generatePacklist({ shipments }: { shipments: string[] }) {
     const { data } = await http.post(`/api/admin/shipment/shipments/operation/generate-packlist`, { shipments });
+    return data as { url: string };
+}
+
+
+export async function generateExportUrl({ shipments }: { shipments: string[] }) {
+    const { data } = await http.post(`/api/admin/shipment/shipments/operation/export`, { shipments });
     return data as { url: string };
 }
 

@@ -8,10 +8,9 @@
                         <v-spacer />
                         <v-card-text v-if="selected?.length">
                             <PrintShipmentManifestButton :shipments="selected" />
-                           <BulkUpdateShipmentStatusButton
-                           :apply-transition="bulkApplyTransition"
-                           @updated="() => refreshTable()"
-                           :shipments="selected"/>
+                            <ExportShipmentButton class="mx-1" :shipments="selected" />
+                            <BulkUpdateShipmentStatusButton :apply-transition="bulkApplyTransition"
+                                @updated="() => refreshTable()" :shipments="selected" />
                         </v-card-text>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
@@ -32,7 +31,7 @@
 
                 <template v-slot:append>
                     <!-- <create-shipment-button /> -->
-                    <BarcodeScannerButton/>
+                    <BarcodeScannerButton />
                 </template>
             </v-card>
 
@@ -54,6 +53,7 @@ import CreateShipmentButton from './partials/CreateShipmentButton.vue';
 import ShipmentStatusFilter from '@/views/shipment/filter/ShipmentStatusFilter.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
+import ExportShipmentButton from './partials/ExportShipmentButton.vue';
 import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
 import ShipmentFilterBar from './partials/filtter/ShipmentFilterBar.vue';
 import { useColorScheme } from '@/utils/color';
@@ -78,7 +78,7 @@ const selected = ref<string[]>([]);
 
 
 
-function refreshTable(){
+function refreshTable() {
     table.value?.refresh();
 }
 </script>

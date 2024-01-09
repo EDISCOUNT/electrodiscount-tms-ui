@@ -8,7 +8,10 @@
     <v-menu>
         <template v-slot:activator="{ props }">
             <v-btn v-bind="props" color="primary" :loading="isLoading" :elevation="0" variant="outlined">
-                <span>Update status</span>
+                <span>
+                    <span v-if="smAndUp">Update</span>
+                    status
+                </span>
                 <v-icon>mdi-menu-down</v-icon>
             </v-btn>
         </template>
@@ -42,11 +45,11 @@ import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify';
 import { ShipmentDocumentFileAttachmentFormData } from '@/model/shipment/shipment_document_attachment';
 
-interface ShipmentBulkTransitionArgs { 
-    shipments: (Shipment|string|number)[];
+interface ShipmentBulkTransitionArgs {
+    shipments: (Shipment | string | number)[];
     transition: string;
     description?: string;
-    attachments?: ShipmentDocumentFileAttachmentFormData[] ;
+    attachments?: ShipmentDocumentFileAttachmentFormData[];
 }
 
 const props = defineProps<{
@@ -62,7 +65,7 @@ const emit = defineEmits<{
 
 
 const notifier = useNotifier();
-const { xs, smAndDown, sm, } = useDisplay();
+const { xs, smAndDown, sm, smAndUp } = useDisplay();
 
 const form = ref<VForm>();
 

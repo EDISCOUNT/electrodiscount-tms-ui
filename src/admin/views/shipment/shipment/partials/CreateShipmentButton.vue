@@ -3,7 +3,8 @@
         <template v-slot:activator="{ props }">
             <slot name="activator" v-bind="{ props, to: { name: 'admin:shipment:create' } }">
                 <v-btn v-bind="props" color="primary" :elevation="0" variant="flat">
-                    New <v-divider vertical />
+                    <v-icon v-if="xs">mdi-plus-circle</v-icon>
+                    <span v-else>New</span> <v-divider vertical />
                     <v-icon>mdi-menu-down</v-icon>
                 </v-btn>
             </slot>
@@ -72,11 +73,14 @@ import useSWRV from 'swrv';
 import { ref } from 'vue';
 import ChannelOrderTable from '@/admin/views/order/order/partials/ChannelOrderTable.vue';
 import ChannelListItem from '@/admin/views/channel/partials/ChannelListItem.vue';
+import { useDisplay } from 'vuetify';
 
 const { data: pagination, isValidating: loading, error } = useSWRV(
     `/api/admin/channel/channels`,
     () => getPaginatedChannels(),
 );
+
+const {xs} = useDisplay();
 
 
 

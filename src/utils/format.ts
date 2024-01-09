@@ -47,6 +47,24 @@ export function formatDate(date: Date | string, locale: string = 'en-US', option
 }
 
 
+const _min_options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short',
+    // hour: 'numeric',
+    // minute: 'numeric',
+    // second: 'numeric',
+    // timeZoneName: 'short',
+};
+export function formatMinDate(date: Date | string, locale: string = 'en-US', options = _min_options): string {
+    if (typeof (date) == 'string') {
+        date = new Date(date);
+    }
+    return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
+
 export function formatDateTime(date: Date | string, locale: string = 'en-US', options = _options): string {
     return formatDate(date, locale, options);
 }

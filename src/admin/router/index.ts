@@ -140,6 +140,12 @@ const routes = [
         props: true
       },
       {
+        path: ':id',
+        name: 'admin:carrier:show',
+        component: () => import('@/admin/views/carrier/carrier/Show.vue'),
+        props: true
+      },
+      {
         path: ':id/edit',
         name: 'admin:carrier:edit',
         component: () => import('@/admin/views/carrier/carrier/Edit.vue'),

@@ -61,6 +61,8 @@
                                                     density="compact" :items="[
                                                         'PICKUP_AND_DELIVERY',
                                                         'DROPSHIPPING',
+                                                        'RETURN_ORDER',
+                                                        'EXCHANGE_ORDER',
                                                     ]"></v-select>
                                             </v-col>
 
