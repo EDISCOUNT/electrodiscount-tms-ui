@@ -37,8 +37,8 @@
                                     :elevation="0" :disabled="isImportingShipping || !orderIds.length" variant="flat"
                                     :loading="isImportingShipping && carrier.id == choosenCarrier?.id">
                                     <template v-slot:prepend>
-                                        <v-avatar v-if="carrier.logo">
-                                            <v-img :src="carrier.logo" />
+                                        <v-avatar v-if="carrier.logoImage">
+                                            <v-img :src="carrier.logoImage.url" />
                                         </v-avatar>
 
                                         <v-avatar color="primary" v-else>

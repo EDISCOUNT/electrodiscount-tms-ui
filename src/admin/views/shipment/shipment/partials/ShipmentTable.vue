@@ -122,19 +122,48 @@
             <small>{{ fulfilmentType }}</small>
         </template>
 
-        <template v-slot:item.actions="{ item: { id } }">
+        <template v-slot:item.actions="{ item: shipment }">
             <v-card-actions>
-                <v-btn color="primary" :to="{ name: 'admin:shipment:show', params: { id } }" :disabled="loading"
-                    :elevation="0" variant="flat" size="small" rounded>
+                <v-btn color="primary" :to="{ name: 'admin:shipment:show', params: { id: shipment.id } }"
+                    :disabled="loading" :elevation="0" variant="flat" size="small" rounded>
                     View
                     <v-icon>mdi-eye</v-icon>
                 </v-btn>
 
-                <v-btn color="primary" :to="{ name: 'admin:shipment:edit', params: { id } }" :disabled="loading"
-                    :elevation="0" variant="flat" size="small" rounded>
-                    Edit
-                    <v-icon>mdi-pencil</v-icon>
-                </v-btn>
+                <v-menu>
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" color="primary" :disabled="loading" :elevation="0" variant="outlined"
+                            size="small" rounded>
+                            Options
+                            <v-divider class="mx-1" vertical />
+                            <v-icon>mdi-chevron-down</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-card flat>
+                        <v-card-text class="pa-0">
+                            <v-lsit>
+                                <v-list-item :to="{ name: 'admin:shipment:edit', params: { id: shipment.id } }">
+                                    <template v-slot:prepend>
+                                        <v-icon>mdi-pencil</v-icon>
+                                    </template>
+                                    <template v-slot:title>
+                                        <span>Edit</span>
+                                    </template>
+                                </v-list-item>
+                                <v-divider />
+                                <v-list-item @click="() => deleteSingleShipment(shipment)">
+                                    <template v-slot:prepend>
+                                        <v-icon>mdi-delete</v-icon>
+                                    </template>
+                                    <template v-slot:title>
+                                        <span>Delete</span>
+                                    </template>
+                                </v-list-item>
+
+                            </v-lsit>
+                        </v-card-text>
+                    </v-card>
+                </v-menu>
 
             </v-card-actions>
         </template>
@@ -143,12 +172,14 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { getPaginatedShipments } from '../../../../repository/shipment/shipment_repository';
+import { getPaginatedShipments, deleteShipment } from '../../../../repository/shipment/shipment_repository';
 import { useDisplay } from 'vuetify';
 import { computed } from 'vue';
 import { getStatusColor } from '@/utils/color';
 import { formatDate } from '@/utils/format';
+import Shipment from '@/model/shipment/shipment';
 import ShipmentFulfilmentCard from '@/views/shipment/ShipmentFulfilmentCard.vue';
+import { useNotifier } from 'vuetify-notifier';
 
 
 const props = defineProps<{
@@ -165,6 +196,7 @@ const emit = defineEmits<{
 
 
 
+const notifier = useNotifier();
 const { xs, smAndDown, smAndUp, mdAndUp, sm, lg } = useDisplay();
 
 const height = computed(() => {
@@ -186,6 +218,7 @@ const headers = [
         // sortable: false,
         sortable: true,
         fixed: smAndUp,
+        minWidth: '100px',
         key: 'id',
     },
     // {
@@ -196,6 +229,7 @@ const headers = [
         title: 'Order ID', key: 'channelOrderId',
         sortable: true,
         fixed: smAndUp,
+        minWidth: '100px',
         //  align: 'end' 
     },
     {
@@ -318,6 +352,31 @@ async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?:
 
 async function refresh() {
     await loadItems({});
+}
+
+
+const isDeleting = ref(false);
+
+async function deleteSingleShipment(shipment: Shipment) {
+    try {
+        const mayDelete = await notifier.confirm({
+            title: "Delete Shipment",
+            text: "Are you sure you want to delete this shipment?"
+        });
+        if (!mayDelete) {
+            return;
+        }
+        isDeleting.value = true;
+        const result = await deleteShipment(shipment.id! as any);
+        refresh();
+    }
+    catch (err) {
+        const message = (err as any).message;
+        notifier.toastError(message);
+    }
+    finally {
+        isDeleting.value = false;
+    }
 }
 
 

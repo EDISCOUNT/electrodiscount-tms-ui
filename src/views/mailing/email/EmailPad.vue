@@ -208,6 +208,7 @@ const data = reactive<EmailMessageFormData>({
     subject: (undefined as any) as string,
     message: (undefined as any) as string,
     attachments: [] as FileEntry[],
+    shipment: props.shipment,
 });
 
 

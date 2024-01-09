@@ -5,7 +5,7 @@
 
         <template v-slot:item.logo="{ item: { logoImage } }">
             <div v-if="logoImage">
-                <v-img :src="logoImage.url"/>
+                <v-img :src="logoImage.url" />
             </div>
             <span class="text-grey" v-else>N/A</span>
         </template>
@@ -25,7 +25,7 @@
             </div>
             <span class="text-grey" v-else>N/A</span>
         </template>
-        
+
 
 
         <!-- <template v-slot:item.name="{ item }">
@@ -41,7 +41,8 @@
                 <v-icon>mdi-eye</v-icon>
             </v-btn>
 
-            <v-btn color="primary" :to="{ name: 'admin:carrier:edit', params: { id } }" :elevation="0" size="small" class="mx-1" rounded>
+            <v-btn color="primary" :to="{ name: 'admin:carrier:edit', params: { id } }" :elevation="0" size="small"
+                class="mx-1" rounded>
                 <v-icon>mdi-pencil</v-icon>
                 Edit
             </v-btn>
@@ -53,6 +54,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { getPaginatedCarriers } from '@/admin/repository/carrier/carrier_repository';
+import { debounce } from 'lodash';
 
 
 const props = defineProps<{
@@ -65,7 +67,7 @@ const props = defineProps<{
 
 const headers = [
     { title: 'ID', key: 'id', },
-    { title: 'Logo', key: 'logo', },
+    { title: 'Logo', key: 'logo', sortable: false },
     { title: 'Code', key: 'code', },
     {
         title: 'Name',
@@ -88,7 +90,7 @@ const loading = ref(true);
 const totalItems = ref(0);
 
 
-async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
+async function doLoadItems({ page, itemsPerPage: limit, sortBy }: { page?: number, itemsPerPage?: number, sortBy: any }) {
     try {
         loading.value = true;
         const pagination = await getPaginatedCarriers({ page, limit });
@@ -105,4 +107,5 @@ async function loadItems({ page, itemsPerPage: limit, sortBy }: { page?: number,
     }
 
 }
+const loadItems = debounce(doLoadItems, 100);
 </script>

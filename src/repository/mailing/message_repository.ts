@@ -45,6 +45,11 @@ export async function createEmailMessage(data: EmailMessageFormData) {
         // formData.append(`attachments[${index}][filename]`, attachment.filename);
     });
 
+    // 
+    if (data.shipment) {
+        formData.append('shipment', String(data.shipment.id));
+    }
+
     const { data: result } = await http.post(`/api/mailing/messages`, formData);
     return EmailMessage.fromJson(result);
 }

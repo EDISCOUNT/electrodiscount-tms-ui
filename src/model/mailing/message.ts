@@ -1,6 +1,7 @@
 import Address from "../addressing/address";
 import EmailAddress from "./email_address";
 import EmailAttachment, { EmailAttachmentFormData } from "./email_attachment";
+import Shipment from '@/model/shipment/shipment';
 
 export default class EmailMessage {
     id?: string;
@@ -48,4 +49,6 @@ export interface EmailMessageFormData {
     //
     label?: string;
     saveAsTemplate?: boolean;
+    // 
+    shipment?: Shipment;
 }

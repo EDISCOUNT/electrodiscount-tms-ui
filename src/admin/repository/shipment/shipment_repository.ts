@@ -132,6 +132,11 @@ export async function updateShipment(id: string, data: ShipmentFormData) {
 }
 
 
+export async function deleteShipment(id: string) {
+    const { data: result } = await http.delete(`/api/admin/shipment/shipments/${id}`);
+}
+
+
 
 export interface AttachmentFormData {
     file: File;
