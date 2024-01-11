@@ -18,7 +18,8 @@
                             <v-icon>mdi-content-save</v-icon>
                             Save
                         </v-btn>
-                        <v-btn v-if="shipment" :to="{name: 'admin:shipment:show', params:{id: shipment.id}}" color="primary" :elevation="0" class="mx-2" variant="outlined">
+                        <v-btn v-if="shipment" :to="{ name: 'admin:shipment:show', params: { id: shipment.id } }"
+                            color="primary" :elevation="0" class="mx-2" variant="outlined">
                             View
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
@@ -57,8 +58,8 @@
                                                     density="compact"></v-text-field>
                                             </v-col>
                                             <v-col cols="12" md="6">
-                                                <v-select v-model="data.fulfilmentType" label="Fulfilment Type" variant="outlined"
-                                                    density="compact" :items="[
+                                                <v-select v-model="data.fulfilmentType" label="Fulfilment Type"
+                                                    variant="outlined" density="compact" :items="[
                                                         'PICKUP_AND_DELIVERY',
                                                         'DROPSHIPPING',
                                                         'RETURN_ORDER',
@@ -264,12 +265,23 @@
 
                                     </v-card>
                                     <v-card flat>
+                                        <template v-slot:title>
+                                            <span> Config and fulfilment</span>
+                                        </template>
                                         <v-card-subtitle>
-                                            Select Carrier(Optional)
+                                            Select Carrier, channel and warehouse
                                         </v-card-subtitle>
                                         <v-card-text>
                                             <CarrierInput v-model="data.carrier" label=""
                                                 placeholder="Start typing to search for carriers..." variant="outlined"
+                                                density="compact" outlined />
+
+                                            <ChannelInput v-model="data.channel" label=""
+                                                placeholder="Start typing to search for Channels..." variant="outlined"
+                                                density="compact" outlined />
+
+                                            <StorageInput v-model="data.storage" label=""
+                                                placeholder="Start typing to search for Storages..." variant="outlined"
                                                 density="compact" outlined />
                                         </v-card-text>
                                     </v-card>
@@ -330,6 +342,8 @@ import { useDisplay } from 'vuetify/lib/framework.mjs';
 import FlatShipmentItemForm from './partials/FlatShipmentItemForm.vue';
 import ShipmentFulfilmentForm from './partials/ShipmentFulfilmentForm.vue';
 import CarrierInput from './partials/CarrierInput.vue';
+import ChannelInput from './partials/ChannelInput.vue';
+import StorageInput from './partials/StorageInput.vue';
 import DimensionInput from './partials/DimensionInput.vue';
 import AddressForm from './partials/AddressForm.vue';
 import { useColorScheme } from '@/utils/color';

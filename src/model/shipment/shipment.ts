@@ -1,9 +1,11 @@
 import Address, { AddressFormData } from "../addressing/address";
 import Carrier from "../carrier/carrier";
 import Channel from "../channel/channel";
+import Storage from "../inventory/storage";
 import AdditionalService from "../order/additional_service";
 import ShipmentDimension, { ShipmentDimensionFormData } from "./shipment_dimension";
 import ShipmentFulfilment, { ShipmentFulfilmentFormData } from "./shipment_fulfilment";
+import ShipmentFulfilmentTimeRange, { ShipmentFulfilmentTimeRangeFormData } from "./shipment_fulfilment_time_range";
 import ShipmentFulfilmentType from "./shipment_fulfilment_type";
 import ShipmentItem, { ShipmentItemFormData } from "./shipment_item";
 
@@ -19,6 +21,7 @@ export default class Shipment {
   channelOrderId: string;
   carrier?: Carrier;
   channel?: Channel;
+  storage?: Storage;
   metadata?: Record<string, any>;
   items: ShipmentItem[];
   _fulfilment?: ShipmentFulfilment;
@@ -36,6 +39,7 @@ export default class Shipment {
   volumetricWeight?: number;
   //
   fulfilmentType?: ShipmentFulfilmentType;
+  fulfilmentTimeRange?: ShipmentFulfilmentTimeRange;
 
 
   get fulfilment (): ShipmentFulfilment | undefined{
@@ -71,6 +75,7 @@ get fulfilments() {
     channelOrderId,
     carrier,
     channel,
+    storage,
     metadata,
     items,
     fulfilment,
@@ -85,7 +90,8 @@ get fulfilments() {
     netWeight,
     volumetricWeight,
     //
-    fulfilmentType
+    fulfilmentType,
+    fulfilmentTimeRange,
     //
   }: {
     id: number;
@@ -100,6 +106,7 @@ get fulfilments() {
     items: ShipmentItem[];
     carrier?: Carrier;
     channel?: Channel;
+    storage?: Storage;
     metadata?: Record<string, any>;
     fulfilment?: ShipmentFulfilment;
     additionalServices?: AdditionalService[];
@@ -113,6 +120,8 @@ get fulfilments() {
     netWeight?: number,
     volumetricWeight?: number,
     fulfilmentType?: ShipmentFulfilmentType,
+    // 
+    fulfilmentTimeRange?: ShipmentFulfilmentTimeRange,
   }) {
     this.id = id;
     this.code = code;
@@ -126,6 +135,7 @@ get fulfilments() {
     this.items = items;
     this.carrier = carrier;
     this.channel = channel;
+    this.storage = storage;
     this.metadata = metadata;
     this._fulfilment = fulfilment;
     this.additionalServices = additionalServices;
@@ -140,6 +150,7 @@ get fulfilments() {
     this.volumetricWeight = volumetricWeight;
     //
     this.fulfilmentType = fulfilmentType;
+    this.fulfilmentTimeRange = fulfilmentTimeRange;
   }
 
   copyWith({
@@ -154,6 +165,7 @@ get fulfilments() {
     channelOrderId,
     carrier,
     channel,
+    storage,
     items,
     metadata,
     fulfilment,
@@ -169,6 +181,7 @@ get fulfilments() {
     volumetricWeight,
     //
     fulfilmentType,
+    fulfilmentTimeRange,
   }: {
     id?: number;
     code?: string;
@@ -181,6 +194,7 @@ get fulfilments() {
     channelOrderId?: string;
     carrier?: Carrier;
     channel?: Channel;
+    storage?: Storage;
     items?: ShipmentItem[];
     metadata?: Record<string, any>;
     fulfilment?: ShipmentFulfilment;
@@ -197,6 +211,7 @@ get fulfilments() {
     //
     
   fulfilmentType?: ShipmentFulfilmentType,
+  fulfilmentTimeRange?: ShipmentFulfilmentTimeRange,
   }): Shipment {
     return new Shipment({
       id: id ?? this.id,
@@ -210,6 +225,7 @@ get fulfilments() {
       channelOrderId: channelOrderId ?? this.channelOrderId,
       carrier: carrier ?? this.carrier,
       channel: channel ?? this.channel,
+      storage: storage ?? this.storage,
       items: items ?? this.items,
       metadata: metadata ?? this.metadata,
       fulfilment: fulfilment ?? this.fulfilment,
@@ -225,6 +241,7 @@ get fulfilments() {
       volumetricWeight: volumetricWeight ?? this.volumetricWeight,
       //
       fulfilmentType: fulfilmentType?? this.fulfilmentType,
+      fulfilmentTimeRange: fulfilmentTimeRange?? this.fulfilmentTimeRange,
     });
   }
 
@@ -241,6 +258,7 @@ get fulfilments() {
       channelOrderId: json["channelOrderId"],
       carrier: json["carrier"] ? Carrier.fromJson(json["carrier"]) : undefined,
       channel: json["channel"] ? Channel.fromJson(json["channel"]) : undefined,
+      storage: json["storage"] ? Storage.fromJson(json["storage"]) : undefined,
       items: json["items"].map((x: any) => ShipmentItem.fromJson(x)),
       additionalServices: json["additionalServices"]?.map((x: any) => AdditionalService.fromJson(x)),
       metadata: json["metadata"] ?? [],
@@ -256,6 +274,7 @@ get fulfilments() {
       volumetricWeight: json["volumetricWeight"],
       //
       fulfilmentType: json['fulfilmentType'],
+      fulfilmentTimeRange: json['fulfilmentTimeRange'] ? ShipmentFulfilmentTimeRange.fromJson(json['fulfilmentTimeRange']) : undefined,
     });
   }
 
@@ -272,6 +291,8 @@ get fulfilments() {
       "items": this.items.map((x) => x.toJson()),
       "additionalServices": this.additionalServices?.map((x) => x.id),
       "carrier": this.carrier?.id,
+      "channel": this.channel?.id,
+      "storage": this.storage?.id,
       // "metadata": this.metadata ?? {},
       "fulfilment": this._fulfilment?.toJson(),
       "dimension": this.dimension?.toJson(),
@@ -284,6 +305,7 @@ get fulfilments() {
       "codCurrency": this.codCurrency,
       // 
       "fulfilmentType": this.fulfilmentType,
+      "fulfilmentTimeRange": this.fulfilmentTimeRange?.toJson(),
     };
   }
 }
@@ -291,7 +313,7 @@ get fulfilments() {
 
 export interface ShipmentFormData {
   code?: string;
-  items: ShipmentItemFormData[];
+  items?: ShipmentItemFormData[];
   originAddress?: AddressFormData;
   destinationAddress?: AddressFormData;
   fulfilment?: ShipmentFulfilmentFormData;
@@ -309,7 +331,10 @@ export interface ShipmentFormData {
   volumetricWeight?: number;
   //
   carrier?: string;
+  channel?: string;
+  storage?: string;
   // 
   fulfilmentType?: ShipmentFulfilmentType;
+  fulfilmentTimeRange?: ShipmentFulfilmentTimeRangeFormData;
 }
 

@@ -3,8 +3,22 @@ import Pagination from "@/data/pagination/pagination";
 import Carrier, { CarrierLogoData } from "@/model/carrier/carrier";
 import { encodeURLParams } from "@/utils/url";
 
-export async function getPaginatedCarriers({ page, limit, search }: { page?: number, limit?: number, search?: string } = {}) {
-    const params = encodeURLParams({ page, limit, search });
+export async function getPaginatedCarriers({ page, limit, search, criteria, sortBy, }: { page?: number, limit?: number, search?: string, criteria?: { [i: string]: any }, sortBy?: { [i: string]: 'asc' | 'desc' } } = {}) {
+    // const params = encodeURLParams({ page, limit, search });
+    criteria ??= {};
+    criteria = { ...criteria };
+    // console.log("criteria: ", { criteria })
+    if ('status' in criteria) {
+        if (criteria['status'] == 0) {
+            delete criteria['status'];
+        }
+    }
+    const params = encodeURLParams({
+        ...criteria,
+        page,
+        limit,
+        search,
+    });
     const { data } = await http.get(`/api/admin/carrier/carriers?${params}`);
     const pagination = Pagination.fromJson<Carrier>({
         ...data,

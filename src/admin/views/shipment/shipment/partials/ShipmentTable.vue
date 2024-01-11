@@ -19,8 +19,8 @@
                             [PRODUCT NAME NOT AVAILABE]
                         </span>
                     </div>
-                    <v-chip v-else-if="i == (items.length - 1)">
-                        {{ items.length - 1 }} More
+                    <v-chip v-else-if="i == (items.length - 1)" size="small">
+                       + {{ items.length - 1 }} More
                     </v-chip>
                 </div>
             </template>
@@ -141,7 +141,7 @@
                     </template>
                     <v-card flat>
                         <v-card-text class="pa-0">
-                            <v-lsit>
+                            <v-list>
                                 <v-list-item :to="{ name: 'admin:shipment:edit', params: { id: shipment.id } }">
                                     <template v-slot:prepend>
                                         <v-icon>mdi-pencil</v-icon>
@@ -160,7 +160,7 @@
                                     </template>
                                 </v-list-item>
 
-                            </v-lsit>
+                            </v-list>
                         </v-card-text>
                     </v-card>
                 </v-menu>
@@ -229,23 +229,40 @@ const headers = [
         title: 'Order ID', key: 'channelOrderId',
         sortable: true,
         fixed: smAndUp,
-        minWidth: '100px',
-        //  align: 'end' 
+        minWidth: '120px',
+         align: 'end' 
     },
     {
-        title: 'Products', key: 'items',
+        title: 'Status', key: 'status',
         sortable: false,
-        fixed: mdAndUp,
-        //  align: 'center' 
-        minWidth: '400px',
+        align: 'center'
+    },
+    {
+        title: 'Expected Delivery Date', key: 'expiresAt',
+        sortable: false,
+        minWidth: '200px',
+        align: 'center',
+    },
+    {
+        title: 'Delivery Date', key: 'deliveryDate',
+        sortable: false,
+        minWidth: '120px',
         align: 'center',
     },
     {
         title: 'Destination', key: 'destinationAddress',
         sortable: false,
         minWidth: '300px',
+        fixed: mdAndUp,
         align: 'center',
         //  align: 'center' 
+    },
+    {
+        title: 'Products', key: 'items',
+        sortable: false,
+        //  align: 'center' 
+        minWidth: '500px',
+        align: 'center',
     },
     {
         title: 'Carrier', key: 'carrier',
@@ -260,23 +277,6 @@ const headers = [
         minWidth: '200px',
         align: 'center',
         // align: 'center' 
-    },
-    {
-        title: 'Expected Delivery Date', key: 'expiresAt',
-        sortable: false,
-        minWidth: '150px',
-        align: 'center',
-    },
-    {
-        title: 'Delivery Date', key: 'deliveryDate',
-        sortable: false,
-        minWidth: '120px',
-        align: 'center',
-    },
-    {
-        title: 'Status', key: 'status',
-        sortable: false,
-        //  align: 'center'
     },
     // {
     //     title: 'Status', key: 'status',
@@ -297,7 +297,7 @@ const headers = [
 ];
 
 
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(100);
 const search = ref('');
 const serverItems = ref<any[]>([]);
 const loading = ref(true);
@@ -314,7 +314,7 @@ watch(selected, (selected) => emit('update:model-value', selected));
 watch(
     () => props.filter,
     (filter) => {
-        // console.log("DATA CHANGED:", filter);
+        console.log("DATA CHANGED:", filter);
         loadItems({
             page: tablePage.value,
             itemsPerPage: itemsPerPage.value,
@@ -327,9 +327,11 @@ watch(
 
 async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy?: any, filter?: { [i: string]: any } }) {
     try {
-        console.log("SORT BY: ", { sortBy });
+        //console.log("SORT BY: ", { sortBy });
         const criteria = {
-            ...{ ...(filter ?? props.filter ?? {}), status: undefined },
+            ...{ ...(filter ?? props.filter ?? {}),
+            //status: undefined
+            },
         };
 
         loading.value = true;
@@ -341,6 +343,8 @@ async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?:
 
     }
     catch (err) {
+        const message = (err as any).message;
+        notifier.toastError(message);
         throw err;
     }
     finally {

@@ -14,11 +14,11 @@ export function encodeURLParams(data: { [i: string]: any }) {
 
     for (const key in data) {
         if (Array.isArray(data[key])) {
-            data[key].forEach((item: any) => {
+            (data[key] as string[]).forEach((item: any, index) => {
                 if (item === undefined || item === null || item === '') {
                     return;
                 }
-                params.append(key, item);
+                params.append(`${key}[]`, item);
             });
             // const entries = data[key].filter((item: any) => !(item === undefined || item === null || item === ''));
             // params.append(key,entries);

@@ -1,12 +1,13 @@
 <template>
     <div>
         <!-- <DateRangeSelector/> -->
-        <!-- {{ { rsql: filter.datesRsql } }} -->
+        <!-- {{ { rsql: filter.fulfilmentDatesRsql } }} -->
         <v-row no-gutters>
             <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
-                <ShipmentFulfilmentDateRangeFilter v-model="filter.fulfilmentDateRange" v-model:rsql="filter.fulfilmentDatesRsql"
-                    label="Expected Delivery Dates" placeholder="Select fulfilment dates" variant="outlined"
-                    density="compact" :fields="['fulfilment.exactDeliveryDate']" :possible-fields="[
+                <ShipmentFulfilmentDateRangeFilter v-model="filter.fulfilmentDateRange"
+                    v-model:rsql="filter.fulfilmentDatesRsql" label="Expected Delivery Dates"
+                    placeholder="Select fulfilment dates" variant="outlined" density="compact"
+                    r-:fields="['fulfilment.exactDeliveryDate']" :possible-fields="[
                         { label: 'Exact Delivery Date', value: 'fulfilment.latestDeliveryDate' },
                         { label: 'Latest Delivery Date', value: 'fulfilment.exactDeliveryDate', },
                         { label: 'Expiry Date', value: 'fulfilment.expiryDate' }
@@ -20,15 +21,15 @@
             </v-col>
             <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
                 <v-text-field v-model="filter.code" label="Shipment Code" placeholder="Enter Shipment Code"
-                    variant="outlined" density="compact"  class="mr-2" clearable />
+                    variant="outlined" density="compact" class="mr-2" clearable />
             </v-col>
             <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
                 <v-text-field v-model="filter.channelOrderId" label="Order ID" placeholder="Enter Order Id"
-                    variant="outlined" density="compact"  class="mx-1" clearable />
+                    variant="outlined" density="compact" class="mx-1" clearable />
             </v-col>
             <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
-                <v-select v-model="filter.fulfilmentType" label="Fulfilment Type" variant="outlined" density="compact" class="mx-1"
-                    :items="[
+                <v-select v-model="filter.fulfilmentType" label="Fulfilment Type" variant="outlined" density="compact"
+                    class="mx-1" :items="[
                         'PICKUP_AND_DELIVERY',
                         'DROPSHIPPING',
                         'RETURN_ORDER',
@@ -36,12 +37,12 @@
                     ]" multiple></v-select>
             </v-col>
             <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
-                <CarrierInput v-model="filter.carriers" label="Carriers" placeholder="Filter by assigned carriers"
-                    variant="outlined" density="compact"  class="mx-1" multiple clearable />
+                <CarrierInput v-model="filter.carrier" label="Carriers" placeholder="Filter by assigned carriers"
+                    variant="outlined" density="compact" class="mx-1" multiple clearable />
             </v-col>
-            <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
-                <ChannelInput v-model="filter.channels" label="Channels" placeholder="Filter by source Channels"
-                    variant="outlined" density="compact"  class="mx-1" multiple clearable />
+            <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3" v-if="!noCarrier">
+                <ChannelInput v-model="filter.channel" label="Channels" placeholder="Filter by source Channels"
+                    variant="outlined" density="compact" class="mx-1" multiple clearable />
             </v-col>
 
             <v-col v-if="xs" :cols="12" :sm="4" r-:md="4" r-:lg="3">
@@ -66,8 +67,8 @@ import { useRouter } from 'vue-router';
 import { DateRangeInput } from '@/views/shipment/filter/DateRange';
 
 interface FilterOptions {
-    channels: string[];
-    carriers: string[];
+    channel: string[];
+    carrier: string[];
     code?: string,
     channelOrderId?: string;
     status?: string | string[];
@@ -83,6 +84,7 @@ const props = defineProps<{
     status?: string | string[];
     updateUrlQuery?: boolean;
     // urlQueryNamespace?: string | symbol;
+    noCarrier?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -93,8 +95,8 @@ const router = useRouter();
 const { xs, sm, lg } = useDisplay();
 
 const filter = reactive<FilterOptions>({
-    carriers: [],
-    channels: [],
+    carrier: [],
+    channel: [],
     // status: 
 });
 
@@ -114,7 +116,7 @@ watch(filter, (filter) => {
             }
         })
     }
-});
+}, { deep: true });
 
 onMounted(() => {
     if (props.updateUrlQuery) {
@@ -124,9 +126,9 @@ onMounted(() => {
                 console.log("QUERY: ", { query });
                 filter.code = query.code as string;
                 filter.channelOrderId = query.channelOrderId as string;
-                filter.status = query.status as string;
-                filter.carriers = (Array.isArray(query.carriers) ? query.carriers : [query.carriers].filter((e: any) => e)).map(e => Number(e)) as any[];
-                filter.channels = (Array.isArray(query.channels) ? query.channels : [query.channels].filter((e: any) => e)).map(e => Number(e)) as any[];
+                // filter.status = query.status as string;
+                filter.carrier = (Array.isArray(query.carrier) ? query.carrier : [query.carrier].filter((e: any) => e)).map(e => Number(e)) as any[];
+                filter.channel = (Array.isArray(query.channel) ? query.channel : [query.channel].filter((e: any) => e)).map(e => Number(e)) as any[];
                 filter.fulfilmentType = (Array.isArray(query.fulfilmentType) ? query.fulfilmentType : [query.fulfilmentType].filter((e: any) => e)) as string[];
                 // filter.status = query.status as string;
                 const fulfilmentDateRange = query.fulfilmentDateRange ? JSON.parse(query.fulfilmentDateRange as string) : undefined;
@@ -143,10 +145,10 @@ onMounted(() => {
                     filter.deliveryDateRange = deliveryDateRange;
                 }
 
-                console.log("FILTER: ", { filter });
+                // console.log("FILTER: ", { filter });
             }
             catch (err) {
-                console.log("ERROR: ", err);
+                // console.log("ERROR: ", err);
 
             }
         }
@@ -191,11 +193,11 @@ const rsql = computed(() => {
         query = and(query, comparison('channelOrderId', like(filter.channelOrderId)));
     }
 
-    if (filter.carriers.length > 0) {
-        query = and(query, comparison('carrier.id', inList(...filter.carriers)));
+    if (filter.carrier.length > 0) {
+        query = and(query, comparison('carrier.id', inList(...filter.carrier)));
     }
-    if (filter.channels.length > 0) {
-        query = and(query, comparison('channel.id', inList(...filter.channels)));
+    if (filter.channel.length > 0) {
+        query = and(query, comparison('channel.id', inList(...filter.channel)));
     }
     if (filter.fulfilmentType && filter.fulfilmentType.length > 0) {
         query = and(query, comparison('fulfilmentType', inList(...filter.fulfilmentType)));

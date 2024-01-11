@@ -1,11 +1,12 @@
 <template>
     <v-card height="100vh" :color="secondaryBg" flat>
         <v-card-text class="pa-0 pa-sm-4">
+            <!-- {{ {filter} }} -->
             <v-card class="" flat>
                 <template v-slot:title>
                     <v-toolbar color="transparent">
                         <template v-if="smAndUp">
-                            <span> Shipments</span>
+                            <span>All Shipments</span>
                         </template>
                             <v-spacer />
                         <v-row v-if="selected?.length" class="px-md-5">
@@ -18,8 +19,8 @@
                         </v-row>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
-                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" multiple />
-                                <ShipmentFilterBar v-model:rsql="filter.filter" :code="filter.code" :status="filter.status"
+                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" :filter="filter.filter" update-url-query multiple />
+                                <ShipmentFilterBar v-model:rsql="filter.filter" :code="filter.code" r-:status="filter.status"
                                     update-url-query v-else />
                                 <BarcodeScannerButton v-model:result="filter.code" autoclose />
                             </v-row>
@@ -29,7 +30,7 @@
                 <!-- <template v-slot:title> -->
                 <!-- <div class="mt-2"> -->
                 <!-- <v-toolbar-items> -->
-                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" :status="filter.status" update-url-query
+                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" r-:status="filter.status" update-url-query
                     class="mt-2 px-5" />
                 <!-- </v-toolbar-items> -->
                 <!-- </div> -->

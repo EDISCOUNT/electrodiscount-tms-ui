@@ -10,28 +10,38 @@
         :color="rselected.includes(0) ? 'primary' : undefined" :elevation="0">
         All
     </v-chip> -->
-    <v-chip-group v-model="selected" multiple variant="text" r-mandatory show-arrows clearable>
+    <!-- {{ {filter} }} -->
+    <v-chip-group v-model="selected" multiple r-variant="text" r-class="mt-5" r-mandatory show-arrows clearable>
         <!-- <template v-slot:prepend>
                 <span>Here I AM!</span>
         </template> -->
         <!-- {{ {selected, rselected} }} -->
-        <v-chip r-class="mx-2" @click.stop="() => clear()" :value="0" label :color="(selected == 0) ? 'primary' : undefined"
-            :elevation="0">
+        <v-btn @click.stop="() => clear()" class="mt-1 mx-1" variant="tonal" size="small">
+            <!-- <v-chip r-class="mx-2" @click.stop="() => clear()" :value="0" label
+                :color="(selected == 0) ? 'primary' : undefined" :elevation="0"> -->
             All
-        </v-chip>
-        <v-chip v-for="(status, i) in statuses" :key="status.value" r-class="mx-2" :value="status.value" label
+            <!-- </v-chip> -->
+        </v-btn>
+        <!-- <v-chip v-for="(status, i) in statuses" :key="status.value" r-class="mx-2" :value="status.value" label
             :color="rselected.includes(status.value) ? 'primary' : undefined" :elevation="0">
             {{ status.text }}
-        </v-chip>
+        </v-chip> -->
+        <StatusFilterChip v-for="(status, i) in statuses" :key="status.value" r-class="mx-2" :value="status.value" :filter="filter" label
+            :is-selected="rselected.includes(status.value)" size="small" :elevation="0">
+            {{ status.text }}
+        </StatusFilterChip>
     </v-chip-group>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import StatusFilterChip from './StatusFilterChip.vue';
 
 const props = defineProps<{
     modelValue?: string[] | string | number;
+    filter?: string;
+    updateUrlQuery?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -63,6 +73,19 @@ watch(selected, (v) => {
 
 
 
+watch(selected, (selected) => {
+    if (props.updateUrlQuery) {
+        router.replace({
+            query: {
+                ...router.currentRoute.value.query,
+                // [props.urlQueryNamespace ?? 'filter']: 
+                status: selected
+            }
+        })
+    }
+});
+
+
 onMounted(() => {
     // if (props.updateUrlQuery) {
     const query = router.currentRoute.value.query;
@@ -70,7 +93,7 @@ onMounted(() => {
         try {
             setTimeout(() => {
                 selected.value = (query.status as any) ?? [];
-            },10);
+            }, 10);
         } catch (e) {
 
         }
@@ -89,6 +112,7 @@ const statuses = [
     { text: 'Assigned', value: 'assigned' },
     { text: 'Processing', value: 'processing' },
     { text: 'Ready', value: 'ready' },
+    { text: 'On Hold', value: 'onhold' },
     { text: 'In Transit', value: 'intransit' },
     { text: 'Delivered', value: 'delivered' },
     { text: 'Completed', value: 'completed' },

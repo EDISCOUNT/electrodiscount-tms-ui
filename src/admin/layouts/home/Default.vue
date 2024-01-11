@@ -7,53 +7,9 @@
 
                 <v-row justify="center" align="center" class="fill-height">
                     <v-card color="transparent" flat>
-                        <v-card-title class="mb-3">
-                            <v-card flat>
-                                <v-card-text>
-                                    <v-row justify="space-between" class="px-5 pb-1 pt-4">
-                                        <!-- <v-col> -->
-                                        <v-chip-group v-model="parameters.fulfilmentType" variant="text" multiple>
-                                            <v-chip value="PICKUP_AND_DELIVERY">
-                                                Pick/Drop
-                                            </v-chip>
-
-                                            <v-chip value="DROPSHIPPING">
-                                                Drop Ship
-                                            </v-chip>
-
-                                            <v-chip value="RETURN_ORDER">
-                                                Return
-                                            </v-chip>
-
-                                            <v-chip value="EXCHANGE_ORDER">
-                                                Exchange
-                                            </v-chip>
-                                        </v-chip-group>
-                                        <!-- </v-col> -->
-                                        <!-- <v-col> -->
-                                        <v-spacer />
-                                        <!-- </v-col> -->
-                                        <!-- <v-col> -->
-                                        <div>
-                                            <!-- {{ {criteria} }} -->
-                                            <!-- <v-chip class="mx-1">
-                                                        Expected:
-                                                        <v-icon>mdi-chevron-down</v-icon>
-                                                    </v-chip>
-                                                    <v-chip class="mx-1">
-                                                        Delivered:
-                                                        <v-icon>mdi-chevron-down</v-icon>
-                                                    </v-chip> -->
-                                            <!-- <ShipmentTimeRangeInput/> -->
-                                            <!-- {{ {filter} }} -->
-                                            <ShipmentTimeRangeOptionInput v-model:criteria="dateCriteria"
-                                                v-model:rsql="parameters.dateRsql" />
-                                        </div>
-                                        <!-- </v-col> -->
-                                    </v-row>
-                                </v-card-text>
-                            </v-card>
-                        </v-card-title>
+                        <!-- <v-card-title class="mb-3">
+                   
+                        </v-card-title> -->
                         <v-card-text class="">
                             <v-row>
                                 <v-col :cols="12" :sm="12">
@@ -85,6 +41,55 @@
                                         <!-- </v-col> -->
                                         <!-- </v-row> -->
                                         <!-- </v-card-text> -->
+                                    </v-card>
+                                </v-col>
+
+
+                                <v-col :cols="12" :sm="12">
+                                    <v-card flat>
+                                        <v-card-text>
+                                            <v-row justify="space-between" class="px-5 pb-1 pt-4">
+                                                <!-- <v-col> -->
+                                                <v-chip-group v-model="parameters.fulfilmentType" variant="text" multiple>
+                                                    <v-chip value="PICKUP_AND_DELIVERY">
+                                                        Pick/Drop
+                                                    </v-chip>
+
+                                                    <v-chip value="DROPSHIPPING">
+                                                        Drop Ship
+                                                    </v-chip>
+
+                                                    <v-chip value="RETURN_ORDER">
+                                                        Return
+                                                    </v-chip>
+
+                                                    <v-chip value="EXCHANGE_ORDER">
+                                                        Exchange
+                                                    </v-chip>
+                                                </v-chip-group>
+                                                <!-- </v-col> -->
+                                                <!-- <v-col> -->
+                                                <v-spacer />
+                                                <!-- </v-col> -->
+                                                <!-- <v-col> -->
+                                                <div>
+                                                    <!-- {{ {criteria} }} -->
+                                                    <!-- <v-chip class="mx-1">
+                                                        Expected:
+                                                        <v-icon>mdi-chevron-down</v-icon>
+                                                    </v-chip>
+                                                    <v-chip class="mx-1">
+                                                        Delivered:
+                                                        <v-icon>mdi-chevron-down</v-icon>
+                                                    </v-chip> -->
+                                                    <!-- <ShipmentTimeRangeInput/> -->
+                                                    <!-- {{ {filter} }} -->
+                                                    <ShipmentTimeRangeOptionInput v-model:criteria="dateCriteria"
+                                                        v-model:rsql="parameters.dateRsql" />
+                                                </div>
+                                                <!-- </v-col> -->
+                                            </v-row>
+                                        </v-card-text>
                                     </v-card>
                                 </v-col>
 

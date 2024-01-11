@@ -154,6 +154,28 @@ const routes = [
     ]
   },
 
+  // >> CARRIER >> SHIPMENT
+  // {
+  //   path: 'carrier/:id?/shipments',
+  //   name: 'admin:carrier:shipment:index',
+  //   component: () => import('@/admin/views/carrier/shipment/Index.vue'),
+  //   props: true,
+  // },
+   {
+    // path: 'carrier/shipments',
+    path:'',
+    name: 'admin:carrier:shipment',
+    component: () => import('@/admin/layouts/carrier/Default.vue'),
+    children: [
+      {
+        path: 'carrier/:id?/shipments',
+        name: 'admin:carrier:shipment:index',
+        component: () => import('@/admin/views/carrier/shipment/Index.vue'),
+        props: true,
+      },
+    ]
+  },
+
 
 
   // >> CATLOG
@@ -178,6 +200,39 @@ const routes = [
         path: ':id/edit',
         name: 'admin:catalog:product:edit',
         component: () => import('@/admin/views/catalog/product/Edit.vue'),
+        props: true
+
+      },
+    ]
+  },
+
+
+  // 
+  // 
+
+
+  // >> CATLOG
+  // >> CATALOG >> PRODUCT
+  {
+    path: 'inventory/storages',
+    name: 'admin:inventory:storage',
+    component: () => import('@/admin/layouts/inventory/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin:inventory:storage:index',
+        component: () => import('@/admin/views/inventory/storage/Index.vue')
+      },
+      {
+        path: 'create',
+        name: 'admin:inventory:storage:create',
+        component: () => import('@/admin/views/inventory/storage/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:inventory:storage:edit',
+        component: () => import('@/admin/views/inventory/storage/Edit.vue'),
         props: true
 
       },

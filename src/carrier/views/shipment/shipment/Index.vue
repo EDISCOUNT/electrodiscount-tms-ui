@@ -14,7 +14,7 @@
                         </v-card-text>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
-                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" />
+                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" update-url-query/>
                                 <ShipmentFilterBar v-model:rsql="filter.filter" v-else />
                                 <!-- <BarcodeScannerButton/> -->
                             </v-row>

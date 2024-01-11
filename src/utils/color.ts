@@ -11,6 +11,8 @@ export function getStatusColor(status: string | undefined): string {
     status = (status ?? '').toUpperCase();
     if (status) {
         const statusColorMap: Record<string, string> = {
+            "ONHOLD":"grey",
+            "NEW":"red",
             "ASSIGNED":"pink",
             "READY":"blue",
             "OPEN":'blue',//"orange",

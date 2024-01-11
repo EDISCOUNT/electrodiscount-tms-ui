@@ -4,7 +4,7 @@
             <v-bottom-sheet v-model="open">
                 <v-card flat>
                     <v-card-text>
-                        <ShipmentFilterBarForm v-model:rsql="rsql" :code="code" :status="status"  :update-url-query="updateUrlQuery"/>
+                        <ShipmentFilterBarForm v-model:rsql="rsql" :code="code" :status="status"  :update-url-query="updateUrlQuery" :no-carrier="noCarrier"/>
                     </v-card-text>
                 </v-card>
             </v-bottom-sheet>
@@ -14,7 +14,7 @@
             </v-btn>
         </template>
         <template v-else>
-            <ShipmentFilterBarForm v-model:rsql="rsql"  :code="code" :status="status" :update-url-query="updateUrlQuery"/>
+            <ShipmentFilterBarForm v-model:rsql="rsql"  :code="code" :status="status" :update-url-query="updateUrlQuery" :no-carrier="noCarrier"/>
         </template>
     </div>
 </template>
@@ -32,6 +32,7 @@ const props = defineProps<{
     code?: string;
     status?: string| string[];
     updateUrlQuery?: boolean;
+    noCarrier?: boolean;
 }>();
 
 const open = ref(false);

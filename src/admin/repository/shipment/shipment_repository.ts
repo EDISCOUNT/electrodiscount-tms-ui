@@ -3,6 +3,7 @@ import Pagination from "@/data/pagination/pagination";
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 import { encodeURLParams } from "@/utils/url";
 import { ShipmentDocumentFileAttachmentFormData } from "@/model/shipment/shipment_document_attachment";
+import { and, comparison, inList } from "rsql-builder";
 
 export async function getPaginatedShipments({ page, limit, criteria }: { page?: number, limit?: number, criteria?: { [i: string]: any } } = {}) {
     criteria ??= {};
@@ -12,6 +13,19 @@ export async function getPaginatedShipments({ page, limit, criteria }: { page?: 
         if (criteria['status'] == 0) {
             delete criteria['status'];
         }
+    }
+    if (('status' in criteria) && criteria.status) {
+        let status: string[] = criteria.status;
+        if (!Array.isArray(status)) {
+            status = [status];
+        }
+        let filter = criteria.filter ?? '';
+        filter = and(
+            filter,
+            comparison('status', inList(...status)),
+        );
+        criteria.filter = filter;
+        delete criteria.status;
     }
     const query = encodeURLParams({
         ...criteria,

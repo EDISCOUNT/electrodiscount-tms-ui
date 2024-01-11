@@ -7,32 +7,40 @@
                 </v-alert>
             </v-card-text>
             <v-card-text>
-                <v-timeline density="comfortable">
+                <v-timeline density="compact" truncate-line="both">
                     <v-timeline-item v-for="(event, i) in pagination.items" :key="event.id ?? i" :size="10"
                         style="padding: 0;">
-                        <template v-if="event.createdAt" v-slot:opposite>
+                        <!-- <template v-if="event.createdAt" v-slot:opposite>
                             <v-chip variant="text">
                                 <span class="text-grey">
                                     {{ formatDate(event.createdAt) }}
                                 </span>
                             </v-chip>
-                        </template>
-                        <v-card color="secondary-bg" width="100%" flat>
+                        </template> -->
+                        <v-card flat>
                             <!-- <v-spacer/> -->
                             <!-- <v-toolbar/> -->
                             <!-- <template v-slot:title>
                                 <v-list-item flat> -->
-                                    <!-- <template v-slot:title> -->
-                                    <v-card-title>
-                                        {{ event.title }}
-                                    </v-card-title>
-                                    <!-- </template> -->
-                                    <!-- <template v-slot:subtitle> -->
-                                    <v-card-text>
-                                        {{ event.subtitle }}
-                                    </v-card-text>
-                                    <!-- </template> -->
-                                <!-- </v-list-item> -->
+                            <!-- <template v-slot:title> -->
+                            <v-card-subtitle v-if="event.eventOccuredAt">
+                                <span class="text-grey">
+                                    {{ formatDate(event.eventOccuredAt) }}
+                                </span>
+                            </v-card-subtitle>
+
+                            <v-card-title>
+                                {{ event.title }}
+                            </v-card-title>
+                            <!-- </template> -->
+                            <!-- <template v-if="event.eventOccuredAt" v-slot:subtitle> -->
+
+                            <!-- </template> -->
+                            <v-card-text>
+                                {{ event.subtitle }}
+                            </v-card-text>
+                            <!-- </template> -->
+                            <!-- </v-list-item> -->
                             <!-- </template> -->
                             <v-card-text class="pa-2">
                                 <!-- {{ { attachments: event.attachments } }} -->

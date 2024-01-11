@@ -14,6 +14,10 @@
     </v-row>
 
     <v-card color="transparent" flat v-else-if="shipment">
+
+      <v-overlay :value="isSaving">
+        <v-progress-circular indeterminate size="64" color="primary"></v-progress-circular>
+      </v-overlay>
       <v-card-text v-if="error">
         <v-alert type="error">
           {{ error }}
@@ -70,6 +74,33 @@
                 Fulfilment
               </template>
               <v-divider />
+              <!-- <v-card-titlte>
+               
+              </v-card-titlte> -->
+              <v-card-text class="pb-0">
+                <v-card flat>
+                  <v-card-subtitle>
+                    Expectedt Time of Arrival(ETA)
+                  </v-card-subtitle>
+                  <v-card-text>
+                    <v-row>
+                      <v-col :cols="12" :md="10">
+                        <DateTimeRangeInput
+                          v-model="fulfilmentTimeRange"
+                          label="Expected Delivery Date" />
+                      </v-col>
+
+                      <v-col :cols="12" :md="2">
+                        <v-btn color="primary" @click="() => save({ fulfilmentTimeRange })" :elevation="0"
+                          variant="flat">
+                          Save
+                          <v-icon>mdi-save</v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </v-card-text>
               <v-card-text>
                 <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
               </v-card-text>
@@ -105,6 +136,21 @@
             </v-card>
           </v-col>
 
+          <v-col :cols="12" :md="12">
+            <v-card class="fill-height" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-package</v-icon>
+              </template>
+              <template v-slot:title>
+                Shipment Lines
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentItemList :shipment="shipment" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
           <v-col :cols="12" :md="4">
             <v-card class="fill-height" flat>
               <template v-slot:prepend>
@@ -130,7 +176,7 @@
               </template>
               <v-divider />
               <v-card-text class="pa-2">
-                <v-card height="300px" :color="inlineBg" flat />
+                <ShipmentMapView :shipment="shipment" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -138,14 +184,24 @@
           <v-col :cols="12" :md="6">
             <v-card class="fill-height" flat>
               <template v-slot:prepend>
-                <v-icon>mdi-package</v-icon>
+                <v-icon>mdi-tools</v-icon>
               </template>
               <template v-slot:title>
-                Shipment Lines
+                Shipment Setiings
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentItemList :shipment="shipment" />
+                <CarrierInput :model-value="shipment.carrier?.id"
+                  @update:model-value="(carrier) => save({ carrier: carrier as any })" r-:disabled="true"
+                  label="Carrier" />
+
+                <ChannelInput :model-value="shipment.channel?.id"
+                  @update:model-value="(channel) => save({ channel: channel as any })" r-:disabled="true"
+                  label="Channel" />
+
+                <StorageInput :model-value="shipment.storage?.id"
+                  @update:model-value="(storage) => save({ storage: storage as any })" r-:disabled="true"
+                  label="Storage/Warehouse" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -206,6 +262,11 @@ import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.
 import EmailDrawer from '@/views/mailing/email/EmailDrawer.vue';
 import SmsDrawer from '@/views/texting/sms/SmsDrawer.vue';
 import { getPaginatedShipmentEvents } from '@/admin/repository/shipment/shipment_event_repository';
+import ShipmentMapView from '@/views/shipment/ShipmentMapView.vue';
+import CarrierInput from './partials/CarrierInput.vue';
+import ChannelInput from './partials/ChannelInput.vue';
+import StorageInput from './partials/StorageInput.vue';
+import DateTimeRangeInput from '@/components/Input/DateTimeRangeInput.vue';
 
 const props = defineProps<{
   id: string,
@@ -221,10 +282,28 @@ const notifier = useNotifier();
 const { secondaryBg, inlineBg } = useColorScheme();
 
 
+const fulfilmentTimeRange = ref<any>();
+
 
 onMounted(async () => {
   await loadShipment();
 });
+
+
+// const isSaving = ref(false);
+
+// async function updateShipmentData({  ...data }: ShipmentFormData) {
+//   try{
+//   const result = await  save(data);
+//   }catch(err){
+//     const message = (err as any).message as string;
+//     error.value = message;
+//   }
+//   finally{
+//     isSaving.value = false;
+
+//   }
+// }
 
 
 
@@ -240,12 +319,14 @@ async function save(data: ShipmentFormData) {
     isSaving.value = true;
     const result = await updateShipment(props.id, data);
     notifier.toastSuccess('Shipment updated successfully');
-    router.back();
+    // router.back();
+    onUpdateShipment(result);
 
   }
   catch (err) {
     const message = (err as any).message as string;
     error.value = message;
+    notifier.toastError(message);
   }
   finally {
     isSaving.value = false;
@@ -259,6 +340,7 @@ async function loadShipment() {
     error.value = null;
     const result = await getShipment(props.id);
     shipment.value = result;
+    fulfilmentTimeRange.value = result.fulfilmentTimeRange?.toJson();
   }
   catch (err) {
     const message = (err as any).message as string;

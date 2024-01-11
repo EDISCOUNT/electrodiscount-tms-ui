@@ -1,6 +1,6 @@
 import { GOOGLE_MAPS_API_KEY } from '@/common/constants';
 import Address from '@/model/addressing/address';
-import {Loader, LoaderOptions} from 'google-maps';
+import { Loader, LoaderOptions,  } from 'google-maps';
 // or const {Loader} = require('google-maps'); without typescript
 
 
@@ -29,7 +29,7 @@ export function getPlaceDetailsById(placeId: string): Promise<google.maps.places
 export function getPlaceDetails({ location, address, placeId }: google.maps.GeocoderRequest): Promise<google.maps.places.PlaceResult> {
     return new Promise((resolve, reject) => {
         const service = new google.maps.Geocoder();
-        service.geocode({ location: location, placeId,address }, (result, status) => {
+        service.geocode({ location: location, placeId, address }, (result, status) => {
             if (status === google.maps.GeocoderStatus.OK) {
                 const entry = result[0];
                 getPlaceDetailsById(entry.place_id)
@@ -44,27 +44,37 @@ export function getPlaceDetails({ location, address, placeId }: google.maps.Geoc
 
 
 export async function getAddressWithGoogle({ location, address, placeId }: google.maps.GeocoderRequest): Promise<Address> {
-    const details = await getPlaceDetails({location,address,placeId});
+    const details = await getPlaceDetails({ location, address, placeId });
     return Address.fromPlaceDetails(details);
 }
 
 
- 
+
 const options: LoaderOptions = {
     /* todo */
-    libraries:[
+    libraries: [
         'places',// google.maps.PlacesLibrary
-        'directions',
+        // 'directions',
+        // 'directions'
     ]
 };
 
 
-class ChainedLoader extends Loader{
+let loadPromise: Promise<typeof google> | undefined = undefined;
+
+class ChainedLoader extends Loader {
     async load(): ReturnType<Loader['load']> {
-        if('google' in window){
+        if ('google' in window) {
             return window['google'];
         }
-        return super.load();
+        try {
+            loadPromise = super.load();
+            return await loadPromise;
+        }
+        catch (err) {
+            loadPromise = undefined;
+            throw err;
+        }
     }
 }
 

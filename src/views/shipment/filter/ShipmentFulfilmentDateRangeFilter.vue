@@ -1,10 +1,14 @@
 <template>
+    <!-- {{ {fields, props: props.fields} }} -->
+    <!-- {{ { fields} }} -->
     <DateRangeField v-model="range">
         <template v-slot:activator="{ props }">
-            <slot name="activator" v-bind:props="props" v-bind:possibleFields="possibleFields" v-bind:fields="_fields" v-bind:range="range" v-bind:updateFields="updateFields"></slot>
+            <slot name="activator" v-bind:props="props" v-bind:possibleFields="possibleFields" v-bind:fields="_fields"
+                v-bind:range="range" v-bind:updateFields="updateFields"></slot>
         </template>
         <template v-slot:append-inner>
-            <slot name="append-inner" v-bind:possibleFields="possibleFields" v-bind:fields="_fields"  v-bind:range="range" v-bind:updateFields="updateFields">
+            <slot name="append-inner" v-bind:possibleFields="possibleFields" v-bind:fields="_fields" v-bind:range="range"
+                v-bind:updateFields="updateFields">
                 <v-menu v-if="possibleFields.length">
                     <template v-slot:activator="{ props }">
                         <v-icon v-bind="props">mdi-chevron-down</v-icon>
@@ -64,8 +68,17 @@ const possibleFields = computed(() => {
 })
 
 const fields = computed(() => {
-    return props.fields ?? _fields.value;
+    return _fields.value;
+    // props.fields ??
+    
 });
+
+// watch(
+//     () => props.fields,
+//     (fields) => _fields.value = fields
+// );
+// onMounted
+
 const itemsFields = computed(() => {
     return props.itemsFields ?? fields.value ?? _fields.value;
 });
@@ -78,7 +91,10 @@ function updateFields(fields: string[]) {
 onMounted(() => _fields.value = props.fields ?? possibleFields.value.map(e => e.value));
 
 
-watch(_fields, (fields) => emitValues(range.value));
+watch(fields, (fields) => {
+    console.log("FIEDLS CHANGED:", {fields});
+    emitValues(range.value);
+},{deep: true});
 watch(range, (range) => {
     // const out = values?.map(e => new Date(e));
     emitValues(range);
