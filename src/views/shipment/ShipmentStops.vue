@@ -11,13 +11,22 @@
                     </v-row>
                 </v-card-title>
                 <v-card-subtitle v-if="shipment?.originAddress.fullName">
-                    <strong class="text-black">{{ shipment.originAddress.fullName }}</strong>
+                    <strong class="">{{ shipment.originAddress.fullName }}</strong>
                 </v-card-subtitle>
                 <v-card-subtitle v-if="shipment?.originAddress.company">
                     <strong class="text-green">{{ shipment.originAddress.company }}</strong>
                 </v-card-subtitle>
                 <v-card-text class="pt-2">
                     {{ shipment?.originAddress.label }}
+                </v-card-text>
+                <v-card-text v-if="shipment?.originAddress.emailAddress || shipment?.originAddress.phoneNumber"
+                    class="py-0 px-4">
+                    <span v-if="shipment?.originAddress.emailAddress" class="">{{
+                        shipment.originAddress.emailAddress }}</span>
+                    <span v-if="shipment?.originAddress.phoneNumber" class="">
+                    <span v-if="shipment?.originAddress.emailAddress" class="mr-1">,</span>
+                    {{
+                        shipment.originAddress.phoneNumber }}</span>
                 </v-card-text>
             </v-card>
         </v-card-text>
@@ -33,13 +42,22 @@
                     </v-row>
                 </v-card-title>
                 <v-card-subtitle v-if="shipment?.destinationAddress.fullName">
-                    <strong class="text-black">{{ shipment.destinationAddress.fullName }}</strong>
+                    <strong class="">{{ shipment.destinationAddress.fullName }}</strong>
                 </v-card-subtitle>
                 <v-card-subtitle v-if="shipment?.destinationAddress.company">
                     <strong class="text-green">{{ shipment.destinationAddress.company }}</strong>
                 </v-card-subtitle>
-                <v-card-text class="pt-2">
+                <v-card-text class="pt-2 pb-0">
                     {{ shipment?.destinationAddress.label }}
+                </v-card-text>
+                <v-card-text v-if="shipment?.destinationAddress.emailAddress || shipment?.destinationAddress.phoneNumber"
+                    class="py-0 px-4">
+                    <span v-if="shipment?.destinationAddress.emailAddress" class="">{{
+                        shipment.destinationAddress.emailAddress }}</span>
+                    <span v-if="shipment?.destinationAddress.phoneNumber" class="">
+                    <span v-if="shipment?.destinationAddress.emailAddress" class="mr-1">,</span>
+                    {{
+                        shipment.destinationAddress.phoneNumber }}</span>
                 </v-card-text>
             </v-card>
         </v-card-text>

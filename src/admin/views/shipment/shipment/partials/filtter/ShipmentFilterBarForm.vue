@@ -36,17 +36,18 @@
                         'EXCHANGE_ORDER',
                     ]" multiple></v-select>
             </v-col>
-            <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
+            <v-col :cols="12" :sm="4" r-:md="4" r-v-if="!noCarrier" r-:lg="3">
                 <CarrierInput v-model="filter.carrier" label="Carriers" placeholder="Filter by assigned carriers"
-                    variant="outlined" density="compact" class="mx-1" multiple clearable />
+                    variant="outlined" density="compact" class="mx-1" :disabled="noCarrier" multiple clearable />
             </v-col>
-            <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3" v-if="!noCarrier">
+            <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
                 <ChannelInput v-model="filter.channel" label="Channels" placeholder="Filter by source Channels"
                     variant="outlined" density="compact" class="mx-1" multiple clearable />
             </v-col>
 
             <v-col v-if="xs" :cols="12" :sm="4" r-:md="4" r-:lg="3">
-                <ShipmentStatusFilter v-model="filter.status" />
+                <ShipmentStatusFilter v-model="filter.status" url="/api/admin/shipment/shipments/count"
+                    :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })" />
             </v-col>
         </v-row>
     </div>
@@ -65,6 +66,7 @@ import ShipmentFulfilmentDateRangeFilter from '@/views/shipment/filter/ShipmentF
 // import ShipmentFulfilmentDateFilter from '@/views/shipment/filter/ShipmentFulfilmentDateFilter.vue';
 import { useRouter } from 'vue-router';
 import { DateRangeInput } from '@/views/shipment/filter/DateRange';
+import { countShipments } from '@/admin/repository/shipment/shipment_repository';
 
 interface FilterOptions {
     channel: string[];
@@ -109,6 +111,7 @@ watch(filter, (filter) => {
                 ...router.currentRoute.value.query,
                 // [props.urlQueryNamespace ?? 'filter']: 
                 ...filter,
+                ...(props.noCarrier ? { carrier: undefined } : {}),
                 fulfilmentDateRange: filter.fulfilmentDateRange ? JSON.stringify(filter.fulfilmentDateRange) : undefined,
                 deliveryDateRange: filter.deliveryDateRange ? JSON.stringify(filter.deliveryDateRange) : undefined,
                 fulfilmentDatesRsql: undefined,
@@ -193,7 +196,7 @@ const rsql = computed(() => {
         query = and(query, comparison('channelOrderId', like(filter.channelOrderId)));
     }
 
-    if (filter.carrier.length > 0) {
+    if (!(props.noCarrier) && filter.carrier.length > 0) {
         query = and(query, comparison('carrier.id', inList(...filter.carrier)));
     }
     if (filter.channel.length > 0) {

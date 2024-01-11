@@ -10,7 +10,8 @@
             <v-card r-color="secondary-bg" flat>
                 <v-slide-group v-model="model" multiple>
                     <v-slide-group-item v-for="(carrier, i) in pagination.items" :key="carrier.id">
-                        <v-card :class="['ma-2',]" flat>
+                        <v-card :to="{ name: 'admin:carrier:shipment:index', query: {  ...(criteria?? {}), carrier: carrier.id } }"
+                            :class="['ma-2',]" flat>
                             <template v-slot:prepend>
                                 <slot name="prepend">
                                     <v-avatar color="white" :size="60">
@@ -19,7 +20,7 @@
                                 </slot>
                             </template>
                             <template v-slot:append>
-                                <v-btn :to="{ name: 'admin:carrier:show', params: { id: carrier.id } }" variant="text" size="x-small" icon>
+                                <v-btn variant="text" size="x-small" icon>
                                     <v-icon>mdi-arrow-right</v-icon>
                                 </v-btn>
                             </template>
@@ -57,22 +58,26 @@
                                         <v-row class="px-2">
                                             <v-col cols="3">
                                                 <!-- <v-card flat> -->
-                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="assigned" />
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter"
+                                                    :criteria="criteria" status="assigned" />
                                                 <!-- </v-card> -->
                                             </v-col>
                                             <v-col cols="3">
                                                 <!-- <v-card flat> -->
-                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="intransit" />
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter"
+                                                    :criteria="criteria" status="intransit" />
                                                 <!-- </v-card> -->
                                             </v-col>
                                             <v-col cols="3">
                                                 <!-- <v-card flat> -->
-                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="onhold" />
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter"
+                                                    :criteria="criteria" status="onhold" />
                                                 <!-- </v-card> -->
                                             </v-col>
                                             <v-col cols="3">
                                                 <!-- <v-card flat> -->
-                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter" :criteria="criteria" status="delivered" />
+                                                <CarrierShipmentStatusCount :carrier="carrier" :filter="filter"
+                                                    :criteria="criteria" status="delivered" />
                                                 <!-- </v-card> -->
                                             </v-col>
                                         </v-row>
@@ -102,7 +107,7 @@ import { computed, ref } from 'vue';
 const props = defineProps<{
     code?: string;
     filter?: string;
-    criteria?: {[i:string]: any};
+    criteria?: { [i: string]: any };
 }>();
 
 

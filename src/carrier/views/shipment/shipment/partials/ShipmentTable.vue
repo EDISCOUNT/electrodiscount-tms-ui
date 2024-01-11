@@ -162,12 +162,12 @@ const height = computed(() => {
 })
 
 const headers = [
-    {
-        title: 'ID',
-        // align: 'start',
-        sortable: true,
-        key: 'id',
-    },
+    // {
+    //     title: 'ID',
+    //     // align: 'start',
+    //     sortable: true,
+    //     key: 'id',
+    // },
     // {
     //     title: 'Code', key: 'code',
     //     //  align: 'end' 
@@ -177,28 +177,28 @@ const headers = [
         sortable: true,
         //  align: 'end' 
     },
+    // {
+    //     title: 'Carrier', key: 'carrier',
+    //     // align: 'center' 
+    // },
     {
-        title: 'Products', key: 'items',
+        title: 'Status', key: 'status',
         sortable: false,
-        //  align: 'center' 
+        //  align: 'center'
+    },
+    {
+        title: 'Delivery Date', key: 'expiresAt',
+        sortable: false,
     },
     {
         title: 'Destination', key: 'destinationAddress',
         sortable: false,
         //  align: 'center' 
     },
-    // {
-    //     title: 'Carrier', key: 'carrier',
-    //     // align: 'center' 
-    // },
     {
-        title: 'Delivery Date', key: 'expiresAt',
+        title: 'Products', key: 'items',
         sortable: false,
-    },
-    {
-        title: 'Status', key: 'status',
-        sortable: false,
-        //  align: 'center'
+        //  align: 'center' 
     },
     // {
     //     title: 'Status', key: 'status',

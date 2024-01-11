@@ -1,9 +1,9 @@
 <template>
     <!-- {{ criteria }} -->
-    <EntityPageCount :fetcher="() => countShipments({ criteria })"
+    <EntityPageCount :fetcher="() => countShipments({ criteria: { ...criteria, status } })"
         :uri="`/api/admin/shipment/shipments?status=${status}&filter=${criteria.filter}`">
         <template v-slot:default="{ pagination, loading }">
-            <v-badge color="primary" :content="pagination?.count?? 0" floating>
+            <v-badge color="primary" :content="pagination?.count ?? 0" floating>
                 <!-- <v-icon icon="mdi-post"></v-icon> -->
                 <span class="text-grey">
                     {{ status }}
@@ -24,7 +24,7 @@ const props = defineProps<{
     status: string;
     carrier: Carrier;
     filter?: string;
-    criteria?: {[i:string]: any};
+    criteria?: { [i: string]: any };
 }>();
 
 
@@ -36,7 +36,7 @@ const criteria = computed(() => {
         filter: and(
             comparison('carrier.id', eq(carrierId)),
             comparison('status', eq(props.status)),
-            ...(props.filter? [props.filter] : []),
+            ...(props.filter ? [props.filter] : []),
         )
     }
 

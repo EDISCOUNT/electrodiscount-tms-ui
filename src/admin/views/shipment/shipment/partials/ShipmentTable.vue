@@ -212,15 +212,15 @@ const height = computed(() => {
 })
 
 const headers = [
-    {
-        title: 'ID',
-        // align: 'start',
-        // sortable: false,
-        sortable: true,
-        fixed: smAndUp,
-        minWidth: '100px',
-        key: 'id',
-    },
+    //{
+    //    title: 'ID',
+    //    // align: 'start',
+    //    // sortable: false,
+    //    sortable: true,
+    //    fixed: smAndUp,
+    //    minWidth: '100px',
+    //    key: 'id',
+    //},
     // {
     //     title: 'Code', key: 'code',
     //     //  align: 'end' 

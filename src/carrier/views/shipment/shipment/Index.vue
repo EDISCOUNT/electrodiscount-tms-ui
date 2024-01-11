@@ -14,7 +14,10 @@
                         </v-card-text>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
-                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" update-url-query/>
+                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status"
+                                    url="/api/carrier/shipment/shipments/count"
+                                    :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })"
+                                    update-url-query />
                                 <ShipmentFilterBar v-model:rsql="filter.filter" v-else />
                                 <!-- <BarcodeScannerButton/> -->
                             </v-row>
@@ -61,6 +64,7 @@ import { useDisplay } from 'vuetify';
 import BarcodeScannerButton from '@/components/BarcodeScannerButton.vue';
 import BulkUpdateShipmentStatusButton from '@/views/shipment/BulkUpdateShipmentStatusButton.vue';
 import { bulkApplyTransition } from '@/carrier/repository/shipment/shipment_repository';
+import { countShipments } from '@/carrier/repository/shipment/shipment_repository';
 
 const filter = reactive({
     status: [] as string[],

@@ -17,7 +17,7 @@ export default class ShipmentFulfilmentTimeRange {
         })
     }
 
-    toJson(): any {
+    toJson(): { startAt: Date | string; endAt: Date | string } {
         return {
             startAt: this.startAt.toISOString(),
             endAt: this.endAt.toISOString()

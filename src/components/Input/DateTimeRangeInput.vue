@@ -1,17 +1,25 @@
 <template>
+    <!-- {{ { data } }} -->
     <v-row>
         <v-col>
-            <DateTimeInput v-model="data.startAt" />
+            <DateTimeInput v-model="data.startAt" :rules="[
+                v => !!v || 'Start date is required',
+                v => !v || !data.endAt || v < toLocalDate(data.endAt) || 'Start date must be before end date'
+            ]" :max="toLocalDate(data.endAt)" v-bind="attrs" />
         </v-col>
         <v-col>
-            <DateTimeInput v-model="data.endAt" />
+            <DateTimeInput v-model="data.endAt" v-bind="attrs" :rules="[
+                v => !!v || 'End date is required',
+                v => !v || !data.startAt || v > toLocalDate(data.startAt) || 'End date must be after start date'
+            ]" :min="toLocalDate(data.startAt)" />
         </v-col>
     </v-row>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, watch, useAttrs } from 'vue';
 import { is } from '@babel/types';
 import { reactive } from 'vue';
+import { formatDateString } from '@/utils/format/date';
 import DateTimeInput from './DateTimeInput.vue';
 
 interface DateTimeRangeInput {
@@ -22,6 +30,8 @@ interface DateTimeRangeInput {
 const props = defineProps<{
     modelValue?: DateTimeRangeInput;
 }>();
+
+const attrs = useAttrs();
 
 const data = reactive<DateTimeRangeInput>({});
 
@@ -54,5 +64,13 @@ watch(data,
     }
 );
 
+
+function toLocalDate(date: Date) {
+    // return date?.toUTCString().slice(0, 23);
+    if (date) {
+        return formatDateString(date).slice(0, 23);
+    }
+    return undefined;
+}
 
 </script>

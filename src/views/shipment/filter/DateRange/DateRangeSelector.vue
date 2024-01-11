@@ -240,11 +240,17 @@ function handleDateChange(newDates: Date[]){
 
     watch(
       () => [
-        month.value, year.value
+        month.value, year.value,
       ],
       ([month]) => setTimeout(() => updateCellColors(startDate.value, endDate.value, month), 10)
     );
 
+    watch(
+      () => [
+        startDate.value, endDate.value,
+      ],
+      ([startDate, endDate]) => setTimeout(() => updateCellColors(startDate, endDate), 10)
+    );
 
 
 

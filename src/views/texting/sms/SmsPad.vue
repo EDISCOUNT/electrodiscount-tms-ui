@@ -52,12 +52,22 @@
                                 </v-card-text>
                                 <v-divider></v-divider>
                                 <v-card-actions>
-                                    <v-btn color="primary" r-:elevation="0">
+                                    <!-- <v-btn color="primary" r-:elevation="0">
                                         Open Detail View
-                                    </v-btn>
+                                    </v-btn> -->
                                     <v-spacer />
 
                                     <template v-if="raw.phoneNumber">
+
+                                        <v-tooltip>
+                                            <template v-slot:activator="{ props }" position="bottom">
+                                                <v-btn v-bind="props" :href="`https://wa.me/${raw.phoneNumber}`" color="primary"
+                                                    :elevation="0" target="_blank" icon>
+                                                    <v-icon>mdi-whatsapp</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <small>Whatsapp: {{ raw.phoneNumber }}</small>
+                                        </v-tooltip>
 
                                         <v-tooltip>
                                             <template v-slot:activator="{ props }" position="bottom">

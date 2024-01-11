@@ -8,20 +8,23 @@
                         <template v-if="smAndUp">
                             <span>All Shipments</span>
                         </template>
-                            <v-spacer />
+                        <v-spacer />
                         <v-row v-if="selected?.length" class="px-md-5">
                             <BulkUpdateShipmentStatusButton @updated="() => refreshTable()" :shipments="selected"
                                 :apply-transition="bulkApplyTransition" />
-                            <v-spacer v-if="smAndUp"/>
-                            <span class="mx-1" v-else/>
+                            <v-spacer v-if="smAndUp" />
+                            <span class="mx-1" v-else />
                             <PrintShipmentManifestButton :shipments="selected" variant="outlined" />
                             <ExportShipmentButton :shipments="selected" variant="outlined" class="mx-1" />
                         </v-row>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
-                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" :filter="filter.filter" update-url-query multiple />
-                                <ShipmentFilterBar v-model:rsql="filter.filter" :code="filter.code" r-:status="filter.status"
-                                    update-url-query v-else />
+                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" :filter="filter.filter"
+                                    url="/api/admin/shipment/shipments/count"
+                                    :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })"
+                                    update-url-query multiple />
+                                <ShipmentFilterBar v-model:rsql="filter.filter" :code="filter.code"
+                                    r-:status="filter.status" update-url-query v-else />
                                 <BarcodeScannerButton v-model:result="filter.code" autoclose />
                             </v-row>
                         </v-card-text>
@@ -67,6 +70,7 @@ import { useDisplay } from 'vuetify';
 import BarcodeScannerButton from '@/components/BarcodeScannerButton.vue';
 import BulkUpdateShipmentStatusButton from '@/views/shipment/BulkUpdateShipmentStatusButton.vue';
 import { bulkApplyTransition } from '@/admin/repository/shipment/shipment_repository';
+import { countShipments } from '@/admin/repository/shipment/shipment_repository';
 
 const filter = reactive({
     status: [] as string[],

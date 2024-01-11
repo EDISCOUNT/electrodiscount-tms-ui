@@ -78,28 +78,10 @@
                
               </v-card-titlte> -->
               <v-card-text class="pb-0">
-                <v-card flat>
-                  <v-card-subtitle>
-                    Expectedt Time of Arrival(ETA)
-                  </v-card-subtitle>
-                  <v-card-text>
-                    <v-row>
-                      <v-col :cols="12" :md="10">
-                        <DateTimeRangeInput
-                          v-model="fulfilmentTimeRange"
-                          label="Expected Delivery Date" />
-                      </v-col>
-
-                      <v-col :cols="12" :md="2">
-                        <v-btn color="primary" @click="() => save({ fulfilmentTimeRange })" :elevation="0"
-                          variant="flat">
-                          Save
-                          <v-icon>mdi-save</v-icon>
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
+                <ShipmentTimeRangeInput
+                :shipment="shipment"
+                @update:shipment="(shipment) => onUpdateShipment(shipment)"
+                />
               </v-card-text>
               <v-card-text>
                 <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
@@ -266,7 +248,7 @@ import ShipmentMapView from '@/views/shipment/ShipmentMapView.vue';
 import CarrierInput from './partials/CarrierInput.vue';
 import ChannelInput from './partials/ChannelInput.vue';
 import StorageInput from './partials/StorageInput.vue';
-import DateTimeRangeInput from '@/components/Input/DateTimeRangeInput.vue';
+import ShipmentTimeRangeInput from './partials/ShipmentTimeRangeInput.vue';
 
 const props = defineProps<{
   id: string,
@@ -281,8 +263,6 @@ const router = useRouter();
 const notifier = useNotifier();
 const { secondaryBg, inlineBg } = useColorScheme();
 
-
-const fulfilmentTimeRange = ref<any>();
 
 
 onMounted(async () => {
@@ -340,7 +320,6 @@ async function loadShipment() {
     error.value = null;
     const result = await getShipment(props.id);
     shipment.value = result;
-    fulfilmentTimeRange.value = result.fulfilmentTimeRange?.toJson();
   }
   catch (err) {
     const message = (err as any).message as string;
@@ -350,6 +329,7 @@ async function loadShipment() {
     isLoading.value = false;
   }
 }
+
 
 
 </script>

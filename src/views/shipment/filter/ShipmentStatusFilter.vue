@@ -21,13 +21,27 @@
                 :color="(selected == 0) ? 'primary' : undefined" :elevation="0"> -->
             All
             <!-- </v-chip> -->
+            <template v-slot:append>
+                <span v-if="pagination">
+                    <v-chip class="mx-1" color="grey" :size="18" variant="flat" label>
+                        {{ pagination.count }}
+                    </v-chip>
+                </span>
+                <span v-else-if="count">
+                    <v-chip class="mx-1" color="grey" :size="18" variant="flat" label>
+                        {{ count }}
+                    </v-chip>
+                </span>
+                <v-progress-circular indeterminate :size="15" v-else />
+            </template>
         </v-btn>
         <!-- <v-chip v-for="(status, i) in statuses" :key="status.value" r-class="mx-2" :value="status.value" label
             :color="rselected.includes(status.value) ? 'primary' : undefined" :elevation="0">
             {{ status.text }}
         </v-chip> -->
-        <StatusFilterChip v-for="(status, i) in statuses" :key="status.value" r-class="mx-2" :value="status.value" :filter="filter" label
-            :is-selected="rselected.includes(status.value)" size="small" :elevation="0">
+        <StatusFilterChip v-for="(status, i) in statuses" :key="status.value" r-class="mx-2" :value="status.value"
+            :filter="filter" label :is-selected="rselected.includes(status.value)" size="small" :elevation="0"
+            :counter="counter" :count="count" :url="url">
             {{ status.text }}
         </StatusFilterChip>
     </v-chip-group>
@@ -37,16 +51,34 @@
 import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import StatusFilterChip from './StatusFilterChip.vue';
+import useSWRV from 'swrv';
 
 const props = defineProps<{
     modelValue?: string[] | string | number;
     filter?: string;
     updateUrlQuery?: boolean;
+    // 
+
+    counter: (input: { status?: string, filter?: string }) => Promise<{ count: number }>;
+    count?: number;
+    url: string;
 }>();
 
 const emit = defineEmits<{
     (e: 'update:model-value', value: string | number | string[] | undefined): void;
 }>();
+
+
+const { data: pagination, isValidating: loading, error } = useSWRV(
+    () => (!props.counter) ? null : `${props.url}?filter=${props.filter}`,
+    () => props.counter!({ filter: props.filter }),
+    {
+        refreshInterval: 0,
+        revalidateOnFocus: false,
+        revalidateDebounce: 100,
+    }
+);
+
 
 const router = useRouter();
 
