@@ -24,7 +24,8 @@
         </v-col> -->
 
         <v-col v-if="xs" :cols="12" :sm="4" r-:md="4" r-:lg="3">
-            <ShipmentStatusFilter />
+                <ShipmentStatusFilter r-v-model="filter.status" url="/api/admin/shipment/shipments/count"
+                    :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })" />
         </v-col>
     </v-row>
     </div>
@@ -40,6 +41,7 @@ import { like } from '@/utils/rsql';
 import { useDisplay } from 'vuetify';
 import ShipmentStatusFilter from '@/views/shipment/filter/ShipmentStatusFilter.vue';
 import ShipmentFulfilmentDateFilter from '@/views/shipment/filter/ShipmentFulfilmentDateFilter.vue';
+import { countShipments } from '@/carrier/repository/shipment/shipment_repository';
 
 interface FilterOptions {
     channels: string[];

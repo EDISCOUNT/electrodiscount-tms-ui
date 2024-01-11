@@ -15,7 +15,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:model-value', value?: string): void;
+    (e: 'update:model-value', value?: Date): void;
 }>();
 
 
@@ -45,10 +45,11 @@ watch(
 watch(date,
     (value) => {
         if (!isUpdating.value) {
+            let date: Date | undefined = undefined;
             if (value) {
-                value = new Date(value);
+                date = new Date(value);
             }
-            emit('update:model-value', value);
+            emit('update:model-value', date);
         }
     }
 );

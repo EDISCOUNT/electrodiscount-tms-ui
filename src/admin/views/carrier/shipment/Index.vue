@@ -57,8 +57,8 @@
                 <!-- <template v-slot:title> -->
                 <!-- <div class="mt-2"> -->
                 <!-- <v-toolbar-items> -->
-                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" r-:status="filter.status" no-carrier update-url-query
-                    class="mt-2 px-5" />
+                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" r-:status="filter.status" no-carrier
+                    update-url-query class="mt-2 px-5" />
                 <!-- </v-toolbar-items> -->
                 <!-- </div> -->
                 <!-- </template> -->
@@ -127,7 +127,7 @@ const { secondaryBg } = useColorScheme();
 const { xs, md, smAndDown, smAndUp, mdAndUp } = useDisplay();
 
 
-const tab = ref<string>();
+const tab = ref<number>();
 const selected = ref<string[]>([]);
 
 
@@ -145,15 +145,15 @@ onMounted(() => {
     if (query) {
         try {
             setTimeout(() => {
-                console.log("QUERY IN: ",{query, tab: tab.value});
-                let carrier = query.carrier;
+                console.log("QUERY IN: ", { query, tab: tab.value });
+                let carrier = query.carrier as (string | string[]);
                 if (carrier) {
                     if (Array.isArray(carrier)) {
                         carrier = carrier[0] ?? undefined;
                     }
-                    tab.value = carrier? Number(carrier) : carrier;
+                    tab.value = carrier ? Number(carrier) : carrier as any;
                 }
-                console.log("QUERY OUT: ",{query, tab: tab.value});
+                console.log("QUERY OUT: ", { query, tab: tab.value });
                 // tab.value = (query.carrier as any) ?? [];
             }, 0);
         } catch (e) {
@@ -175,8 +175,8 @@ const tableFilter = computed(() => {
                 _filter);
         }
         else {
-            _filter = _filter.toString();
         }
+        // _filter = _filter.toString();
     }
 
 
@@ -185,7 +185,7 @@ const tableFilter = computed(() => {
 
     return {
         ...filter,
-        filter: _filter
+        filter: _filter?.toString()
     };
 });
 

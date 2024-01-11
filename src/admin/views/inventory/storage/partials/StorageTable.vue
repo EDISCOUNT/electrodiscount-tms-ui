@@ -1,5 +1,5 @@
 <template>
-    <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items-length="totalItems"
+    <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="(headers as any)" :items-length="totalItems"
         :items="serverItems" :loading="loading" :search="search" item-value="name" :height="height ?? 'calc(100vh - 200px)'"
         @update:options="loadItems">
 
