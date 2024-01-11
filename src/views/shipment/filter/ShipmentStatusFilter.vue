@@ -96,11 +96,25 @@ watch(() => props.modelValue, (value) => {
     selected.value = value ?? [];
 });
 
+let isUpdating = false;
 watch(selected, (v) => {
     // if(Array.isArray(v)){
     //     v = v[0]?? null;
     // }
+    if (isUpdating) {
+        return;
+    }
+    isUpdating = true;
+    let _selected = v;
+    if (!Array.isArray(_selected)) {
+        _selected = [_selected as any];
+    }
+    if (_selected.some((v) => typeof (v) == 'number')) {
+        selected.value = _selected;
+    }
     emit('update:model-value', v);
+
+    setTimeout(() => isUpdating = false, 10);
 });
 
 
@@ -125,7 +139,7 @@ onMounted(() => {
         try {
             setTimeout(() => {
                 selected.value = (query.status as any) ?? [];
-            }, 10);
+            }, 1000);
         } catch (e) {
 
         }
