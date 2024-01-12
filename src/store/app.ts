@@ -150,7 +150,7 @@ export const useAccountStore = defineStore('account', () => {
       return user.value = await _fetchUserPromise;
     }
     catch (err) {
-      // throw err;
+      throw err;
     }
     finally {
       isFetchingUser.value = false;

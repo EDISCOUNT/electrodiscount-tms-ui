@@ -149,7 +149,7 @@
           </v-col>
 
           <v-col :cols="12" :md="8">
-            <v-card flat>
+            <v-card class="fill-height" flat>
               <template v-slot:prepend>
                 <v-icon>mdi-map</v-icon>
               </template>
@@ -158,7 +158,7 @@
               </template>
               <v-divider />
               <v-card-text class="pa-2">
-                <ShipmentMapView :shipment="shipment" />
+                <ShipmentMapView :shipment="shipment" height="480px"/>
               </v-card-text>
             </v-card>
           </v-col>

@@ -109,10 +109,21 @@ watch(selected, (v) => {
     if (!Array.isArray(_selected)) {
         _selected = [_selected as any];
     }
-    if (_selected.some((v) => typeof (v) == 'number')) {
+    
+    const _removedIndex: (number)[] = [];
+    for (const index in _selected) {
+        const v = _selected[index];
+        if (Number.isSafeInteger(v)) {
+            _removedIndex.push(index as any);
+        }
+    }
+    if (_removedIndex.length > 0) {
+        for (const index of _removedIndex) {
+            _selected.splice(index, 1);
+        }
         selected.value = _selected;
     }
-    emit('update:model-value', v);
+    emit('update:model-value', _selected);
 
     setTimeout(() => isUpdating = false, 10);
 });

@@ -1,9 +1,11 @@
 import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Product from "@/model/catalog/product";
+import { encodeURLParams } from "@/utils/url";
 
-export async function getPaginatedProducts({ page, limit, search}: { page?: number, limit?: number, search?: string } = {}) {
-    const { data } = await http.get(`/api/admin/catalog/products?page=${page ?? 1}&limit=${limit ?? 10}`);
+export async function getPaginatedProducts({ page, limit, search }: { page?: number, limit?: number, search?: string } = {}) {
+    const params = encodeURLParams({ page, limit, search });
+    const { data } = await http.get(`/api/admin/catalog/products?${params}`);
     const pagination = Pagination.fromJson<Product>({
         ...data,
         buildItem: (input) => Product.fromJson(input),

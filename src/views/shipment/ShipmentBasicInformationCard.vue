@@ -1,5 +1,20 @@
 <template>
     <v-card flat>
+        <v-card-text v-if="channel">
+            <v-list-item>
+                <template v-slot:prepend>
+                    <v-avatar>
+                        <v-img :src="channel.typeConfig.iconImage" />
+                    </v-avatar>
+                </template>
+                <template v-slot:title>
+                    {{ channel.name }}
+                </template>
+                <template v-slot:subtitle>
+                    {{ channel.typeConfig.subtitle }}
+                </template>
+            </v-list-item>
+        </v-card-text>
         <v-card-text>
             <v-row>
                 <v-col :cols="12" :md="6">
@@ -17,9 +32,9 @@
                             <span>Shipment Code(Reference)</span>
                         </template>
                     </v-list-item>
-                    </v-col>
+                </v-col>
 
-                    <v-col :cols="12" :md="6">
+                <v-col :cols="12" :md="6">
                     <v-list-item>
                         <template v-slot:prepend>
                             <v-icon>mdi-label</v-icon>
@@ -34,9 +49,9 @@
                             <span>Order ID</span>
                         </template>
                     </v-list-item>
-                    </v-col>
+                </v-col>
 
-                    <v-col :cols="12" :md="6">
+                <v-col :cols="12" :md="6">
                     <v-list-item>
                         <template v-slot:prepend>
                             <v-icon>mdi-label</v-icon>
@@ -51,9 +66,9 @@
                             <span>Net Weight</span>
                         </template>
                     </v-list-item>
-                    </v-col>
+                </v-col>
 
-                    <v-col :cols="12" :md="6">
+                <v-col :cols="12" :md="6">
                     <v-list-item>
                         <template v-slot:prepend>
                             <v-icon>mdi-weight</v-icon>
@@ -68,10 +83,10 @@
                             <span>Volumetric Weight</span>
                         </template>
                     </v-list-item>
-                    </v-col>
+                </v-col>
 
-                    
-                    <v-col :cols="12" :md="6">
+
+                <v-col :cols="12" :md="6">
                     <v-list-item>
                         <template v-slot:prepend>
                             <v-icon>mdi-dimension</v-icon>
@@ -86,8 +101,8 @@
                             <span>Dimension</span>
                         </template>
                     </v-list-item>
-                    </v-col>
-                    <v-col :cols="12" :md="6">
+                </v-col>
+                <v-col :cols="12" :md="6">
                     <v-list-item>
                         <template v-slot:prepend>
                             <v-icon>mdi-dimension</v-icon>
@@ -102,19 +117,23 @@
                             <span>COD Amount</span>
                         </template>
                     </v-list-item>
-                    </v-col>
+                </v-col>
             </v-row>
         </v-card-text>
     </v-card>
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue';
+import { computed, defineProps } from 'vue';
 import Shipment from '@/model/shipment/shipment';
 import { formatDate } from '@/utils/format';
 
 const props = defineProps<{
     shipment: Shipment;
 }>();
+
+
+
+const channel = computed(() => props.shipment.channel);
 
 </script>

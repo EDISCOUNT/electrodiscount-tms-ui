@@ -2,10 +2,18 @@
     <v-app>
         <v-main>
             <v-row justify="center" align="center" class="fill-height">
-                <v-card flat>
+                <v-card min-width="300px" flat>
                     <template v-slot:title>
-                        Please wait...
+                        <span v-show="loading">Please wait...</span>
                     </template>
+                    <v-card-text v-if="error">
+                        <v-alert type="error" dismissible>
+                            {{ error }}
+                        </v-alert>
+                    </v-card-text>
+                    <v-card-text>
+                        <v-progress-linear :indeterminate="loading" />
+                    </v-card-text>
                 </v-card>
             </v-row>
         </v-main>
@@ -19,7 +27,7 @@ import { useAccountStore, useUser } from '@/store/app';
 
 const router = useRouter();
 const { isGranted } = useAccountStore();
-const {user} = useUser();
+const { user, loading, error } = useUser();
 
 
 
@@ -27,8 +35,8 @@ watch(user, (user) => authGuard());
 onMounted(() => authGuard());
 
 
-function authGuard(){
-    
+function authGuard() {
+
     if (isGranted('ROLE_ADMIN')) {
         router.replace({ name: 'admin:home' });
     }

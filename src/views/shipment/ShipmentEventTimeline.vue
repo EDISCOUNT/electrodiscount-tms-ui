@@ -7,7 +7,7 @@
                 </v-alert>
             </v-card-text>
             <v-card-text>
-                <v-card :max-height="maxHeight?? '600px'" style="overflow-y: auto;">
+                <v-card :max-height="maxHeight?? '600px'" style="overflow-y: auto;" flat>
                     <v-timeline density="compact" truncate-line="both">
                         <v-timeline-item v-for="(event, i) in pagination.items" :key="event.id ?? i" :size="10"
                             style="padding: 0;">

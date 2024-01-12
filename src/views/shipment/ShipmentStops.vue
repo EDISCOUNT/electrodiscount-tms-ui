@@ -21,12 +21,24 @@
                 </v-card-text>
                 <v-card-text v-if="shipment?.originAddress.emailAddress || shipment?.originAddress.phoneNumber"
                     class="py-0 px-4">
-                    <span v-if="shipment?.originAddress.emailAddress" class="">{{
-                        shipment.originAddress.emailAddress }}</span>
-                    <span v-if="shipment?.originAddress.phoneNumber" class="">
-                    <span v-if="shipment?.originAddress.emailAddress" class="mr-1">,</span>
-                    {{
-                        shipment.originAddress.phoneNumber }}</span>
+                    <v-chip v-if="shipment?.originAddress.emailAddress"
+                        :href="`mailto:${shipment?.originAddress.emailAddress}`" class="pl-1  ma-1" size="small">
+                        <template v-slot:prepend>
+                            <v-avatar color="primary" class="mr-2">
+                                <v-icon>mdi-email</v-icon>
+                            </v-avatar>
+                        </template>
+                        {{
+                            shipment.originAddress.emailAddress }}</v-chip>
+                    <v-chip v-if="shipment?.originAddress.phoneNumber" :href="`tel:${shipment?.originAddress.phoneNumber}`"
+                        class="pl-1  ma-1" size="small">
+                        <template v-slot:prepend>
+                            <v-avatar color="primary" class="mr-2">
+                                <v-icon>mdi-phone</v-icon>
+                            </v-avatar>
+                        </template>
+                        {{ shipment.originAddress.phoneNumber }}
+                    </v-chip>
                 </v-card-text>
             </v-card>
         </v-card-text>
@@ -52,12 +64,30 @@
                 </v-card-text>
                 <v-card-text v-if="shipment?.destinationAddress.emailAddress || shipment?.destinationAddress.phoneNumber"
                     class="py-0 px-4">
-                    <span v-if="shipment?.destinationAddress.emailAddress" class="">{{
-                        shipment.destinationAddress.emailAddress }}</span>
-                    <span v-if="shipment?.destinationAddress.phoneNumber" class="">
-                    <span v-if="shipment?.destinationAddress.emailAddress" class="mr-1">,</span>
-                    {{
-                        shipment.destinationAddress.phoneNumber }}</span>
+                    <v-chip v-if="shipment?.destinationAddress.emailAddress"
+                        :href="`mailto:${shipment?.destinationAddress.emailAddress}`" class="pl-1  ma-1" size="small">
+                        <template v-slot:prepend>
+                            <v-avatar color="primary" class="mr-2">
+                                <v-icon>mdi-email</v-icon>
+                            </v-avatar>
+                        </template>
+                        {{
+                            shipment.destinationAddress.emailAddress }}</v-chip>
+
+                    <v-chip v-if="shipment?.destinationAddress.phoneNumber"
+                        :href="`tel:${shipment?.destinationAddress.phoneNumber}`" class="pl-1 ma-1" size="small">
+                        <template v-slot:prepend>
+                            <v-avatar color="primary" class="mr-2">
+                                <v-icon>mdi-phone</v-icon>
+                            </v-avatar>
+                        </template>
+                        {{ shipment.destinationAddress.phoneNumber }}
+                    </v-chip>
+
+                    <!-- <span v-if="shipment?.destinationAddress.phoneNumber" class="">
+                        <span v-if="shipment?.destinationAddress.emailAddress" class="mr-1">,</span>
+                        {{
+                            shipment.destinationAddress.phoneNumber }}</span> -->
                 </v-card-text>
             </v-card>
         </v-card-text>

@@ -36,9 +36,9 @@
                 </template>
                 <template v-slot:append>
                   <PrintShipmentManifestButton :shipments="[(shipment.id as any)!]" />
-                  <EmailDrawer :shipment="shipment"/>
-                  <span class="mx-1"/>
-                  <SmsDrawer :shipment="shipment"/>
+                  <EmailDrawer :shipment="shipment" />
+                  <span class="mx-1" />
+                  <SmsDrawer :shipment="shipment" />
                 </template>
                 <!-- <template v-slot:extension>
                   <v-btn icon @click="router.back()">
@@ -90,11 +90,23 @@
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentActionCard
-                :shipment="shipment"
-                @updated="(shipment) => onUpdateShipment(shipment)"
-                :apply-transition="applyTransition"
-                />
+                <ShipmentActionCard :shipment="shipment" @updated="(shipment) => onUpdateShipment(shipment)"
+                  :apply-transition="applyTransition" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col :cols="12" :md="12">
+            <v-card class="fill-height" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-package</v-icon>
+              </template>
+              <template v-slot:title>
+                Shipment Lines
+              </template>
+              <v-divider />
+              <v-card-text>
+                <ShipmentItemList :shipment="shipment" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -124,27 +136,28 @@
               </template>
               <v-divider />
               <v-card-text class="pa-2">
-                <v-card height="300px" :color="inlineBg" flat />
+                <ShipmentMapView :shipment="shipment" height="450px"/>
               </v-card-text>
             </v-card>
           </v-col>
 
-          <v-col :cols="12" :md="8">
+          <v-col :cols="12" :md="6">
             <v-card class="fill-height" flat>
               <template v-slot:prepend>
-                <v-icon>mdi-package</v-icon>
+                <v-icon>mdi-note</v-icon>
               </template>
               <template v-slot:title>
-                Shipment Lines
+                Internal Note
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentItemList :shipment="shipment" />
+                <v-card min-height="400px" height="100%" color="secondary-bg" flat>
+                </v-card>
               </v-card-text>
             </v-card>
           </v-col>
 
-          <v-col :cols="12" :md="4">
+          <v-col :cols="12" :md="6">
             <v-card class="fill-height" flat>
               <template v-slot:prepend>
                 <v-icon>mdi-history</v-icon>
@@ -154,16 +167,14 @@
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentEventTimeline 
-                :get-paginated-shipment-events="getPaginatedShipmentEvents"
-                :shipment="shipment" />
+                <ShipmentEventTimeline :get-paginated-shipment-events="getPaginatedShipmentEvents" :shipment="shipment" />
               </v-card-text>
             </v-card>
           </v-col>
 
         </v-row>
 
-        <v-btn color="primary" position="fixed" bottom="24px" right="24px" size="large" style="z-index: 5;" icon >
+        <v-btn color="primary" position="fixed" bottom="24px" right="24px" size="large" style="z-index: 5;" icon>
           <v-icon>mdi-email</v-icon>
         </v-btn>
       </v-card-text>
@@ -200,6 +211,7 @@ import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.
 import EmailDrawer from '@/views/mailing/email/EmailDrawer.vue';
 import SmsDrawer from '@/views/texting/sms/SmsDrawer.vue';
 import { getPaginatedShipmentEvents } from '@/carrier/repository/shipment/shipment_event_repository';
+import ShipmentMapView from '@/views/shipment/ShipmentMapView.vue';
 
 const props = defineProps<{
   id: string,

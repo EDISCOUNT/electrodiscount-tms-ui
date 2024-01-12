@@ -2,9 +2,11 @@ import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Storage from "@/model/inventory/storage";
 import { AddressFormData } from "@/model/addressing/address";
+import { encodeURLParams } from "@/utils/url";
 
 export async function getPaginatedStorages({ page, limit, search}: { page?: number, limit?: number, search?: string } = {}) {
-    const { data } = await http.get(`/api/admin/inventory/storages?page=${page ?? 1}&limit=${limit ?? 10}`);
+    const params = encodeURLParams({page, limit, search});
+    const { data } = await http.get(`/api/admin/inventory/storages?${params}`);
     const pagination = Pagination.fromJson<Storage>({
         ...data,
         buildItem: (input) => Storage.fromJson(input),

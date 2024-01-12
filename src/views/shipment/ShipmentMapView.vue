@@ -1,7 +1,7 @@
 <template>
-    <v-card height="300px" :color="inlineBg" flat>
+    <v-card :height="height" :color="inlineBg" flat>
         <!-- {{ { markers, mapCenter } }} -->
-        <GoogleMap v-bind:zoom="zoom" v-if="mapCenter" :center="mapCenter" :api-key="GOOGLE_MAPS_API_KEY" style="height: 300px;">
+        <GoogleMap v-bind:zoom="zoom" v-if="mapCenter" :center="mapCenter" :api-key="GOOGLE_MAPS_API_KEY" :style="`height: ${height};`">
             <Marker v-for="{ position, label, title, info, address, } in markers" :key="address.id" :options="{
                 // animation: google.maps.Animation.DROP,
                 position,
@@ -47,11 +47,13 @@ interface MarkerData {
 
 const props = defineProps<{
     shipment: Shipment;
+    height?: string | number;
 }>();
 
 const notifier = useNotifier();
 const { secondaryBg, inlineBg } = useColorScheme();
 
+const height= computed(() => props.height?? '400px');
 const zoom = ref(15);
 
 const addresses = computed(() => {
