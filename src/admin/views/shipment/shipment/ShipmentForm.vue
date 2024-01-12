@@ -152,9 +152,18 @@
                                 <template v-slot:title>
                                     <span>Shipper Info</span>
                                 </template>
+
                                 <v-divider />
                                 <v-card-text class="pa-0">
                                     <AddressForm v-model="data.originAddress" />
+                                </v-card-text>
+                                <v-divider />
+                                <v-card-subtitle>
+                                    Storage or warehouse
+                                </v-card-subtitle>
+                                <v-card-text>
+                                    <StorageInput v-model="data.storage" label="Storage/Warehouse"
+                                        placeholder="Select Warehouse to fulfil this order" variant="outlined" />
                                 </v-card-text>
                             </v-card>
                         </v-col>
@@ -335,7 +344,7 @@
 import { getPaginatedAdditionalServices } from '@/admin/repository/order/additional_service_repository';
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
 import useSWRV from 'swrv';
-import { computed, defineProps, reactive, ref } from "vue";
+import { computed, defineProps, reactive, ref, watch } from "vue";
 // import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
@@ -347,6 +356,9 @@ import StorageInput from './partials/StorageInput.vue';
 import DimensionInput from './partials/DimensionInput.vue';
 import AddressForm from './partials/AddressForm.vue';
 import { useColorScheme } from '@/utils/color';
+import { getStorage } from '@/admin/repository/inventory/storage_repository';
+import Storage from '@/model/inventory/storage';
+import { useNotifier } from 'vuetify-notifier';
 
 const props = defineProps<{
     type?: string;
@@ -363,6 +375,7 @@ const emit = defineEmits<{
 // const createConfirm = useConfirm()
 // const createSnackbar = useSnackbar();
 
+const notifier = useNotifier();
 const { xs, smAndDown, mdAndUp } = useDisplay();
 const { secondaryBg, inlineBg } = useColorScheme();
 
@@ -385,6 +398,33 @@ const data = reactive<ShipmentFormData>(props.shipment?.toJson() ?? { items: [] 
 const form = ref<VForm>();
 const error = ref<string>();
 
+
+
+const fetchingStorage = ref(false);
+const storage = ref<Storage>();
+watch(
+    () => data.storage,
+    async (id) => {
+        try {
+            fetchingStorage.value = true;
+
+            if (data.originAddress) {
+                return;
+            }
+            const _storage = await getStorage(id as any);
+            storage.value = _storage;
+            data.originAddress = _storage.address?.toJson() ?? {};
+        }
+        catch (err) {
+            const message = (err as any).message as string;
+            notifier.toastError(message);
+            // error.value = message;
+        }
+        finally {
+            fetchingStorage.value = false;
+        }
+    }
+)
 
 
 function addItem() {

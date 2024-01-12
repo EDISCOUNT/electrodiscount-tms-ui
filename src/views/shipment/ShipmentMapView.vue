@@ -1,7 +1,8 @@
 <template>
     <v-card :height="height" :color="inlineBg" flat>
         <!-- {{ { markers, mapCenter } }} -->
-        <GoogleMap v-bind:zoom="zoom" v-if="mapCenter" :center="mapCenter" :api-key="GOOGLE_MAPS_API_KEY" :style="`height: ${height};`">
+        <GoogleMap v-bind:zoom="zoom" v-if="mapCenter" :center="mapCenter" ref="map" :api-key="GOOGLE_MAPS_API_KEY"
+            :style="`height: ${height};`">
             <Marker v-for="{ position, label, title, info, address, } in markers" :key="address.id" :options="{
                 // animation: google.maps.Animation.DROP,
                 position,
@@ -53,7 +54,7 @@ const props = defineProps<{
 const notifier = useNotifier();
 const { secondaryBg, inlineBg } = useColorScheme();
 
-const height= computed(() => props.height?? '400px');
+const height = computed(() => props.height ?? '400px');
 const zoom = ref(15);
 
 const addresses = computed(() => {
@@ -70,8 +71,10 @@ const addresses = computed(() => {
 
 
 const markers = ref<MarkerData[]>([]);
+const direction = ref<google.maps.DirectionsResult>();
 // const mapCenter = ref<google.maps.LatLngLiteral | null>(null);
-const map = ref<google.maps.Map | null>(null);
+// const map = ref<google.maps.Map | null>(null);
+const map = ref<typeof GoogleMap>();
 
 const mapCenter = computed(() => {
     if (markers.value.length > 0) {
@@ -87,6 +90,9 @@ onMounted(async () => {
     markers.value = await buildMakers();
 });
 
+watch(markers, async () => {
+    await resolveDirection();
+});
 
 async function buildMakers() {
     const markers: MarkerData[] = [];
@@ -136,6 +142,37 @@ async function resolveAddressCoords(address: Address) {
     }
     catch (err) {
         const message = `Failed to resolve address location: ${err}`;
+        notifier.toastError(message);
+    }
+}
+
+
+async function resolveDirection() {
+    try {
+        const google = await loader.load();
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        if(addresses.value.length < 2) {
+            return;
+        }
+        const request: google.maps.DirectionsRequest = {
+            origin: addresses.value[0].formatted,
+            destination: addresses.value[1].formatted,
+            waypoints: markers.value.slice(1, -1).map(marker => ({ location: marker.address.formatted })),
+            travelMode: google.maps.TravelMode.DRIVING,
+        };
+        directionsService.route(request, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                direction.value = result;
+                directionsRenderer.setDirections(result);
+                if (map.value?.map) {
+                    directionsRenderer.setMap(map.value.map);
+                }
+            }
+        });
+    }
+    catch (err) {
+        const message = `Failed to load google Maps: ${err}`;
         notifier.toastError(message);
     }
 }

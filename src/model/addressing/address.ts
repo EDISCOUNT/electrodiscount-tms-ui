@@ -101,7 +101,7 @@ export default class Address {
             postcode: this.postcode,
             countryCode: this.countryCode,
             coordinates: this.coordinates?.toJson(),
-            arriveAt: this.arriveAt?.toISOString(),
+            // arriveAt: this.arriveAt?.toISOString(),
             // updatedAt: this.updatedAt?.toISOString(), // You might want to specify the correct data type here
             // createdAt: this.createdAt?.toISOString(),
         };
@@ -118,7 +118,7 @@ export default class Address {
             company: json.company,
             street: json.street,
             city: json.city,
-            provinceCode: json.provinceCode?? json.provinceName,
+            provinceCode: json.provinceCode ?? json.provinceName,
             provinceName: json.provinceName ?? json.provinceCode,
             postcode: json.postcode,
             countryCode: json.country ?? json.countryCode,
@@ -210,11 +210,11 @@ export interface AddressFormData {
     phoneNumber?: string;
     company?: string;
     street?: string;
-    city: string;
-    provinceCode: string;
-    provinceName: string;
-    postcode: string;
-    countryCode: string;
+    city?: string;
+    provinceCode?: string;
+    provinceName?: string;
+    postcode?: string;
+    countryCode?: string;
     coordinates?: CoordsFormData;
     arriveAt?: string;
 }

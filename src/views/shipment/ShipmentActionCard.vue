@@ -158,7 +158,7 @@ const statuses = [
 const possibleStatuses = computed(() => {
     switch (status.value) {
         case 'new':
-            return statuses.filter((e) => ['assigned', 'processing', 'onhold', 'cancelled',].includes(e.value));
+            return statuses.filter((e) => ['assigned', 'intransit', 'processing', 'onhold', 'cancelled',].includes(e.value));
         case 'assigned':
             return statuses.filter((e) => ['processing', 'ready', 'intransit', 'onhold', 'cancelled',].includes(e.value));
         //

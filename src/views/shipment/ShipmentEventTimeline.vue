@@ -7,7 +7,7 @@
                 </v-alert>
             </v-card-text>
             <v-card-text>
-                <v-card :max-height="maxHeight?? '600px'" style="overflow-y: auto;" flat>
+                <v-card :max-height="maxHeight ?? '600px'" style="overflow-y: auto;" flat>
                     <v-timeline density="compact" truncate-line="both">
                         <v-timeline-item v-for="(event, i) in pagination.items" :key="event.id ?? i" :size="10"
                             style="padding: 0;">
@@ -47,20 +47,7 @@
                                     <!-- {{ { attachments: event.attachments } }} -->
                                     <v-row justify="start" class="py-5">
                                         <v-col :cols="6" v-for="(attachment, i) in event.attachments" :key="attachment.id">
-                                            <v-card height="150px" r-color="grey-lighten-5" :href="attachment.href"
-                                                target="_blank" flat>
-                                                <!-- {{ {  attachment } }} -->
-                                                <v-img :src="attachment.href">
-                                                    <template v-slot:placeholder>
-                                                        <v-sheet>
-                                                            {{ { href: attachment.href } }}
-                                                        </v-sheet>
-                                                    </template>
-                                                </v-img>
-                                                <v-card-subtitle>
-                                                    {{ attachment.caption }}
-                                                </v-card-subtitle>
-                                            </v-card>
+                                           <shipment-event-timeline-item :attachment="attachment"/>
                                         </v-col>
                                     </v-row>
 
@@ -99,6 +86,7 @@ import { formatDate } from '@/utils/format';
 import useSWRV from 'swrv';
 import Pagination from '@/data/pagination/pagination';
 import ShipmentEvent from '@/model/shipment/shipment_event';
+import ShipmentEventTimelineItem from './ShipmentEventTimelineItem.vue';
 
 interface FetchShipmentEventsParams {
     shipment: Shipment
