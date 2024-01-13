@@ -4,7 +4,7 @@ import Channel from "@/model/channel/channel";
 import { encodeURLParams } from "@/utils/url";
 
 export async function getPaginatedChannels({ page, limit, search, }: { page?: number, limit?: number, search?: string } = {}) {
-    const params = encodeURLParams({page, limit, search});
+    const params = encodeURLParams({ page, limit, search });
     const { data } = await http.get(`/api/admin/channel/channels?${params}`);
     const pagination = Pagination.fromJson<Channel>({
         ...data,
@@ -29,6 +29,11 @@ export async function updateChannel(id: string, data: ChannelFormData) {
     const { data: result } = await http.patch(`/api/admin/channel/channels/${id}`, data);
     return Channel.fromJson(result);
 }
+
+export async function deleteChannel(id: string) {
+    const { data } = await http.delete(`/api/admin/channel/channels/${id}`);
+}
+
 
 
 

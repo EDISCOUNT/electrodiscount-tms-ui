@@ -12,7 +12,7 @@
                 ]"></v-text-field>
                 <v-text-field v-model="data.gtin" label="EAN" variant="outlined" density="compact" :rules="[
                     // (v) => !!v || 'EAN is required',
-                    (v) => (v && v.length <= 14) || 'EAN must be less than or equal to 14 characters',
+                    (v) => !v || v.length <= 14 || 'EAN must be less than or equal to 14 characters',
                 ]"></v-text-field>
                 <v-text-field v-model="data.name" label="Name" variant="outlined" density="compact" :rules="[
                     (v) => !!v || 'Name is required',

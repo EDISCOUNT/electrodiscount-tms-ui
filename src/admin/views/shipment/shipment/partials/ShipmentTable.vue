@@ -180,6 +180,7 @@ import { formatDate } from '@/utils/format';
 import Shipment from '@/model/shipment/shipment';
 import ShipmentFulfilmentCard from '@/views/shipment/ShipmentFulfilmentCard.vue';
 import { useNotifier } from 'vuetify-notifier';
+import { debounce } from 'lodash';
 
 
 const props = defineProps<{
@@ -325,7 +326,7 @@ watch(
     }, { deep: true });
 
 
-async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy?: any, filter?: { [i: string]: any } }) {
+async function doLoadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy?: any, filter?: { [i: string]: any } }) {
     try {
         //console.log("SORT BY: ", { sortBy });
         const criteria = {
@@ -351,6 +352,8 @@ async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?:
         loading.value = false;
     }
 }
+
+const loadItems = debounce(doLoadItems,1000);
 
 
 

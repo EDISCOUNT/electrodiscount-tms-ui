@@ -21,12 +21,10 @@ export async function getAdditionalService(id: string) {
     return AdditionalService.fromJson(data);
 }
 
-
 export async function createAdditionalService(data: AdditionalServiceFormData) {
     const { data: result } = await http.post(`/api/admin/order/additional_services`, data);
     return AdditionalService.fromJson(result);
 }
-
 
 export async function updateAdditionalService(id: string, data: AdditionalServiceFormData) {
     const { data: result } = await http.patch(`/api/admin/order/additional_services/${id}`, data);
@@ -34,6 +32,9 @@ export async function updateAdditionalService(id: string, data: AdditionalServic
 }
 
 
+export async function deleteAdditionalService(id: string) {
+    const { data } = await http.delete(`/api/admin/order/additional_services/${id}`);
+}
 
 
 

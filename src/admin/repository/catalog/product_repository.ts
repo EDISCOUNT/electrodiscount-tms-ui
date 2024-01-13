@@ -31,6 +31,11 @@ export async function updateProduct(id: string, data: ProductFormData) {
 }
 
 
+export async function deleteProduct(id: string) {
+    const { data } = await http.delete(`/api/admin/catalog/products/${id}`);
+}
+
+
 
 
 

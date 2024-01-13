@@ -31,7 +31,7 @@ const { user, loading, error } = useUser();
 
 
 
-watch(user, (user) => authGuard());
+watch(user, (user) => authGuard(), {deep: true});
 onMounted(() => authGuard());
 
 

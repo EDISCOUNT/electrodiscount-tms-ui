@@ -4,8 +4,8 @@ import Storage from "@/model/inventory/storage";
 import { AddressFormData } from "@/model/addressing/address";
 import { encodeURLParams } from "@/utils/url";
 
-export async function getPaginatedStorages({ page, limit, search}: { page?: number, limit?: number, search?: string } = {}) {
-    const params = encodeURLParams({page, limit, search});
+export async function getPaginatedStorages({ page, limit, search }: { page?: number, limit?: number, search?: string } = {}) {
+    const params = encodeURLParams({ page, limit, search });
     const { data } = await http.get(`/api/admin/inventory/storages?${params}`);
     const pagination = Pagination.fromJson<Storage>({
         ...data,
@@ -29,6 +29,11 @@ export async function createStorage(data: StorageFormData) {
 export async function updateStorage(id: string, data: StorageFormData) {
     const { data: result } = await http.patch(`/api/admin/inventory/storages/${id}`, data);
     return Storage.fromJson(result);
+}
+
+
+export async function deleteStorage(id: string) {
+    const { data } = await http.delete(`/api/admin/inventory/storages/${id}`);
 }
 
 

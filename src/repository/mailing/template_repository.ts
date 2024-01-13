@@ -29,3 +29,8 @@ export async function updateEmailMessageTemplate(id: string, data: EmailMessageT
 }
 
 
+export async function deleteEmailMessageTemplate(id: string,) {
+    const { data: result } = await http.delete(`/api/mailing/message_templates/${id}`);
+}
+
+

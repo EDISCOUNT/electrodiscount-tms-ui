@@ -37,6 +37,12 @@ export async function getUser({ id }: { id: string }, { }: UtilityProps = {}) {
 }
 
 
+export async function deleteUser({ id }: { id: string },) {
+  const { data } = await http.delete(`/api/admin/account/users/${id}`);
+}
+
+
+
 export interface UserUpdateInput extends UserFormData {
 }
 export interface UserCreationInput extends UserFormData {

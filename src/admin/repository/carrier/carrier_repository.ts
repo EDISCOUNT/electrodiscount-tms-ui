@@ -51,6 +51,11 @@ export async function updateCarrier(id: string, data: CarrierFormData) {
 }
 
 
+export async function deleteCarrier(id: string,) {
+    const { data: result } = await http.delete(`/api/admin/carrier/carriers/${id}`);
+}
+
+
 export async function updateCarrierLogo(id: string, image: File) {
     const formData = new FormData();
     formData.append('image', image);
