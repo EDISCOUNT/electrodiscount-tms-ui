@@ -40,12 +40,12 @@
                                             </v-card-subtitle>
                                             <v-card-text>
                                                 <StorageObjectInput
-                                                    @update:model-value="storage => data.destinationAddress = storage?.address?.formatted"
+                                                    @update:model-value="storage => onSelectStorage(storage)"
                                                     variant="outlined" density="compact" clearable />
                                             </v-card-text>
-                                            <v-card-actions>
+                                            <!-- <v-card-actions>
 
-                                            </v-card-actions>
+                                            </v-card-actions> -->
                                         </v-card>
                                     </v-dialog>
                                     <span>Delivery Address</span>
@@ -194,6 +194,11 @@ async function validate() {
         throw new Error(`Form Error: ${errors?.toString()}`)
     }
     return data;
+}
+
+
+function onSelectStorage(storage: Storage) {
+    data.destinationAddress = storage?.address?.formatted ?? '';
 }
 
 
