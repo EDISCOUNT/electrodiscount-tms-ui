@@ -29,7 +29,7 @@
             </v-list-item>
         </v-toolbar-items>
     </v-app-bar>
-    <v-navigation-drawer v-model="isOpen" :color="isDark ? undefined : 'primary'" :expand-on-hover="smAndUp" :rail="!xs"
+    <v-navigation-drawer v-model="isOpen" r-:color="isDark ? undefined : 'primary'" :expand-on-hover="smAndUp" :rail="!xs"
         :permanent="smAndUp">
 
         <!-- <v-container class="fill-height">
@@ -148,7 +148,7 @@
                     <v-list-item prepend-icon="mdi-account" title="Users" :to="{ name: 'admin:account:user:index' }"
                         value="users"></v-list-item>
                     <v-divider />
-                    <v-list-item prepend-icon="mdi-bank" title="Warehouses" :to="{ name: 'admin:inventory:storage:index' }"
+                    <v-list-item prepend-icon="mdi-warehouse" title="Warehouses" :to="{ name: 'admin:inventory:storage:index' }"
                         value="Warehouses"></v-list-item>
 
                     <v-divider />

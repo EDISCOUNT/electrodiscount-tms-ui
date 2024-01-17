@@ -20,7 +20,7 @@
                         </span>
                     </div>
                     <v-chip v-else-if="i == (items.length - 1)" size="small">
-                       + {{ items.length - 1 }} More
+                        + {{ items.length - 1 }} More
                     </v-chip>
                 </div>
             </template>
@@ -88,6 +88,17 @@
             <span class="text-grey" v-else>
                 N/A
             </span>
+        </template>
+
+        <template v-slot:item.channelOrderId="{ item: { id, channelOrderId } }">
+            <RouterLink :to="{ name: 'admin:shipment:show', params: { id: id } }" style="text-decoration: none;">
+                <div v-if="channelOrderId">
+                    {{ channelOrderId }}
+                </div>
+                <span class="text-grey" v-else>
+                    [N/A]
+                </span>
+            </RouterLink>
         </template>
 
         <template v-slot:item.channel="{ item: { channel } }">
@@ -159,6 +170,19 @@
                                         <span>Delete</span>
                                     </template>
                                 </v-list-item>
+                                <v-divider />
+                                <ShipmentReturnDialog :shipment="shipment" show-button>
+                                    <template v-slot:activator="{ props: returnProps }">
+                                        <v-list-item v-bind="returnProps">
+                                            <template v-slot:prepend>
+                                                <v-icon>mdi-truck</v-icon>
+                                            </template>
+                                            <template v-slot:title>
+                                                <span>Return</span>
+                                            </template>
+                                        </v-list-item>
+                                    </template>
+                                </ShipmentReturnDialog>
 
                             </v-list>
                         </v-card-text>
@@ -166,6 +190,17 @@
                 </v-menu>
 
             </v-card-actions>
+        </template>
+
+
+        <template v-slot:item.createdAt="{ item: { createdAt } }">
+            <!-- {{ {carrier} }} -->
+            <div v-if="createdAt">
+                {{ formatDate(createdAt) }}
+            </div>
+            <span class="text-grey" v-else>
+                N/A
+            </span>
         </template>
     </v-data-table-server>
 </template>
@@ -179,6 +214,7 @@ import { getStatusColor } from '@/utils/color';
 import { formatDate } from '@/utils/format';
 import Shipment from '@/model/shipment/shipment';
 import ShipmentFulfilmentCard from '@/views/shipment/ShipmentFulfilmentCard.vue';
+import ShipmentReturnDialog from '../return/ShipmentReturnDialog.vue';
 import { useNotifier } from 'vuetify-notifier';
 import { debounce } from 'lodash';
 
@@ -226,12 +262,20 @@ const headers = [
     //     title: 'Code', key: 'code',
     //     //  align: 'end' 
     // },
+
+    {
+        title: 'Actions', key: 'actions',
+        sortable: false,
+        width: '250px',
+        fixed: smAndUp,
+        //  align: 'end' 
+    },
     {
         title: 'Order ID', key: 'channelOrderId',
         sortable: true,
-        fixed: smAndUp,
+        //    fixed: smAndUp,
         minWidth: '120px',
-         align: 'end' 
+        align: 'end'
     },
     {
         title: 'Status', key: 'status',
@@ -254,7 +298,7 @@ const headers = [
         title: 'Destination', key: 'destinationAddress',
         sortable: false,
         minWidth: '300px',
-        fixed: mdAndUp,
+        //    fixed: mdAndUp,
         align: 'center',
         //  align: 'center' 
     },
@@ -291,10 +335,18 @@ const headers = [
         // align: 'center'
     },
     {
-        title: 'Actions', key: 'actions',
-        sortable: false,
-        //  align: 'end' 
+        title: 'Created At',
+        key: 'createdAt',
+        sortable: true,
+        minWidth: '250px',
+        align: 'center',
+        // align: 'center'
     },
+    //{
+    //    title: 'Actions', key: 'actions',
+    //    sortable: false,
+    //    //  align: 'end' 
+    //},
 ];
 
 
@@ -330,8 +382,9 @@ async function doLoadItems({ page, itemsPerPage: limit, sortBy, filter }: { page
     try {
         //console.log("SORT BY: ", { sortBy });
         const criteria = {
-            ...{ ...(filter ?? props.filter ?? {}),
-            //status: undefined
+            ...{
+                ...(filter ?? props.filter ?? {}),
+                //status: undefined
             },
         };
 
@@ -353,7 +406,7 @@ async function doLoadItems({ page, itemsPerPage: limit, sortBy, filter }: { page
     }
 }
 
-const loadItems = debounce(doLoadItems,1000);
+const loadItems = debounce(doLoadItems, 1000);
 
 
 

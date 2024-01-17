@@ -70,7 +70,7 @@ const possibleFields = computed(() => {
 const fields = computed(() => {
     return _fields.value;
     // props.fields ??
-    
+
 });
 
 // watch(
@@ -84,7 +84,7 @@ const itemsFields = computed(() => {
 });
 
 function updateFields(fields: string[]) {
-    console.log("UPDATE FIELDS: ", fields);
+    // console.log("UPDATE FIELDS: ", fields);
     _fields.value = fields;
 }
 
@@ -92,11 +92,16 @@ onMounted(() => _fields.value = props.fields ?? possibleFields.value.map(e => e.
 
 
 watch(fields, (fields) => {
-    console.log("FIEDLS CHANGED:", {fields});
+    // console.log("FIEDLS CHANGED:", {fields});
     emitValues(range.value);
-},{deep: true});
+}, { deep: true });
 watch(range, (range) => {
     // const out = values?.map(e => new Date(e));
+    if (range) {
+        if (!(range.start && range.end)) {
+            return;
+        }
+    }
     emitValues(range);
 
 }, { deep: true });

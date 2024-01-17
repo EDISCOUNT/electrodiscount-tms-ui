@@ -14,7 +14,7 @@
             </v-btn>
         </template>
         <template v-else>
-            <ShipmentFilterBarForm v-model:rsql="rsql"  :code="code" :status="status" :update-url-query="updateUrlQuery" :no-carrier="noCarrier"/>
+            <ShipmentFilterBarForm v-model:filter="filter" v-model:rsql="rsql"  :code="code" :status="status" :update-url-query="updateUrlQuery" :no-carrier="noCarrier"/>
         </template>
     </div>
 </template>
@@ -26,21 +26,25 @@ import { useDisplay } from 'vuetify';
 
 const emit = defineEmits<{
     (e: 'update:rsql', value?: string): void;
+    (e: 'update:filter', value?: {[i:string]: any}): void;
 }>();
 
 const props = defineProps<{
     code?: string;
     status?: string| string[];
+    filter?: {[i:string]: any};
     updateUrlQuery?: boolean;
     noCarrier?: boolean;
 }>();
 
 const open = ref(false);
 const rsql = ref<string>();
+const filter = ref<{[i:string]: any}>();
 
 const { xs, sm, lg } = useDisplay();
 
 watch(rsql, (rsql) => emit('update:rsql', rsql));
+watch(filter, (filter) => emit('update:filter', filter));
 
 
 </script>

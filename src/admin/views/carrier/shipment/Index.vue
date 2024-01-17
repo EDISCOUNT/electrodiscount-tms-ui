@@ -47,7 +47,7 @@
                                     url="/api/admin/shipment/shipments/count"
                                     :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })"
                                     update-url-query multiple />
-                                <ShipmentFilterBar v-model:rsql="filter.filter" :code="filter.code"
+                                <ShipmentFilterBar v-model:rsql="filter.filter"  v-model:filter="criteria" :code="filter.code"
                                     r-:status="filter.status" update-url-query no-carrier v-else />
                                 <BarcodeScannerButton v-model:result="filter.code" autoclose />
                             </v-row>
@@ -57,7 +57,7 @@
                 <!-- <template v-slot:title> -->
                 <!-- <div class="mt-2"> -->
                 <!-- <v-toolbar-items> -->
-                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" r-:status="filter.status" no-carrier
+                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" v-model:filter="criteria" r-:status="filter.status" no-carrier
                     update-url-query class="mt-2 px-5" />
                 <!-- </v-toolbar-items> -->
                 <!-- </div> -->
@@ -75,7 +75,7 @@
                     <v-window v-if="pagination" v-model="tab" :touch="false">
                         <v-window-item v-for="(carrier) in pagination.items" :key="carrier.id" :value="carrier.id">
                             <!-- {{ { tableFilter } }} -->
-                            <shipment-table v-model="selected" :filter="tableFilter" ref="table"
+                            <shipment-table v-model="selected" :filter="{ ...(tableFilter ?? {}), ...(criteria ?? {}) }" ref="table"
                                 height="calc(100vh - 380px)" show-select />
                         </v-window-item>
                     </v-window>
@@ -129,6 +129,7 @@ const { xs, md, smAndDown, smAndUp, mdAndUp } = useDisplay();
 
 const tab = ref<number>();
 const selected = ref<string[]>([]);
+const criteria = ref<{ [i: string]: any }>();
 
 
 watch(tab, (carrier) => {

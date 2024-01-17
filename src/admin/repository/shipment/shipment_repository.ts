@@ -1,9 +1,10 @@
 import http from "@/plugins/http";
 import Pagination from "@/data/pagination/pagination";
 import Shipment, { ShipmentFormData } from '@/model/shipment/shipment';
-import { encodeURLParams } from "@/utils/url";
+import { deepEncodeURLParams, encodeURLParams } from "@/utils/url";
 import { ShipmentDocumentFileAttachmentFormData } from "@/model/shipment/shipment_document_attachment";
 import { and, comparison, inList } from "rsql-builder";
+import Address, { AddressFormData } from "@/model/addressing/address";
 
 export async function getPaginatedShipments({ page, limit, criteria }: { page?: number, limit?: number, criteria?: { [i: string]: any } } = {}) {
     criteria ??= {};
@@ -14,6 +15,9 @@ export async function getPaginatedShipments({ page, limit, criteria }: { page?: 
             delete criteria['status'];
         }
     }
+    // if ('dateRange' in criteria) {
+    //    criteria['dateRange'] =  JSON.stringify(criteria['dateRange']);
+    // }
     if (('status' in criteria) && criteria.status) {
         let status: string[] = criteria.status;
         if (!Array.isArray(status)) {
@@ -25,9 +29,9 @@ export async function getPaginatedShipments({ page, limit, criteria }: { page?: 
             comparison('status', inList(...status)),
         );
         criteria.filter = filter;
-        delete criteria.status;
+        // delete criteria.status;
     }
-    const query = encodeURLParams({
+    const query = deepEncodeURLParams({
         ...criteria,
         page,
         limit
@@ -151,6 +155,18 @@ export async function deleteShipment(id: string) {
 }
 
 
+export async function createReturnShipment(shipment: Shipment, data: ShipmentReturnFormData) {
+    const { id } = shipment;
+    if(typeof data.originAddress === 'string') {
+        data.originAddress = Address.fromFormatted(data.originAddress).toJson();
+    }
+    if(typeof data.destinationAddress === 'string') {
+        data.destinationAddress = Address.fromFormatted(data.destinationAddress).toJson();
+    }
+    const { data: result } = await http.post(`/api/admin/shipment/shipments/${id}/create-return`, data);
+}
+
+
 
 export interface AttachmentFormData {
     file: File;
@@ -164,4 +180,23 @@ export interface ShipmentType {
     subtitle: string;
     iconImage: string;
     code: string;
+}
+
+
+
+export interface ShipmentReturnFormData {
+    shipment: string;
+    originAddress: string | AddressFormData;
+    destinationAddress: string | AddressFormData;
+    items: ShipmentReturnItemFormData[]
+}
+
+
+
+export interface ShipmentReturnItemFormData {
+    shipmentItemId: string;
+    orderItemId: string;
+    handlingResult: string;
+    quantity: number;
+    reason: string;
 }

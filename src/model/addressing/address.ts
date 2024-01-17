@@ -9,9 +9,9 @@ export default class Address {
     phoneNumber?: string;
     company?: string;
     street?: string;
-    city: string;
-    provinceCode: string;
-    provinceName: string;
+    city?: string;
+    provinceCode?: string;
+    provinceName?: string;
     postcode: string;
     countryCode: string;
     coordinates?: Coords;
@@ -26,11 +26,11 @@ export default class Address {
         lastName?: string;
         emailAddress?: string;
         phoneNumber?: string;
-        company: string;
-        street: string;
-        city: string;
-        provinceCode: string;
-        provinceName: string;
+        company?: string;
+        street?: string;
+        city?: string;
+        provinceCode?: string;
+        provinceName?: string;
         postcode: string;
         countryCode: string;
         coordinates?: Coords;
@@ -128,6 +128,28 @@ export default class Address {
             createdAt: json.createdAt ? new Date(json.createdAt) : undefined,
         });
     }
+
+
+    static fromFormatted(address: string): Address {
+        const parts = address.split(',');
+        const company = parts[0]?.trim();
+        const street = parts[1]?.trim();
+        const city = parts[2]?.trim();
+        const province = parts[3]?.trim();
+        const postcode = parts[4]?.trim();
+        const country = parts[5]?.trim();
+
+        return new Address({
+            company,
+            street,
+            city,
+            provinceCode: province,
+            postcode,
+            countryCode: country,
+        });
+    }
+
+    // static parse(address: string): ?Address {}
 
 
     static fromPlaceDetails(details: PlaceDetails): Address {

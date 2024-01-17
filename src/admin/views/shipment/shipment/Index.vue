@@ -1,7 +1,8 @@
 <template>
     <v-card height="100vh" :color="secondaryBg" flat>
         <v-card-text class="pa-0 pa-sm-4">
-            <!-- {{ {filter} }} -->
+            <!-- {{ { filter, criteria, rsql: filter.filter } }} -->
+            <!-- {{ {criteria} }} -->
             <v-card class="" flat>
                 <template v-slot:title>
                     <v-toolbar color="transparent">
@@ -23,8 +24,8 @@
                                     url="/api/admin/shipment/shipments/count"
                                     :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })"
                                     update-url-query multiple />
-                                <ShipmentFilterBar v-model:rsql="filter.filter" :code="filter.code"
-                                    r-:status="filter.status" update-url-query v-else />
+                                <ShipmentFilterBar v-model:filter="criteria" v-model:rsql="filter.filter"
+                                    :code="filter.code" r-:status="filter.status" update-url-query v-else />
                                 <BarcodeScannerButton v-model:result="filter.code" autoclose />
                             </v-row>
                         </v-card-text>
@@ -33,8 +34,8 @@
                 <!-- <template v-slot:title> -->
                 <!-- <div class="mt-2"> -->
                 <!-- <v-toolbar-items> -->
-                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" r-:status="filter.status" update-url-query
-                    class="mt-2 px-5" />
+                <ShipmentFilterBar v-if="mdAndUp" v-model:filter="criteria" v-model:rsql="filter.filter"
+                    r-:status="filter.status" update-url-query class="mt-2 px-5" />
                 <!-- </v-toolbar-items> -->
                 <!-- </div> -->
                 <!-- </template> -->
@@ -48,7 +49,8 @@
 
             <v-card class="mt-4 fill-height" flat>
                 <v-card-text class="pb-0">
-                    <shipment-table v-model="selected" :filter="filter" ref="table" show-select />
+                    <shipment-table v-model="selected" :filter="{ ...(filter ?? {}), ...(criteria ?? {}) }" ref="table"
+                        show-select />
                 </v-card-text>
             </v-card>
 
@@ -80,6 +82,7 @@ const filter = reactive({
 
 
 const table = ref<typeof ShipmentTable>();
+const criteria = ref<{ [i: string]: any }>();
 
 const { secondaryBg } = useColorScheme();
 const { xs, md, smAndDown, smAndUp, mdAndUp } = useDisplay();

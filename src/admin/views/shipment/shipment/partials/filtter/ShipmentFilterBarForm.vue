@@ -14,9 +14,9 @@
                     ]" filter-main filter-items allow-select-fields multiple clearable />
             </v-col>
             <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
-                <ShipmentFulfilmentDateRangeFilter v-model="filter.deliveryDateRange" v-model:rsql="filter.deliveryDateRsql"
-                    label="Delivery Dates" placeholder="Select fulfilment dates" variant="outlined"
-                    r-:possible-fields="[{ label: 'Delivery Date', value: 'deliveryDate' }]" :fields="['deliveredAt']"
+                <ShipmentFulfilmentDateRangeFilter v-model="filter.dateRange" r-v-model:rsql="filter.dateRangeRsql"
+                    r-label="Delivery Dates" placeholder="Select date range" variant="outlined"
+                    r-:possible-fields="[{ label: 'Delivery Date', value: 'deliveryDate' }]" r-:fields="['deliveredAt']"
                     filter-main density="compact" multiple clearable />
             </v-col>
             <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
@@ -34,7 +34,7 @@
                         'DROPSHIPPING',
                         'RETURN_ORDER',
                         'EXCHANGE_ORDER',
-                    ]" multiple></v-select>
+                    ]" clearable multiple></v-select>
             </v-col>
             <v-col :cols="12" :sm="4" r-:md="4" r-v-if="!noCarrier" r-:lg="3">
                 <CarrierInput v-model="filter.carrier" label="Carriers" placeholder="Filter by assigned carriers"
@@ -75,15 +75,16 @@ interface FilterOptions {
     channelOrderId?: string;
     status?: string | string[];
     fulfilmentDateRange?: DateRangeInput;
-    deliveryDateRange?: DateRangeInput;
+    dateRange?: DateRangeInput;
     fulfilmentDatesRsql?: string;
     fulfilmentType?: string[];
-    deliveryDateRsql?: string;
+    dateRangeRsql?: string;
 }
 
 const props = defineProps<{
     code?: string;
     status?: string | string[];
+    filter?: { [i: string]: any };
     updateUrlQuery?: boolean;
     // urlQueryNamespace?: string | symbol;
     noCarrier?: boolean;
@@ -91,6 +92,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:rsql', value?: string): void;
+    (e: 'update:filter', value?: { [i: string]: any }): void;
 }>();
 
 const router = useRouter();
@@ -113,9 +115,9 @@ watch(filter, (filter) => {
                 ...filter,
                 ...(props.noCarrier ? { carrier: undefined } : {}),
                 fulfilmentDateRange: filter.fulfilmentDateRange ? JSON.stringify(filter.fulfilmentDateRange) : undefined,
-                deliveryDateRange: filter.deliveryDateRange ? JSON.stringify(filter.deliveryDateRange) : undefined,
+                dateRange: filter.dateRange ? JSON.stringify(filter.dateRange) : undefined,
                 fulfilmentDatesRsql: undefined,
-                deliveryDateRsql: undefined
+                dateRangeRsql: undefined
             }
         })
     }
@@ -135,17 +137,17 @@ onMounted(() => {
                 filter.fulfilmentType = (Array.isArray(query.fulfilmentType) ? query.fulfilmentType : [query.fulfilmentType].filter((e: any) => e)) as string[];
                 // filter.status = query.status as string;
                 const fulfilmentDateRange = query.fulfilmentDateRange ? JSON.parse(query.fulfilmentDateRange as string) : undefined;
-                const deliveryDateRange = query.deliveryDateRange ? JSON.parse(query.deliveryDateRange as string) : undefined;
+                const dateRange = query.dateRange ? JSON.parse(query.dateRange as string) : undefined;
                 // filter.fulfilmentDatesRsql = query.fulfilmentDatesRsql as string;
-                // filter.deliveryDateRsql = query.deliveryDateRsql as string;
+                // filter.dateRangeRsql = query.dateRangeRsql as string;
 
                 if (fulfilmentDateRange) {
                     rebuildDateRange(fulfilmentDateRange);
                     filter.fulfilmentDateRange = fulfilmentDateRange;
                 }
-                if (deliveryDateRange) {
-                    rebuildDateRange(deliveryDateRange);
-                    filter.deliveryDateRange = deliveryDateRange;
+                if (dateRange) {
+                    rebuildDateRange(dateRange);
+                    filter.dateRange = dateRange;
                 }
 
                 // console.log("FILTER: ", { filter });
@@ -208,8 +210,8 @@ const rsql = computed(() => {
     if (filter.fulfilmentDatesRsql) {
         query = and(query, filter.fulfilmentDatesRsql);
     }
-    if (filter.deliveryDateRsql) {
-        query = and(query, filter.deliveryDateRsql);
+    if (filter.dateRangeRsql) {
+        query = and(query, filter.dateRangeRsql);
     }
     return query;
 });
@@ -217,7 +219,35 @@ const rsql = computed(() => {
 
 watch(rsql, (rsql) => emit('update:rsql', rsql));
 
+// 
 
+watch(
+    () => props.filter,
+    (input) => updateFilter(input),
+);
+watch(filter, (filter) => emit('update:filter', filter));
+
+
+
+
+let updating_filter = false;
+function updateFilter(input?: { [i: string]: any }) {
+    if (updating_filter) {
+        return;
+    }
+    updating_filter = true;
+
+    input ??= {};
+
+    for (const key in filter) {
+        const value = (input as any)[key];
+        (filter as any)[key] = value;
+    }
+
+    setTimeout(() => {
+        updating_filter = false;
+    }, 10);
+}
 
 
 function rebuildDateRange(range: any) {

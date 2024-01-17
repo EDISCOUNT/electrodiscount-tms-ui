@@ -40,6 +40,7 @@ export default class Shipment {
   //
   fulfilmentType?: ShipmentFulfilmentType;
   fulfilmentTimeRange?: ShipmentFulfilmentTimeRange;
+  createdAt?: Date;
 
 
   get fulfilment (): ShipmentFulfilment | undefined{
@@ -93,6 +94,7 @@ get fulfilments() {
     fulfilmentType,
     fulfilmentTimeRange,
     //
+    createdAt,
   }: {
     id: number;
     code: string;
@@ -122,6 +124,7 @@ get fulfilments() {
     fulfilmentType?: ShipmentFulfilmentType,
     // 
     fulfilmentTimeRange?: ShipmentFulfilmentTimeRange,
+    createdAt?: Date;
   }) {
     this.id = id;
     this.code = code;
@@ -151,6 +154,8 @@ get fulfilments() {
     //
     this.fulfilmentType = fulfilmentType;
     this.fulfilmentTimeRange = fulfilmentTimeRange;
+    // 
+    this.createdAt = createdAt;
   }
 
   copyWith({
@@ -182,6 +187,8 @@ get fulfilments() {
     //
     fulfilmentType,
     fulfilmentTimeRange,
+    // 
+    createdAt,
   }: {
     id?: number;
     code?: string;
@@ -212,6 +219,8 @@ get fulfilments() {
     
   fulfilmentType?: ShipmentFulfilmentType,
   fulfilmentTimeRange?: ShipmentFulfilmentTimeRange,
+  // 
+  createdAt?: Date;
   }): Shipment {
     return new Shipment({
       id: id ?? this.id,
@@ -242,6 +251,8 @@ get fulfilments() {
       //
       fulfilmentType: fulfilmentType?? this.fulfilmentType,
       fulfilmentTimeRange: fulfilmentTimeRange?? this.fulfilmentTimeRange,
+      // 
+      createdAt: createdAt?? this.createdAt,
     });
   }
 
@@ -275,6 +286,8 @@ get fulfilments() {
       //
       fulfilmentType: json['fulfilmentType'],
       fulfilmentTimeRange: json['fulfilmentTimeRange'] ? ShipmentFulfilmentTimeRange.fromJson(json['fulfilmentTimeRange']) : undefined,
+      // 
+      createdAt: json["createdAt"] != null ? new Date(json["createdAt"]) : undefined,
     });
   }
 
