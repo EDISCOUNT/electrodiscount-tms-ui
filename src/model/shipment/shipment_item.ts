@@ -28,6 +28,7 @@ export default class ShipmentItem {
         name?: string;
         fulfilment?: ShipmentFulfilment;
     }) {
+        this.id = id;
         this.product = product;
         this.quantity = quantity;
         this.quantityReturned = quantityReturned;
@@ -65,6 +66,7 @@ export default class ShipmentItem {
     }
 
     static fromJson(json: Record<string, any>): ShipmentItem {
+        // console.log("SHIPMENT ITEM JSON: ", {json})
         return new ShipmentItem({
             id: json["id"],
             product: json["product"] != null?  Product.fromJson(json["product"]) : undefined,

@@ -221,7 +221,8 @@
                                             <div v-for="(item, i) in data.items" :key="i">
                                                 <v-card variant="outlined" class="ma-3" flat>
                                                     <v-card-text>
-                                                        <flat-shipment-item-form v-model="data.items[i]" />
+                                                        <flat-shipment-item-form v-model="data.items[i]"
+                                                            :product="shipment?.items?.[i]?.product" />
                                                     </v-card-text>
                                                     <v-card-actions class="px-5 mx-5">
                                                         <v-spacer />
@@ -359,6 +360,7 @@ import { useColorScheme } from '@/utils/color';
 import { getStorage } from '@/admin/repository/inventory/storage_repository';
 import Storage from '@/model/inventory/storage';
 import { useNotifier } from 'vuetify-notifier';
+import ShipmentFulfilmentType from '@/model/shipment/shipment_fulfilment_type';
 
 const props = defineProps<{
     type?: string;
@@ -408,12 +410,17 @@ watch(
         try {
             fetchingStorage.value = true;
 
-            if (data.originAddress) {
+            if ((isReturn.value && data.destinationAddress) || (isReturn.value && data.originAddress)) {
                 return;
             }
             const _storage = await getStorage(id as any);
             storage.value = _storage;
-            data.originAddress = _storage.address?.toJson() ?? {};
+            if (isReturn.value) {
+                data.destinationAddress = _storage.address?.toJson() ?? {};
+            }
+            else {
+                data.originAddress = _storage.address?.toJson() ?? {};
+            }
         }
         catch (err) {
             const message = (err as any).message as string;
@@ -426,6 +433,18 @@ watch(
     }
 )
 
+
+const isReturn = computed(() => checkIsReturnShipment(data.fulfilmentType ?? props.shipment));
+
+function checkIsReturnShipment(shipment?: Shipment | ShipmentFulfilmentType) {
+    if (shipment instanceof Shipment) {
+        shipment = shipment.fulfilmentType as ShipmentFulfilmentType;
+    }
+    if (!shipment) {
+        return false;
+    }
+    return [ShipmentFulfilmentType.RETURN_ORDER, ShipmentFulfilmentType.EXCHANGE_ORDER].includes(shipment);
+}
 
 function addItem() {
     if (!data.items) {

@@ -1,6 +1,7 @@
 <template>
     <v-card height="100vh" :color="secondaryBg" flat>
         <v-card-text class="pa-0 pa-sm-4">
+            <!-- {{ {filter,} }} -->
             <v-card color="background" class="" flat>
                 <template v-slot:title>
                     <v-toolbar color="transparent">
@@ -14,11 +15,13 @@
                         </v-card-text>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
-                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status"
+                                <ShipmentStatusFilter v-if="mdAndUp"
+                                @cleared="() => clearFilters()"
+                                v-model="filter.status"
                                     url="/api/carrier/shipment/shipments/count"
                                     :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })"
                                     update-url-query />
-                                <ShipmentFilterBar v-model:rsql="filter.filter" v-else />
+                                <ShipmentFilterBar v-model:filter="criteria" v-model:rsql="filter.filter" update-url-query v-else />
                                 <!-- <BarcodeScannerButton/> -->
                             </v-row>
                         </v-card-text>
@@ -27,7 +30,7 @@
                 <!-- <template v-slot:title> -->
                 <!-- <div class="mt-2"> -->
                 <!-- <v-toolbar-items> -->
-                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" class="mt-2 px-5" />
+                <ShipmentFilterBar v-if="mdAndUp" v-model:filter="criteria" v-model:rsql="filter.filter" update-url-query class="mt-2 px-5" />
                 <!-- </v-toolbar-items> -->
                 <!-- </div> -->
                 <!-- </template> -->
@@ -42,7 +45,7 @@
 
             <v-card class="mt-4 fill-height" flat>
                 <v-card-text>
-                    <shipment-table v-model="selected" :filter="filter" ref="table" show-select />
+                    <shipment-table v-model="selected" :filter="{ ...(filter ?? {}), ...(criteria ?? {}) }" ref="table" show-select />
                 </v-card-text>
             </v-card>
 
@@ -70,6 +73,7 @@ const filter = reactive({
     status: [] as string[],
     filter: undefined as string | undefined,
 });
+const criteria = ref<{ [i: string]: any }>();
 
 
 const table = ref<typeof ShipmentTable>();
@@ -80,6 +84,16 @@ const { xs, md, smAndDown, smAndUp, mdAndUp } = useDisplay();
 
 const selected = ref<string[]>([]);
 
+
+
+function clearFilters(){
+    for(const key in filter){
+        (filter as any)[key] = undefined;
+    }
+    criteria.value = {};
+    // router
+    // console.log("CLEARED FILTERS!!!");
+}
 
 
 function refreshTable() {

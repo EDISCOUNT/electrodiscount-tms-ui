@@ -27,11 +27,12 @@
                 </v-btn>
             </template>
             <v-card-text>
-                <ShipmentReturnForm ref="form" :shipment="shipment" />
+                <ShipmentReturnForm ref="form" v-model:selected="selectedItems" :shipment="shipment" />
             </v-card-text>
             <v-card-actions>
                 <v-row justify="center">
-                    <v-btn @click="() => save()" :loading="saving" color="primary">
+                    <v-btn :disabled="(selectedItems?.length ?? 0) <= 0" @click="() => save()" :loading="saving"
+                        color="primary">
                         Return Selected
                         <v-icon>mdi-send</v-icon>
                     </v-btn>
@@ -42,11 +43,13 @@
 </template>
 
 <script lang="ts" setup>
-import Shipment from '@/models/shipment/Shipment';
+import Shipment from '@/model/shipment/shipment';
+import ShipmentItem from '@/model/shipment/shipment_item';
 import ShipmentReturnForm from './ShipmentReturnForm.vue';
-import { createReturnShipment} from '@/admin/repository/shipment/shipment_repository';
+import { createReturnShipment } from '@/admin/repository/shipment/shipment_repository';
 import { ref, watch } from 'vue';
 import { useNotifier } from 'vuetify-notifier';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
     shipment: Shipment,
@@ -58,12 +61,16 @@ const props = defineProps<{
 const emit = defineEmits<{
     // close: ()  void,
     (e: 'update:open', value: boolean): void,
+    (e: 'returned', value: Shipment): void,
+
 }>();
 
 
+const router = useRouter();
 const notifier = useNotifier();
-const form = ref<ShipmentReturnForm>();
+const form = ref<typeof ShipmentReturnForm>();
 const isOpen = ref(props.open);
+const selectedItems = ref<string[]>(props.shipment.items.map(({ id }: ShipmentItem) => id!));
 
 watch(() => props.open, (value) => {
     isOpen.value = value;
@@ -88,12 +95,31 @@ const saving = ref(false);
 async function save() {
     try {
         saving.value = true;
-        const data = await form.value.validate();
+        const data = await form.value!.validate();
         console.log("FORM STATUS: ", { data });
         if (!data) {
             throw new Error("Form Invalid!");
         }
-        await createReturnShipment(props.shipment, data);
+        const shipment = await createReturnShipment(props.shipment, data);
+        emit('returned', shipment);
+        saving.value = false;
+
+        const result = await notifier.confirm({
+            title: "Shipment return created",
+            text: "View Shipment and edit the necessary parts",
+        }, 'success');
+
+        console.log("CREATED!!: ", { result, shipment });
+        if (result && shipment?.id) {
+            const { id } = shipment;
+            router.push({ name: 'admin:shipment:show', params: { id } });
+        }
+        else {
+            close();
+        }
+
+
+
     }
     catch (err) {
         const message = (err as any)?.message ?? 'Error';
@@ -102,5 +128,9 @@ async function save() {
     finally {
         saving.value = false;
     }
+}
+
+function close() {
+    isOpen.value = false;
 }
 </script>

@@ -8,7 +8,9 @@ export function getRandomColor(): string {
 
 export function getStatusColor(status: string | undefined): string {
     // If a status is provided, check if it exists in the mapping
+    console.log("INPUT: ",{status});
     status = (status ?? '').toUpperCase();
+    console.log("STATUS: ",{status});
     if (status) {
         const statusColorMap: Record<string, string> = {
             "ONHOLD":"grey",
@@ -16,6 +18,8 @@ export function getStatusColor(status: string | undefined): string {
             "ASSIGNED":"pink",
             "READY":"blue",
             "OPEN":'blue',//"orange",
+            "RETURNED": 'orange',
+            "EXCHANGED": 'primary',
             "PENDING": 'blue', //"yellow", // Orange
             "CANCELLED": "red", // Red
             "COMPLETED": "green", // Green

@@ -17,10 +17,12 @@
                             <span class="mx-1" v-else />
                             <PrintShipmentManifestButton :shipments="selected" variant="outlined" />
                             <ExportShipmentButton :shipments="selected" variant="outlined" class="mx-1" />
+                            <ReturnShipmentButton :shipments="selected" variant="outlined" class="mx-1" @returned="() => refreshTable()" />
+                            <DeleteShipmentButton :shipments="selected" variant="outlined" class="mx-1"  @deleted="() => refreshTable()"/>
                         </v-row>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
-                                <ShipmentStatusFilter v-if="mdAndUp" v-model="filter.status" :filter="filter.filter"
+                                <ShipmentStatusFilter  @cleared="() => clearFilters()" v-if="mdAndUp" v-model="filter.status" :filter="filter.filter"
                                     url="/api/admin/shipment/shipments/count"
                                     :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })"
                                     update-url-query multiple />
@@ -34,7 +36,7 @@
                 <!-- <template v-slot:title> -->
                 <!-- <div class="mt-2"> -->
                 <!-- <v-toolbar-items> -->
-                <ShipmentFilterBar v-if="mdAndUp" v-model:filter="criteria" v-model:rsql="filter.filter"
+                <ShipmentFilterBar v-if="mdAndUp" v-model:filter="criteria"  v-model:rsql="filter.filter"
                     r-:status="filter.status" update-url-query class="mt-2 px-5" />
                 <!-- </v-toolbar-items> -->
                 <!-- </div> -->
@@ -66,6 +68,8 @@ import { reactive } from 'vue';
 import { ref } from 'vue';
 import PrintShipmentManifestButton from './partials/PrintShipmentManifestButton.vue';
 import ExportShipmentButton from './partials/ExportShipmentButton.vue';
+import ReturnShipmentButton from './partials/ReturnShipmentButton.vue';
+import DeleteShipmentButton from './partials/DeleteShipmentButton.vue';
 import ShipmentFilterBar from './partials/filtter/ShipmentFilterBar.vue';
 import { useColorScheme } from '@/utils/color';
 import { useDisplay } from 'vuetify';
@@ -73,6 +77,7 @@ import BarcodeScannerButton from '@/components/BarcodeScannerButton.vue';
 import BulkUpdateShipmentStatusButton from '@/views/shipment/BulkUpdateShipmentStatusButton.vue';
 import { bulkApplyTransition } from '@/admin/repository/shipment/shipment_repository';
 import { countShipments } from '@/admin/repository/shipment/shipment_repository';
+import { useRouter } from 'vue-router';
 
 const filter = reactive({
     status: [] as string[],
@@ -84,6 +89,7 @@ const filter = reactive({
 const table = ref<typeof ShipmentTable>();
 const criteria = ref<{ [i: string]: any }>();
 
+const router = useRouter();
 const { secondaryBg } = useColorScheme();
 const { xs, md, smAndDown, smAndUp, mdAndUp } = useDisplay();
 
@@ -91,6 +97,14 @@ const { xs, md, smAndDown, smAndUp, mdAndUp } = useDisplay();
 const selected = ref<string[]>([]);
 
 
+function clearFilters(){
+    for(const key in filter){
+        (filter as any)[key] = undefined;
+    }
+    criteria.value = {};
+    // router
+    // console.log("CLEARED FILTERS!!!");
+}
 
 function refreshTable() {
     table.value?.refresh();

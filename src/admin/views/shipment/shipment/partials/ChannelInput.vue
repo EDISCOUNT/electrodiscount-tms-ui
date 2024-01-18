@@ -9,7 +9,7 @@
             <template v-if="index == 0">
                 {{ item?.raw?.name }}
             </template>
-            <template v-else-if="index == ((selected?.length ?? 0) - 1)">
+            <template v-else-if="Array.isArray(selected) && index == ((selected?.length ?? 0) - 1)">
                 <v-chip size="small">
                     +{{ (selected?.length ?? 0) - 1 }} more
                 </v-chip>
@@ -35,23 +35,23 @@ import { useNotifier } from 'vuetify-notifier';
 const attrs = useAttrs();
 
 const props = defineProps<{
-    modelValue?: string | string[],
+    modelValue?: ID | ID[],
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:model-value', selected?: string | string[]): void;
+    (e: 'update:model-value', selected?: ID | ID[]): void;
 }>();
 
 const notifier = useNotifier();
 
 
 
-const selected = ref<string[] | string>();
+const selected = ref<ID[] | ID | undefined>(props.modelValue );
 const search = ref<string>();
 
 const { data: pagination, isValidating: loading, error } = useSWRV(
-    () => `/api/admin/catalog/channels?search=${search.value}`,
-    () => getPaginatedChannels({ search: search.value }),
+    () => `/api/admin/catalog/channels?search=${search.value}&limit=${100}`,
+    () => getPaginatedChannels({ search: search.value, limit: 100 }),
     {
         refreshInterval: 0,
         revalidateOnFocus: false,

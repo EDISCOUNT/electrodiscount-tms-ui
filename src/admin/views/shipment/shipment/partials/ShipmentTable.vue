@@ -1,6 +1,6 @@
 <template>
     <!-- {{ {filter, } }} -->
-    <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="headers as any"
+    <v-data-table-server v-model="selected" v-model:items-per-page="itemsPerPage" :headers="filteredHeaders as any"
         :items-length="totalItems" :items="serverItems" :loading="loading" :search="search" item-value="id" :height="height"
         @update:options="loadItems" :show-select="showSelect" fixed-header>
 
@@ -161,28 +161,30 @@
                                         <span>Edit</span>
                                     </template>
                                 </v-list-item>
+                                <template v-if="shipment.isDelivered">
+                                    <v-divider />
+                                    <ShipmentReturnDialog @retruned="() => refresh()" :shipment="shipment" show-button>
+                                        <template v-slot:activator="{ props: returnProps }">
+                                            <v-list-item v-bind="returnProps">
+                                                <template v-slot:prepend>
+                                                    <v-icon>mdi-truck</v-icon>
+                                                </template>
+                                                <template v-slot:title>
+                                                    <span>Return</span>
+                                                </template>
+                                            </v-list-item>
+                                        </template>
+                                    </ShipmentReturnDialog>
+                                </template>
                                 <v-divider />
                                 <v-list-item @click="() => deleteSingleShipment(shipment)">
                                     <template v-slot:prepend>
-                                        <v-icon>mdi-delete</v-icon>
+                                        <v-icon color="red">mdi-delete</v-icon>
                                     </template>
                                     <template v-slot:title>
                                         <span>Delete</span>
                                     </template>
                                 </v-list-item>
-                                <v-divider />
-                                <ShipmentReturnDialog :shipment="shipment" show-button>
-                                    <template v-slot:activator="{ props: returnProps }">
-                                        <v-list-item v-bind="returnProps">
-                                            <template v-slot:prepend>
-                                                <v-icon>mdi-truck</v-icon>
-                                            </template>
-                                            <template v-slot:title>
-                                                <span>Return</span>
-                                            </template>
-                                        </v-list-item>
-                                    </template>
-                                </ShipmentReturnDialog>
 
                             </v-list>
                         </v-card-text>
@@ -224,7 +226,7 @@ const props = defineProps<{
     showSelect?: boolean;
     modelValue?: string[];
     filter?: { [i: string]: any };
-
+    removedHeaders?: string[]
 }>();
 
 const emit = defineEmits<{
@@ -349,6 +351,13 @@ const headers = [
     //},
 ];
 
+const filteredHeaders = computed(() => {
+    if (!props.removedHeaders) {
+        return headers;
+    }
+    return headers.filter(e => !props.removedHeaders!.includes(e.key));
+});
+
 
 const itemsPerPage = ref(100);
 const search = ref('');
@@ -375,7 +384,7 @@ watch(
             sortBy: {},
             filter: filter,
         })
-    }, { deep: true });
+    }, { deep: false });
 
 
 async function doLoadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy?: any, filter?: { [i: string]: any } }) {
@@ -411,6 +420,7 @@ const loadItems = debounce(doLoadItems, 1000);
 
 
 async function refresh() {
+    selected.value = [];
     await loadItems({});
 }
 
@@ -419,9 +429,9 @@ const isDeleting = ref(false);
 
 async function deleteSingleShipment(shipment: Shipment) {
     try {
-        const mayDelete = await notifier.confirm({
-            title: "Delete Shipment",
-            text: "Are you sure you want to delete this shipment?"
+        const mayDelete = await notifier.confirmError({
+            title: `Delete Shipment ${shipment?.channelOrderId}?`,
+            text: `Are you sure you want to delete this shipment?\n Operation is not reversible!`
         });
         if (!mayDelete) {
             return;

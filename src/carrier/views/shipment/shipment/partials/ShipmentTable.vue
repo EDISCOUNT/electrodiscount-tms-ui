@@ -247,7 +247,7 @@ watch(
 
 async function loadItems({ page, itemsPerPage: limit, sortBy, filter }: { page?: number, itemsPerPage?: number, sortBy?: any, filter?: { [i: string]: any } }) {
     try {
-        console.log("SORT BY: ", { sortBy });
+        // console.log("SORT BY: ", { sortBy });
         const criteria = {
             ...(filter ?? props.filter ?? {}),
         };

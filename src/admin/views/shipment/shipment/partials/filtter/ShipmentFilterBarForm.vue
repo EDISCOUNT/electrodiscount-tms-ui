@@ -67,6 +67,7 @@ import ShipmentFulfilmentDateRangeFilter from '@/views/shipment/filter/ShipmentF
 import { useRouter } from 'vue-router';
 import { DateRangeInput } from '@/views/shipment/filter/DateRange';
 import { countShipments } from '@/admin/repository/shipment/shipment_repository';
+import { debounce } from 'lodash';
 
 interface FilterOptions {
     channel: string[];
@@ -108,18 +109,7 @@ const filter = reactive<FilterOptions>({
 
 watch(filter, (filter) => {
     if (props.updateUrlQuery) {
-        router.replace({
-            query: {
-                ...router.currentRoute.value.query,
-                // [props.urlQueryNamespace ?? 'filter']: 
-                ...filter,
-                ...(props.noCarrier ? { carrier: undefined } : {}),
-                fulfilmentDateRange: filter.fulfilmentDateRange ? JSON.stringify(filter.fulfilmentDateRange) : undefined,
-                dateRange: filter.dateRange ? JSON.stringify(filter.dateRange) : undefined,
-                fulfilmentDatesRsql: undefined,
-                dateRangeRsql: undefined
-            }
-        })
+        updateUrlQuery();
     }
 }, { deep: true });
 
@@ -198,10 +188,10 @@ const rsql = computed(() => {
         query = and(query, comparison('channelOrderId', like(filter.channelOrderId)));
     }
 
-    if (!(props.noCarrier) && filter.carrier.length > 0) {
+    if (!(props.noCarrier) && (filter.carrier?.length ?? 0) > 0) {
         query = and(query, comparison('carrier.id', inList(...filter.carrier)));
     }
-    if (filter.channel.length > 0) {
+    if ((filter.channel?.length ?? 0) > 0) {
         query = and(query, comparison('channel.id', inList(...filter.channel)));
     }
     if (filter.fulfilmentType && filter.fulfilmentType.length > 0) {
@@ -258,5 +248,25 @@ function rebuildDateRange(range: any) {
         range.end = new Date(range.end);
     }
 }
+
+
+
+
+function doUpdateUrlQuery() {
+    router.replace({
+        query: {
+            ...router.currentRoute.value.query,
+            // [props.urlQueryNamespace ?? 'filter']: 
+            ...filter,
+            ...(props.noCarrier ? { carrier: undefined } : {}),
+            fulfilmentDateRange: filter.fulfilmentDateRange ? JSON.stringify(filter.fulfilmentDateRange) : undefined,
+            dateRange: filter.dateRange ? JSON.stringify(filter.dateRange) : undefined,
+            fulfilmentDatesRsql: undefined,
+            dateRangeRsql: undefined
+        }
+    })
+}
+
+const updateUrlQuery = debounce(doUpdateUrlQuery, 1000);
 
 </script>

@@ -69,9 +69,9 @@
                     </v-col>
 
                     <v-col :cols="12" :md="6">
-                        <v-text-field v-model="addressInfo.provinceName" label="State/Province Code"
-                            placeholder="Enter State or Province Code" variant="outlined" density="compact" :rules="[
-                                v => !!v || 'Field is required',
+                        <v-text-field v-model="addressInfo.provinceName" label="State/Province Code(Optional)"
+                            placeholder="Enter State or Province Code(Optional)" variant="outlined" density="compact" :rules="[
+                                // v => !!v || 'Field is required',
                             ]" />
                     </v-col>
                     <v-col :cols="12" :md="6">
@@ -155,11 +155,14 @@ const error = ref<string>();
 
 const form = ref();
 
-const addressInfo = reactive(USER_INFO);
+const addressInfo = reactive<AddressFormData>(USER_INFO);
 
 watch(() => props.modelValue, (address) => updateData(address));
 onMounted(() => updateData(props.modelValue));
-watch(addressInfo, (data) => emit('update:model-value', data));
+watch(addressInfo, (data) => {
+    emit('update:model-value', data);
+    console.log("GIVING OUTPUT");
+}, { deep: true });
 
 const height = computed(() => {
     if (props.height)
@@ -228,7 +231,7 @@ function updateData(address?: Address | AddressRecord) {
     addressInfo.provinceCode = address.provinceCode;
     addressInfo.provinceName = address.provinceName;
     addressInfo.countryCode = address.countryCode;
-    addressInfo.coordinate = address.coordinates != null ? Coords.fromJson(address.coordinates?.toJson()) : undefined;
+    // addressInfo.coordinate = address.coordinates != null ? Coords.fromJson(address.coordinates?.toJson()) : undefined;
 
 }
 </script>

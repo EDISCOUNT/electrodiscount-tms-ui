@@ -40,6 +40,10 @@
                             <span class="mx-1" v-else />
                             <PrintShipmentManifestButton :shipments="selected" variant="outlined" />
                             <ExportShipmentButton :shipments="selected" variant="outlined" class="mx-1" />
+                            <ReturnShipmentButton :shipments="selected" variant="outlined" class="mx-1"
+                                @returned="() => refreshTable()" />
+                            <DeleteShipmentButton :shipments="selected" variant="outlined" class="mx-1"
+                                @deleted="() => refreshTable()" />
                         </v-row>
                         <v-card-text v-else class="py-0">
                             <v-row class="pa-3" justify="space-between">
@@ -47,8 +51,9 @@
                                     url="/api/admin/shipment/shipments/count"
                                     :counter="({ status, filter }) => countShipments({ criteria: { status, filter } })"
                                     update-url-query multiple />
-                                <ShipmentFilterBar v-model:rsql="filter.filter"  v-model:filter="criteria" :code="filter.code"
-                                    r-:status="filter.status" update-url-query no-carrier v-else />
+                                <ShipmentFilterBar v-model:rsql="filter.filter" v-model:filter="criteria"
+                                     :code="filter.code" r-:status="filter.status"
+                                    update-url-query no-carrier v-else />
                                 <BarcodeScannerButton v-model:result="filter.code" autoclose />
                             </v-row>
                         </v-card-text>
@@ -57,8 +62,8 @@
                 <!-- <template v-slot:title> -->
                 <!-- <div class="mt-2"> -->
                 <!-- <v-toolbar-items> -->
-                <ShipmentFilterBar v-if="mdAndUp" v-model:rsql="filter.filter" v-model:filter="criteria" r-:status="filter.status" no-carrier
-                    update-url-query class="mt-2 px-5" />
+                <ShipmentFilterBar v-if="mdAndUp" @cleared="() => clearFilters()" v-model:rsql="filter.filter"
+                    v-model:filter="criteria" r-:status="filter.status" no-carrier update-url-query class="mt-2 px-5" />
                 <!-- </v-toolbar-items> -->
                 <!-- </div> -->
                 <!-- </template> -->
@@ -75,8 +80,8 @@
                     <v-window v-if="pagination" v-model="tab" :touch="false">
                         <v-window-item v-for="(carrier) in pagination.items" :key="carrier.id" :value="carrier.id">
                             <!-- {{ { tableFilter } }} -->
-                            <shipment-table v-model="selected" :filter="{ ...(tableFilter ?? {}), ...(criteria ?? {}) }" ref="table"
-                                height="calc(100vh - 380px)" show-select />
+                            <shipment-table v-model="selected" :filter="{ ...(tableFilter ?? {}), ...(criteria ?? {}) }"
+                                ref="table" height="calc(100vh - 380px)" show-select :removed-headers="['carrier']" />
                         </v-window-item>
                     </v-window>
                 </v-card-text>
@@ -97,6 +102,8 @@ import ShipmentStatusFilter from '@/views/shipment/filter/ShipmentStatusFilter.v
 // import { reactive } from 'vue';
 import PrintShipmentManifestButton from '@/admin/views/shipment/shipment/partials/PrintShipmentManifestButton.vue';
 import ExportShipmentButton from '@/admin/views/shipment/shipment/partials/ExportShipmentButton.vue';
+import ReturnShipmentButton from '@/admin/views/shipment/shipment/partials/ReturnShipmentButton.vue';
+import DeleteShipmentButton from '@/admin/views/shipment/shipment/partials/DeleteShipmentButton.vue';
 import ShipmentFilterBar from '@/admin/views/shipment/shipment/partials/filtter/ShipmentFilterBar.vue';
 import { useColorScheme } from '@/utils/color';
 import { useDisplay } from 'vuetify';
@@ -191,6 +198,12 @@ const tableFilter = computed(() => {
 });
 
 
+function clearFilters() {
+    for (const key in filter) {
+        (filter as any)[key] = undefined;
+    }
+    criteria.value = {};
+}
 
 function refreshTable() {
     table.value?.refresh();

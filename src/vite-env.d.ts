@@ -9,3 +9,5 @@ declare module '*.vue' {
 
 
 declare module 'vue-signature-pad';
+
+type ID = string | number;

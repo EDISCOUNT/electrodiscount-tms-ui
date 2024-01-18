@@ -66,6 +66,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:model-value', value: string | number | string[] | undefined): void;
+    (e: 'cleared',): void;
 }>();
 
 
@@ -109,7 +110,7 @@ watch(selected, (v) => {
     if (!Array.isArray(_selected)) {
         _selected = [_selected as any];
     }
-    
+
     const _removedIndex: (number)[] = [];
     for (const index in _selected) {
         const v = _selected[index];
@@ -160,19 +161,22 @@ onMounted(() => {
 
 function clear() {
     selected.value = [];
-    console.log("CLEARED!!!");
+    emit('cleared');
+    // console.log("CLEARED!!!");
 }
 
 
 const statuses = [
     { text: 'New', value: 'new' },
     { text: 'Assigned', value: 'assigned' },
-    { text: 'Processing', value: 'processing' },
-    { text: 'Ready', value: 'ready' },
+    // { text: 'Processing', value: 'processing' },
+    // { text: 'Ready', value: 'ready' },
     { text: 'On Hold', value: 'onhold' },
     { text: 'In Transit', value: 'intransit' },
     { text: 'Delivered', value: 'delivered' },
-    { text: 'Completed', value: 'completed' },
+    { text: 'Exchanged', value: 'exchanged' },
+    { text: 'Returned', value: 'returned' },
+    // { text: 'Completed', value: 'completed' },
     { text: 'Cancelled', value: 'cancelled' },
 ];
 

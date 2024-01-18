@@ -5,6 +5,7 @@ import { deepEncodeURLParams, encodeURLParams } from "@/utils/url";
 import { ShipmentDocumentFileAttachmentFormData } from "@/model/shipment/shipment_document_attachment";
 import { and, comparison, inList } from "rsql-builder";
 import Address, { AddressFormData } from "@/model/addressing/address";
+import ShipmentReturnType from "@/model/shipment/shipment_return_type";
 
 export async function getPaginatedShipments({ page, limit, criteria }: { page?: number, limit?: number, criteria?: { [i: string]: any } } = {}) {
     criteria ??= {};
@@ -114,6 +115,19 @@ interface BulkApplyShipmentTransitionInput {
     attachments?: ShipmentDocumentFileAttachmentFormData[]
 }
 
+
+
+interface BulkApplyReturnShipmentInput {
+    shipments: (Shipment | string | number)[],
+    fulfilmentType?: ShipmentReturnType;
+    description?: string,
+}
+
+interface BulkDeleteShipmentInput {
+    shipments: (Shipment | string | number)[],
+    description?: string,
+}
+
 export async function bulkApplyTransition({ shipments: _shipments, description, transition, attachments }: BulkApplyShipmentTransitionInput) {
     const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment) ? shipment.id : shipment)?.map(e => String(e));
     const formData = new FormData();
@@ -138,6 +152,38 @@ export async function bulkApplyTransition({ shipments: _shipments, description, 
 
 
 
+export async function bulkReturnShipments({ shipments: _shipments, fulfilmentType, ...input }: BulkApplyReturnShipmentInput) {
+    const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment) ? shipment.id : shipment)?.map(e => String(e));
+    const formData = new FormData();
+    if(fulfilmentType){
+    formData.append('fulfilmentType', fulfilmentType);
+    }
+    for(const key in input){
+        const value = (input as any)[key];
+        formData.append(key, value);
+    }
+    shipments.forEach((id, index) => {
+        formData.append(`shipments[${index}]`, id);
+    });
+    const { data } = await http.post(`/api/admin/shipment/shipments/operation/bulk-create-return`, formData);
+    return data as string[];
+}
+
+
+export async function bulkDeleteShipments({ shipments: _shipments, fulfilmentType, ...input }: BulkApplyReturnShipmentInput) {
+    const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment) ? shipment.id : shipment)?.map(e => String(e));
+    const formData = new FormData();
+    for(const key in input){
+        const value = (input as any)[key];
+        formData.append(key, value);
+    }
+    shipments.forEach((id, index) => {
+        formData.append(`shipments[${index}]`, id);
+    });
+    const { data } = await http.post(`/api/admin/shipment/shipments/operation/bulk-delete`, formData);
+    return data as string[];
+}
+
 export async function createShipment(data: ShipmentFormData) {
     const { data: result } = await http.post(`/api/admin/shipment/shipments`, data);
     return Shipment.fromJson(result);
@@ -157,13 +203,14 @@ export async function deleteShipment(id: string) {
 
 export async function createReturnShipment(shipment: Shipment, data: ShipmentReturnFormData) {
     const { id } = shipment;
-    if(typeof data.originAddress === 'string') {
+    if (typeof data.originAddress === 'string') {
         data.originAddress = Address.fromFormatted(data.originAddress).toJson();
     }
-    if(typeof data.destinationAddress === 'string') {
+    if (typeof data.destinationAddress === 'string') {
         data.destinationAddress = Address.fromFormatted(data.destinationAddress).toJson();
     }
     const { data: result } = await http.post(`/api/admin/shipment/shipments/${id}/create-return`, data);
+    return Shipment.fromJson(result);
 }
 
 
@@ -185,18 +232,19 @@ export interface ShipmentType {
 
 
 export interface ShipmentReturnFormData {
-    shipment: string;
-    originAddress: string | AddressFormData;
-    destinationAddress: string | AddressFormData;
+    fulfilmentType?: ShipmentReturnType;
+    // shipment: string;
+    originAddress?:  AddressFormData;
+    destinationAddress?: AddressFormData;
     items: ShipmentReturnItemFormData[]
 }
 
 
 
 export interface ShipmentReturnItemFormData {
-    shipmentItemId: string;
-    orderItemId: string;
-    handlingResult: string;
+    shipmentItem: string;
     quantity: number;
-    reason: string;
+    orderItemId?: string;
+    handlingResult?: string;
+    reason?: string;
 }

@@ -1,5 +1,7 @@
 <template>
     <v-card flat>
+        <!-- {{ {items: shipment.items.map((e) => ({...e, product: undefined}))} }} -->
+        <!-- {{ { selectedItems } }} -->
         <v-form ref="form">
             <v-card-text class="py-0">
                 <v-row justify="space-between">
@@ -9,8 +11,10 @@
                                 Pickup Address
                             </v-card-title>
                             <v-card-text>
-                                <v-textarea v-model="data.originAddress" variant="outlined" density="compact" :rows="3"
-                                    clearable />
+                                <EditAddressDialog v-model="data.originAddress">
+                                </EditAddressDialog>
+                                <!-- <v-textarea v-model="data.originAddress" variant="outlined" density="compact" :rows="3"
+                                    clearable /> -->
                                 <!-- <edit-dialog v-model="data.originAddress" :return-value.sync="data.originAddress">
                                     <template v-slot:input>
                                         <v-text-field v-model="data.originAddress" />
@@ -23,10 +27,12 @@
                     <v-col :col="6" :md="4">
                         <v-card flat>
                             <v-card-title>
-                                <v-row justify="space-between" class="py-4 px-4">
+                                <v-row justify="space-between" class="py-3 px-4">
+                                    <span>Delivery Address</span>
                                     <v-dialog max-width="500px">
                                         <template v-slot:activator="{ props }">
-                                            <v-btn v-bind="props" color="primary" variant="text" :elevation="0">
+                                            <v-btn v-bind="props" color="primary" variant="text" size="small"
+                                                :elevation="0">
                                                 <v-icon>mdi-warehouse</v-icon>
                                                 <span>Select</span>
                                             </v-btn>
@@ -48,18 +54,38 @@
                                             </v-card-actions> -->
                                         </v-card>
                                     </v-dialog>
-                                    <span>Delivery Address</span>
                                 </v-row>
                             </v-card-title>
                             <v-card-text>
-                                <v-textarea v-model="data.destinationAddress" variant="outlined" density="compact" :rows="3"
-                                    clearable />
+
+                                <EditAddressDialog v-model="data.destinationAddress" label="Edit Drop off Location">
+                                </EditAddressDialog>
+                                <!-- <v-textarea v-model="data.destinationAddress" variant="outlined" density="compact" :rows="3"
+                                    clearable /> -->
                             </v-card-text>
                         </v-card>
                     </v-col>
                     <!--  -->
                     <!-- <v-col :col="6">
                     </v-col> -->
+
+                    <v-col :col="6" :md="4">
+                        <v-card flat>
+                            <v-card-title>
+                                Return Type
+                            </v-card-title>
+                            <!-- <v-card-subtitle>
+                                Select return type
+                            </v-card-subtitle> -->
+                            <v-card-text>
+                                <v-select v-model="data.fulfilmentType" :items="[
+                                    'RETURN_ORDER',
+                                    'EXCHANGE_ORDER',
+                                ]" label="Return Type" placeholder="Select return type" variant="outlined"
+                                    density="compact" />
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
 
 
 
@@ -74,11 +100,11 @@
                                 Items
                             </v-card-title>
                             <v-card-text>
-                                <v-data-table :headers="headers" :items="data.items" :items-per-page="5" class="elevation-0"
-                                    show-select>
-                                    <template v-slot:footer>
+                                <v-data-table v-model="selectedItems" :headers="(headers as any)" :items="data.items"
+                                    :items-per-page="5" class="elevation-0" item-value="shipmentItem" show-select>
+                                    <!-- <template v-slot:footer>
                                         <span></span>
-                                    </template>
+                                    </template> -->
                                     <template v-slot:item.sn="{ item, index }">
                                         <span>{{ index + 1 }}</span>
                                     </template>
@@ -92,8 +118,10 @@
                                             class="mt-4" />
                                     </template>
                                     <template v-slot:item.quantity="{ item, index }">
-                                        <v-text-field v-model.number="item.quantity"
-                                            :max="shipment.items?.[index]?.quantity ?? Infinity" :min="1" :step="1"
+                                        <v-text-field v-model.number="item.quantity" :rules="[
+                                            v => !!v || 'This field is required',
+                                            v => !v || v <= (shipment.items?.[index]?.quantity ?? 1) || 'This field is invalid'
+                                        ]" :max="shipment.items?.[index]?.quantity ?? 1" :min="1" :step="1"
                                             type="number" variant="outlined" density="compact" class="mt-4" />
                                     </template>
 
@@ -104,7 +132,7 @@
 
 
                                     <template v-slot:item.actions="{ item }">
-                                        <v-btn color="error" text @click="data.items.splice(data.items.indexOf(item), 1)"
+                                        <v-btn color="error" @click="data.items.splice(data.items.indexOf(item), 1)"
                                             :elevation="0">
                                             Return
                                             <v-icon>mdi-send</v-icon>
@@ -123,19 +151,28 @@
 <script lang="ts" setup>
 import Product from '@/model/catalog/product';
 import Shipment from '@/model/shipment/shipment';
-import { AddressFormData } from '@/model/address/address';
+import ShipmentReturnType from '@/model/shipment/shipment_return_type';
+import ShipmentItem from '@/model/shipment/shipment_item';
+import Storage from '@/model/inventory/storage';
+import { AddressFormData } from '@/model/addressing/address';
 import { formatDate } from '@/utils/format';
 import { formatDateNamed } from '@/utils/format/date';
 import { computed, reactive, onMounted, ref, useAttrs, watch } from 'vue';
 import EditDialog from '@/components/Input/EditDialog.vue';
 import StorageObjectInput from '../partials/StorageObjectInput.vue';
+import EditAddressDialog from '../partials/EditAddressDialog.vue';
 import Address from '@/model/addressing/address';
 import { ShipmentReturnFormData, createReturnShipment } from '@/admin/repository/shipment/shipment_repository';
-// import { VForm } from 'vuetify/'
+import { VForm } from 'vuetify/lib/components/index.mjs';
 
 const props = defineProps<{
     shipment: Shipment;
+    selected?: string[];
 }>();
+
+const emit = defineEmits<{
+    (e: 'update:selected', value: string[]): void;
+}>()
 
 
 const form = ref<VForm>();
@@ -143,10 +180,11 @@ const form = ref<VForm>();
 
 const data = reactive<ShipmentReturnFormData>({
     // shipment: props.shipment?.id,
-    originAddress: props.shipment.destinationAddress?.formatted ?? '',
-    destinationAddress: props.shipment.originAddress?.formatted ?? '',
+    fulfilmentType: ShipmentReturnType.RETURN_ORDER,
+    originAddress: props.shipment.destinationAddress?.toJson(),
+    destinationAddress: props.shipment.originAddress?.toJson(),
     items: props.shipment.items.map(e => ({
-        shipmentItem: e.id,
+        shipmentItem: e.id!,
         // orderItemId: e.orderItem?.id,
         handlingResult: 'RETURN_RECEIVED',
         quantity: e.quantity,
@@ -155,6 +193,19 @@ const data = reactive<ShipmentReturnFormData>({
 
 });
 
+const selectedItems = ref<string[]>(props.selected ?? props.shipment.items.map(({ id }: ShipmentItem) => id as string));// 
+
+
+
+watch(
+    selectedItems,
+    (selected) => emit('update:selected', selected)
+);
+
+watch(
+    () => props.selected,
+    (selected) => selectedItems.value = selected ?? [],
+);
 
 
 const headers = [
@@ -193,12 +244,14 @@ async function validate() {
     if (!valid) {
         throw new Error(`Form Error: ${errors?.toString()}`)
     }
-    return data;
+    const out = { ...data };
+    out.items = out.items.filter(item => selectedItems.value.includes(item.shipmentItem));
+    return out;
 }
 
 
-function onSelectStorage(storage: Storage) {
-    data.destinationAddress = storage?.address?.formatted ?? '';
+function onSelectStorage(storage?: Storage) {
+    data.destinationAddress = storage?.address?.toJson() ?? {};
 }
 
 

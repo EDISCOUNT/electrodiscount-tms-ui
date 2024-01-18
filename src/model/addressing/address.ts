@@ -66,11 +66,11 @@ export default class Address {
     }
 
     get label(): string {
-        return ` ${this.street ?? ''}, ${this.city ?? ''}, ${this.postcode ?? ''}, ${this.provinceCode ?? this.provinceName ?? this.countryCode ?? ''}`;
+        return ` ${this.street ?? ''}, ${this.city ?? ''}, ${this.postcode ?? ''}, ${this.provinceCode ?? this.provinceName ?? ''}, ${this.countryCode ?? ''}`;
     }
 
     get formatted(): string {
-        return `${this.company}, ${this.label}`;
+        return `${this.company ? `${this.company},` : ''} ${this.label}`;
     }
 
     get fullName(): string {

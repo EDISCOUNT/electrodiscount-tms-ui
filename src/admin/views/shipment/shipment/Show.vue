@@ -31,9 +31,9 @@
                 <template v-slot:title>
                   <span>
                     <!-- <span>Order:</span> -->
-                    <strong class="text-black">#{{ shipment.code }}</strong>
+                    <strong class="">#{{ shipment.code }}</strong>
                     <span class="mx-2"></span>
-                    <v-chip :color="getStatusColor(shipment.status)">
+                    <v-chip v-if="shipment.status" :color="getStatusColor(shipment.status)">
                       {{ shipment.status }}
                     </v-chip>
                   </span>
@@ -78,10 +78,8 @@
                
               </v-card-titlte> -->
               <v-card-text class="pb-0">
-                <ShipmentTimeRangeInput
-                :shipment="shipment"
-                @update:shipment="(shipment) => onUpdateShipment(shipment)"
-                />
+                <ShipmentTimeRangeInput :shipment="shipment"
+                  @update:shipment="(shipment) => onUpdateShipment(shipment)" />
               </v-card-text>
               <v-card-text>
                 <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
@@ -116,9 +114,42 @@
                   :apply-transition="applyTransition" />
               </v-card-text>
             </v-card>
+
           </v-col>
 
-          <v-col :cols="12" :md="12">
+          <v-col :cols="12" :md="4">
+            <v-card class="mt-0 fill-height" flat>
+              <template v-slot:prepend>
+                <v-icon>mdi-tools</v-icon>
+              </template>
+              <template v-slot:title>
+                Shipment Status
+              </template>
+              <v-divider />
+              <v-card-text>
+                <v-list>
+                  <div v-for="(service, i) in shipment.additionalServices" :key="service.id">
+                    <v-list-item lines="one">
+                      <template v-slot:append>
+                        <v-avatar color="green">
+                          <v-icon size="x-large">mdi-check</v-icon>
+                        </v-avatar>
+                      </template>
+                      <template v-slot:title>
+                        {{ service.title }}
+                      </template>
+                      <template v-slot:subtitle>
+                        {{ service.shortDescription ?? service.code }}
+                      </template>
+                    </v-list-item>
+                    <v-divider v-if="(i + 1) != shipment.additionalServices?.length" class="my-2" />
+                  </div>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col :cols="12" :md="8">
             <v-card class="fill-height" flat>
               <template v-slot:prepend>
                 <v-icon>mdi-package</v-icon>
@@ -158,7 +189,7 @@
               </template>
               <v-divider />
               <v-card-text class="pa-2">
-                <ShipmentMapView :shipment="shipment" height="480px"/>
+                <ShipmentMapView :shipment="shipment" height="480px" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -176,7 +207,7 @@
                 <CarrierInput :model-value="shipment.carrier?.id"
                   @update:model-value="(carrier) => save({ carrier: carrier as any })" r-:disabled="true"
                   label="Carrier" />
-
+                <!-- {{  }} -->
                 <ChannelInput :model-value="shipment.channel?.id"
                   @update:model-value="(channel) => save({ channel: channel as any })" r-:disabled="true"
                   label="Channel" />

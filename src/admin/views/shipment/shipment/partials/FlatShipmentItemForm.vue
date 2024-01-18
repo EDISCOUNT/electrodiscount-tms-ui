@@ -1,7 +1,7 @@
 <template>
     <!--  -->
     <v-card flat>
-        {{ {data, product, item} }}
+        <!-- {{ {data, product, item} }} -->
         <v-card-text class="pa-0">
             <!-- <v-card color="grey-lighten-4" flat>
                 <v-card-text>
@@ -23,7 +23,7 @@
                     </v-col>
                 </v-row>
                 <v-text-field v-model="data.name" label="Product Name" variant="outlined" density="comfortable" type="text"
-                    :counter="255" :rules="[
+                    :counter="255" :disabled="!!data.product" :rules="[
                         (v) => !!data.product || !!v || 'Either or both Product and Product Name is required',
                         (v) => data.product || (v && (v.length <= 255)) || 'Product Name must be less than or equal to 255 characters'
                     ]" clearable />
@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import Product from '@/model/catalog/product';
 import ProductInput from './ProductInput.vue';
-import { reactive, defineProps } from 'vue';
+import { reactive, defineProps, watch } from 'vue';
 // import { ShipmentItemFormData } from '@/admin/repository/shipment/shipment_repository';
 import ShipmentItem, { ShipmentItemFormData } from '@/model/shipment/shipment_item';
 
@@ -52,6 +52,11 @@ import ShipmentItem, { ShipmentItemFormData } from '@/model/shipment/shipment_it
 const props = defineProps<{
     product?: Product;
     item?: ShipmentItem;
+    modelValue?: ShipmentItemFormData;
+}>();
+
+const emit = defineEmits<{
+    (e: 'update:model-value', value?: ShipmentItemFormData): void;
 }>();
 
 const data = reactive<ShipmentItemFormData>({
@@ -61,5 +66,20 @@ const data = reactive<ShipmentItemFormData>({
 });
 
 
+let is_updating_value = false;
+watch(data, data => emit('update:model-value', data));
+watch(
+    () => props.modelValue,
+    (input) => {
+        if (is_updating_value) {
+            return;
+        }
+        is_updating_value = true;
+        for (const key in data) {
+            (data as any)[key] = ((input ?? {}) as any)[key];
+        }
+        setTimeout(() => is_updating_value = false, 100);
+    }
+)
 
 </script>

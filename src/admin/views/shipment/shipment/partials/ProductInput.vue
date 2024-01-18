@@ -33,7 +33,7 @@ const search = ref<string>();
 
 const { data: pagination, isValidating: loading, error } = useSWRV(
     () => `/api/admin/catalog/products?search=${search.value}`,
-    () => getPaginatedProducts({ search: search.value }),
+    () => getPaginatedProducts({ search: search.value, limit: 100 }),
     {
         refreshInterval: 0,
         revalidateOnFocus: false,

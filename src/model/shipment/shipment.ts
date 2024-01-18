@@ -43,26 +43,31 @@ export default class Shipment {
   createdAt?: Date;
 
 
-  get fulfilment (): ShipmentFulfilment | undefined{
 
-  if(this._fulfilment){
-    return this._fulfilment;
+  get isDelivered(): boolean {
+    return this.status === 'delivered';
   }
-  else{
-    return this.items.map( item => item.fulfilment).find( fulfilment => fulfilment != undefined);
-  }
-}
 
-get fulfilments() {
-  const fulfilments = this.items
+  get fulfilment(): ShipmentFulfilment | undefined {
+
+    if (this._fulfilment) {
+      return this._fulfilment;
+    }
+    else {
+      return this.items.map(item => item.fulfilment).find(fulfilment => fulfilment != undefined);
+    }
+  }
+
+  get fulfilments() {
+    const fulfilments = this.items
       .filter((item) => item.fulfilment != null)
       .map((item) => item.fulfilment!);
 
-  if (this._fulfilment) {
+    if (this._fulfilment) {
       fulfilments.unshift(this._fulfilment);
+    }
+    return fulfilments;
   }
-  return fulfilments;
-}
 
   constructor({
     id,
@@ -216,11 +221,11 @@ get fulfilments() {
     netWeight?: number,
     volumetricWeight?: number,
     //
-    
-  fulfilmentType?: ShipmentFulfilmentType,
-  fulfilmentTimeRange?: ShipmentFulfilmentTimeRange,
-  // 
-  createdAt?: Date;
+
+    fulfilmentType?: ShipmentFulfilmentType,
+    fulfilmentTimeRange?: ShipmentFulfilmentTimeRange,
+    // 
+    createdAt?: Date;
   }): Shipment {
     return new Shipment({
       id: id ?? this.id,
@@ -242,17 +247,17 @@ get fulfilments() {
       dimension: dimension ?? this.dimension,
       //
       bookedAt: bookedAt ?? this.bookedAt,
-      deliveredAt: deliveredAt?? this.deliveredAt,
+      deliveredAt: deliveredAt ?? this.deliveredAt,
       codAmount: codAmount ?? this.codAmount,
       codCurrency: codCurrency ?? this.codCurrency,
       type: type ?? this.type,
       netWeight: netWeight ?? this.netWeight,
       volumetricWeight: volumetricWeight ?? this.volumetricWeight,
       //
-      fulfilmentType: fulfilmentType?? this.fulfilmentType,
-      fulfilmentTimeRange: fulfilmentTimeRange?? this.fulfilmentTimeRange,
+      fulfilmentType: fulfilmentType ?? this.fulfilmentType,
+      fulfilmentTimeRange: fulfilmentTimeRange ?? this.fulfilmentTimeRange,
       // 
-      createdAt: createdAt?? this.createdAt,
+      createdAt: createdAt ?? this.createdAt,
     });
   }
 

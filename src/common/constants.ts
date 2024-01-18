@@ -3,8 +3,8 @@ export const STRIPE_PUBLISHABLE_KEY =
     "pk_test_51Nf7gIFeXzz6dbsS0lHAsNXgo7JHY3rlgoBBPzTmZOs3yfcD7kyvR0k50B5GZgVGFrqQ4SmpmDfGaqixfObTEdgS00Qv0a311Z";
 
 
-    // export const BASE_URL = 'https://parcelplanner.eu';
+    export const BASE_URL = 'https://parcelplanner.eu';
 // export const BASE_URL = 'https://srv407806.hstgr.cloud';
 // export const BASE_URL = 'http://192.168.33.6:8000';
 // export const BASE_URL = 'https://localhost:8000';
-export const BASE_URL = 'http://localhost:8000';
+// export const BASE_URL = 'http://localhost:8000';

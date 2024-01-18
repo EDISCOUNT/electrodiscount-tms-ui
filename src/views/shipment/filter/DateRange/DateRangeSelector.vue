@@ -59,6 +59,7 @@ import { formatDateNamed } from '@/utils/format/date';
 import { ref, onMounted, watch } from 'vue';
 import {getMinDate, getMaxDate, dateArrayDifference,getFurthestDate } from './utils';
 import { DateRangeInput } from './types';
+import { endOfDay, startOfDay } from 'date-fns';
 
 
 const props = defineProps<{
@@ -97,6 +98,12 @@ watch(
 watch(
       () => [startDate.value, endDate.value],
       ([start, end]) => {
+        if(start){
+          start = startOfDay(start);
+        }
+        if(end){
+          end = endOfDay(end);
+        }
         if(isUpdatingInput.value){
           return;
         }
