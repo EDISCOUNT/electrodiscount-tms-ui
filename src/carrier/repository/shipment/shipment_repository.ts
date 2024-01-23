@@ -53,7 +53,23 @@ export async function countShipments({ criteria }: { page?: number, limit?: numb
             delete criteria['status'];
         }
     }
-    const query = encodeURLParams({
+    // if ('dateRange' in criteria) {
+    //    criteria['dateRange'] =  JSON.stringify(criteria['dateRange']);
+    // }
+    if (('status' in criteria) && criteria.status) {
+        let status: string[] = criteria.status;
+        if (!Array.isArray(status)) {
+            status = [status];
+        }
+        let filter = criteria.filter ?? '';
+        filter = and(
+            filter,
+            comparison('status', inList(...status)),
+        );
+        criteria.filter = filter;
+        // delete criteria.status;
+    }
+    const query = deepEncodeURLParams({
         ...criteria,
     });
     const { data } = await http.get(`/api/carrier/shipment/shipments/count?${query}`);

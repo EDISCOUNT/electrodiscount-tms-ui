@@ -37,7 +37,7 @@
                     <ShipmentDocumentDrawer v-model:attachments="attachments" :shipment="shipment">
                         <template v-slot:activator="{ attachments, toggle }">
                             <v-file-input @update:focused="(focused) => focused && toggle()"
-                                :model-value="attachments.map(e => e.src)" :rules="[
+                                :model-value="attachments.map(e => e.src)" :rules="isAdmin ? [] : [
                                     (v) => (selectedStatus != 'delivered') || v?.length > 0 || 'This filed is required'
                                 ]" label="File Attachments(POD)" variant="outlined" multiple chips readonly />
                         </template>
@@ -75,6 +75,7 @@ import { computed, ref, defineProps } from 'vue';
 import { useNotifier } from 'vuetify-notifier';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import ShipmentDocumentDrawer from './document/ShipmentDocumentDrawer.vue';
+import { useAccountStore } from '@/store/app';
 
 interface ShipmentTransitionArgs {
     shipment: Shipment;
@@ -95,6 +96,7 @@ const emit = defineEmits<{
 }>();
 
 
+const { isGranted } = useAccountStore();
 const notifier = useNotifier();
 
 const form = ref<VForm>();
@@ -106,6 +108,8 @@ const description = ref<string>();
 function selectStatus(status: string) {
     selectedStatus.value = status;
 }
+
+const isAdmin = computed(() => isGranted('ROLE_ADMIN'));
 const isDelivery = computed(() => selectedStatus.value == 'delivered');
 const isCancelation = computed(() => selectedStatus.value == 'cancelled');
 const isHold = computed(() => selectedStatus.value == 'onhold');
@@ -122,7 +126,7 @@ async function updateStatus() {
         isUpdating.value = true;
         const shipment = props.shipment;
         const transition = selectedStatus.value!;
-        const result = await props.applyTransition({ shipment, transition, attachments: isDelivery.value? attachments.value :  undefined, description: description.value });
+        const result = await props.applyTransition({ shipment, transition, attachments: isDelivery.value ? attachments.value : undefined, description: description.value });
         emit('updated', result);
         attachments.value = [];
         description.value = undefined;
@@ -165,7 +169,7 @@ const possibleStatuses = computed(() => {
         case 'processing':
             return statuses.filter((e) => ['ready', 'intransit', 'onhold', 'cancelled',].includes(e.value));
         case 'onhold':
-            return statuses.filter((e) => ['ready','rejected', 'intransit', 'cancelled',].includes(e.value));
+            return statuses.filter((e) => ['ready', 'rejected', 'intransit', 'cancelled',].includes(e.value));
         //
         case 'ready':
             return statuses.filter((e) => ['intransit', 'onhold', 'cancelled',].includes(e.value));

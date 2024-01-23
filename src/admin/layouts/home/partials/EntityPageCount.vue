@@ -25,30 +25,32 @@
     </v-card> -->
 
         <v-card :loading="pagination && loading" flat>
-            <v-row>
-                <v-col cols="3">
-                    <v-card class="fill-height" flat>
-                        <v-row align="center" justify="center" class="fill-height">
-                            <span class="text-h4" v-if="pagination">
-                                {{ pagination.count ?? 0 }}
-                            </span>
-                            <v-progress-circular v-else-if="loading" indeterminate />
-                        </v-row>
-                    </v-card>
-                </v-col>
-                <v-divider class="my-5" vertical/>
-                <v-col cols="9">
-                    <v-card-title>
-                        <slot name="title"  v-bind:pagination="pagination" v-bind:loading="loading">
-                        </slot>
-                    </v-card-title>
-                    <v-card-subtitle>
-                        <slot name="subtitle"  v-bind:pagination="pagination" v-bind:loading="loading">
-                        </slot>
-                    </v-card-subtitle>
-                </v-col>
-            </v-row>
-
+            <v-card-text class="pa-2">
+                <!-- {{ {uri} }} -->
+                <v-row>
+                    <v-col cols="3">
+                        <v-card class="fill-height" flat>
+                            <v-row align="center" justify="center" class="fill-height">
+                                <span class="text-h4" v-if="pagination">
+                                    {{ pagination.count ?? 0 }}
+                                </span>
+                                <v-progress-circular v-else-if="loading" indeterminate />
+                            </v-row>
+                        </v-card>
+                    </v-col>
+                    <v-divider class="my-5" vertical />
+                    <v-col cols="9">
+                        <v-card-title>
+                            <slot name="title" v-bind:pagination="pagination" v-bind:loading="loading">
+                            </slot>
+                        </v-card-title>
+                        <v-card-subtitle>
+                            <slot name="subtitle" v-bind:pagination="pagination" v-bind:loading="loading">
+                            </slot>
+                        </v-card-subtitle>
+                    </v-col>
+                </v-row>
+            </v-card-text>
         </v-card>
     </slot>
 </template>
@@ -61,7 +63,7 @@ import useSWRV from 'swrv';
 const props = defineProps<{
     height?: string;
     uri: string;
-    fetcher: () => Promise<{count: number}>
+    fetcher: () => Promise<{ count: number }>
 }>();
 
 const slots = defineSlots<{
@@ -74,8 +76,8 @@ const { data: pagination, isValidating: loading } = useSWRV(
     () => props.uri,
     () => props.fetcher(),
     {
-        refreshInterval: 1000 * 60 * 5,
-        revalidateOnFocus: false,
+        // refreshInterval: 1000 * 60 * 5,
+        // revalidateOnFocus: false,
     }
 );
 

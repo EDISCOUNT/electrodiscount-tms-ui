@@ -1,4 +1,7 @@
 <template>
+    <!-- {{ {criteria} }} -->
+
+    <!-- {{ {criteria, status, dType: typeof(criteria?.dateRange)} }} -->
     <v-card v-if="pagination" flat>
         <!-- <v-card-title>
             <slot name="title">
@@ -10,7 +13,8 @@
             <v-card r-color="secondary-bg" flat>
                 <v-slide-group v-model="model" multiple>
                     <v-slide-group-item v-for="(carrier, i) in pagination.items" :key="carrier.id">
-                        <v-card :to="{ name: 'admin:carrier:shipment:index', query: {  ...(criteria?? {}), carrier: carrier.id } }"
+                        <v-card
+                            :to="{ name: 'admin:carrier:shipment:index', query: { ...nCriteria, carrier: carrier.id } }"
                             :class="['ma-2',]" flat>
                             <template v-slot:prepend>
                                 <slot name="prepend">
@@ -132,4 +136,17 @@ const model = ref<any>();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 
+
+const nCriteria = computed(() => {
+    const hash: { [i: string]: any } = {};
+    for (const key in props.criteria) {
+        if (key == 'filter') {
+            hash[key] = props.criteria[key];
+        } else {
+            hash[key] = JSON.stringify(props.criteria[key]);
+        }
+    }
+
+    return hash;
+});
 </script>

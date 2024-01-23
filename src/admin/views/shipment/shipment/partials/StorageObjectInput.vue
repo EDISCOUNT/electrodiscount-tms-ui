@@ -26,7 +26,7 @@ const notifier = useNotifier();
 
 
 const selected = ref(props.modelValue?.id);
-const storage = ref<Storage>();
+const storage = ref(props.modelValue);
 const search = ref<string>();
 
 

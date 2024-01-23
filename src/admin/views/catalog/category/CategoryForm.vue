@@ -1,5 +1,5 @@
 <template>
-    <v-card width="500px" flat>
+    <v-card width="700px" flat>
         <v-card-text v-if="error" class="text-center">
             <v-alert type="error" dense>{{ error }}</v-alert>
         </v-card-text>
@@ -10,17 +10,24 @@
                     (v) => (v && v.length >= 6) || 'Code must be at least 6 characters',
 
                 ]"></v-text-field>
-                <v-text-field v-model="data.gtin" label="EAN" variant="outlined" density="compact" :rules="[
-                    // (v) => !!v || 'EAN is required',
-                    (v) => !v || v.length <= 14 || 'EAN must be less than or equal to 14 characters',
-                ]"></v-text-field>
                 <v-text-field v-model="data.name" label="Name" variant="outlined" density="compact" :rules="[
                     (v) => !!v || 'Name is required',
                     (v) => (v && v.length <= 255) || 'Name must be less than 255 characters',
                 ]"></v-text-field>
-                <CategoryInput v-model="data.category" label="Product Category"
-                    placeholder="Start typing to search for categories" variant="outlined" density="compact" />
                 <v-switch v-model="data.enabled" label="Enabled" color="primary" inset></v-switch>
+            </v-card-text>
+            <v-card-text>
+                <v-tabs v-model="tab">
+                    <v-tab value="config">
+                        Configuration
+                    </v-tab>
+                </v-tabs>
+
+                <v-window v-model="tab">
+                    <v-window-item value="config">
+                        <category-configuration-form v-model="data.configuration" />
+                    </v-window-item>
+                </v-window>
             </v-card-text>
             <v-card-actions class="px-5 pb-5">
                 <v-btn @click="save" color="primary" variant="flat" :elevation="0" :loading="loading" block>Save</v-btn>
@@ -29,17 +36,17 @@
     </v-card>
 </template>
 <script lang="ts" setup>
-import { ProductFormData } from '@/admin/repository/catalog/product_repository';
-import Product from '@/model/catalog/product';
+import { CategoryFormData } from '@/admin/repository/catalog/category_repository';
+import Category from '@/model/catalog/category';
 import { defineProps, reactive, ref, watch } from "vue";
 // import { useConfirm, useSnackbar } from 'vuetify-use-dialog';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
-import CategoryInput from '../category/partials/CategoryInput.vue';
+import CategoryConfigurationForm from './CategoryConfigurationForm.vue';
 
 const props = defineProps<{
     type?: string;
-    product?: Product;
+    category?: Category;
     loading?: boolean;
     error?: string;
 
@@ -47,7 +54,7 @@ const props = defineProps<{
 
 
 const emit = defineEmits<{
-    (e: 'save', data: ProductFormData): void,
+    (e: 'save', data: CategoryFormData): void,
 }>();
 
 // const createConfirm = useConfirm()
@@ -55,14 +62,11 @@ const emit = defineEmits<{
 
 const { xs, smAndDown, mdAndUp } = useDisplay();
 
-const data = reactive<ProductFormData>({
-    code: props.product?.code ?? '',
-    gtin: props.product?.gtin ?? '',
-    name: props.product?.name ?? '',
-    enabled: props.product?.enabled ?? false,
-
+const data = reactive<CategoryFormData>({
+    ...(props.category?.toJson())
 });
 
+const tab = ref<string>();
 const form = ref<VForm>();
 const error = ref<string>();
 

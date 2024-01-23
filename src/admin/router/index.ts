@@ -205,6 +205,32 @@ const routes = [
       },
     ]
   },
+  // >> CATALOG >> CATEGORY
+  {
+    path: 'catalog/categories',
+    name: 'admin:catalog:category',
+    component: () => import('@/admin/layouts/catalog/Default.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin:catalog:category:index',
+        component: () => import('@/admin/views/catalog/category/Index.vue')
+      },
+      {
+        path: 'create',
+        name: 'admin:catalog:category:create',
+        component: () => import('@/admin/views/catalog/category/Create.vue'),
+        props: true
+      },
+      {
+        path: ':id/edit',
+        name: 'admin:catalog:category:edit',
+        component: () => import('@/admin/views/catalog/category/Edit.vue'),
+        props: true
+
+      },
+    ]
+  },
 
 
   // 

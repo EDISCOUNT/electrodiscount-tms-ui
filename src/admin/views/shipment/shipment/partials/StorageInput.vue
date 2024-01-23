@@ -17,11 +17,11 @@ import { useNotifier } from 'vuetify-notifier';
 const attrs = useAttrs();
 
 const props = defineProps<{
-    modelValue?: string,
+    modelValue?: ID,
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:model-value', selected?: string): void;
+    (e: 'update:model-value', selected?: ID): void;
 }>();
 
 const notifier = useNotifier();

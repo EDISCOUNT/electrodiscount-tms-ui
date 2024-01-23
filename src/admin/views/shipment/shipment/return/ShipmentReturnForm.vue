@@ -45,7 +45,7 @@
                                                 Select the warehouse where the returned Item should be delivered to
                                             </v-card-subtitle>
                                             <v-card-text>
-                                                <StorageObjectInput
+                                                <StorageObjectInput v-model="storage"
                                                     @update:model-value="storage => onSelectStorage(storage)"
                                                     variant="outlined" density="compact" clearable />
                                             </v-card-text>
@@ -139,7 +139,32 @@
                                         </v-btn>
                                     </template>
                                 </v-data-table>
+                                <v-divider class="my-2" />
+                                <v-card-text>
+                                    <v-row justify="end">
+                                        <v-col :cols="12" :md="4">
+                                            <CarrierInput v-model="data.carrier" label="Carrier"
+                                                placeholder="Start typing to search for carriers..." variant="outlined"
+                                                density="compact" />
+                                        </v-col>
+                                        <v-col :cols="12" :md="4">
+                                            <StorageInput v-model="data.storage" label="Warehouse"
+                                                placeholder="Start typing to search for storages..." variant="outlined"
+                                                density="compact" />
+                                        </v-col>
+                                    </v-row>
+                                </v-card-text>
                             </v-card-text>
+                            <!-- <v-card-text>
+                                <v-row justify="end">
+                                    <v-col :cols="12" :md="4">
+                                        <CarrierInput v-model="data.carrier" />
+                                    </v-col>
+                                    <v-col :cols="12" :md="4">
+                                        <StorageInput v-model="data.storage" />
+                                    </v-col>
+                                </v-row>
+                            </v-card-text> -->
                         </v-card>
                     </v-col>
                 </v-row>
@@ -164,6 +189,8 @@ import EditAddressDialog from '../partials/EditAddressDialog.vue';
 import Address from '@/model/addressing/address';
 import { ShipmentReturnFormData, createReturnShipment } from '@/admin/repository/shipment/shipment_repository';
 import { VForm } from 'vuetify/lib/components/index.mjs';
+import CarrierInput from '../partials/CarrierInput.vue';
+import StorageInput from '../partials/StorageInput.vue';
 
 const props = defineProps<{
     shipment: Shipment;
@@ -175,11 +202,14 @@ const emit = defineEmits<{
 }>()
 
 
+const storage = ref(props.shipment.storage);
 const form = ref<VForm>();
 
 
 const data = reactive<ShipmentReturnFormData>({
     // shipment: props.shipment?.id,
+    storage: storage.value?.id,
+    carrier: props.shipment.carrier?.id,
     fulfilmentType: ShipmentReturnType.RETURN_ORDER,
     originAddress: props.shipment.destinationAddress?.toJson(),
     destinationAddress: props.shipment.originAddress?.toJson(),
@@ -252,6 +282,7 @@ async function validate() {
 
 function onSelectStorage(storage?: Storage) {
     data.destinationAddress = storage?.address?.toJson() ?? {};
+    data.storage = storage?.id;
 }
 
 

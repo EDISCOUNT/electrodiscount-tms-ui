@@ -10,6 +10,8 @@
                         <!-- <v-card-title class="mb-3">
                    
                         </v-card-title> -->
+                        <!-- {{ {criteria,} }} -->
+                        <!-- {{ { criteria, dType: typeof (criteria?.dateRange) } }} -->
                         <v-card-text class="">
                             <v-row>
                                 <v-col :cols="12" :sm="12">
@@ -93,7 +95,7 @@
                                     </v-card>
                                 </v-col>
 
-                                <v-col :cols="12" :sm="6">
+                                <v-col :cols="12" :sm="12">
                                     <v-card flat>
                                         <template v-slot:title>
                                             <span>Search Shipment</span>
@@ -107,8 +109,8 @@
                                     </v-card>
                                 </v-col>
 
-                                <v-col :cols="12" :sm="6">
-                                    <v-card class="fill-height" width="100%" flat>
+                                <v-col :cols="12" :sm="12">
+                                    <v-card class="fill-height" width="100%" min-height="100px" flat>
                                         <carrier-shipment-assignment-card :filter="filter" :criteria="criteria" />
                                     </v-card>
                                 </v-col>

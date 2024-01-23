@@ -106,9 +106,9 @@
                     </v-col>
                 </v-row>
             </v-card-text>
-            <!-- <v-card-actions> -->
+            <v-card-actions>
             <import-shipment-action :order-ids="[order?.channelOrderId!]" :channel="order.channel!" @imported="(shipment) => onImport(shipment)" />
-            <!-- </v-card-actions> -->
+            </v-card-actions>
         </template>
 
         <v-row justify="center" align="center" class="fill-height" v-else>

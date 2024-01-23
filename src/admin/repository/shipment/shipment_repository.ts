@@ -24,12 +24,12 @@ export async function getPaginatedShipments({ page, limit, criteria }: { page?: 
         if (!Array.isArray(status)) {
             status = [status];
         }
-        let filter = criteria.filter ?? '';
-        filter = and(
-            filter,
-            comparison('status', inList(...status)),
-        );
-        criteria.filter = filter;
+        // let filter = criteria.filter ?? '';
+        // filter = and(
+        //     filter,
+        //     comparison('status', inList(...status)),
+        // );
+        // criteria.filter = filter;
         // delete criteria.status;
     }
     const query = deepEncodeURLParams({
@@ -55,7 +55,24 @@ export async function countShipments({ criteria }: { criteria?: { [i: string]: a
             delete criteria['status'];
         }
     }
-    const query = encodeURLParams({
+    // if ('dateRange' in criteria) {
+    //    criteria['dateRange'] =  JSON.stringify(criteria['dateRange']);
+    // }
+    if (('status' in criteria) && criteria.status) {
+        let status: string[] = criteria.status;
+        if (!Array.isArray(status)) {
+            status = [status];
+        }
+        // let filter = criteria.filter ?? '';
+        // filter = and(
+        //     filter,
+        //     comparison('status', inList(...status)),
+        // );
+        // criteria.filter = filter;
+        // delete criteria.status;
+    }
+    console.log("CRITERIA", { criteria })
+    const query = deepEncodeURLParams({
         ...criteria,
     });
     const { data } = await http.get(`/api/admin/shipment/shipments/count?${query}`);
@@ -155,10 +172,10 @@ export async function bulkApplyTransition({ shipments: _shipments, description, 
 export async function bulkReturnShipments({ shipments: _shipments, fulfilmentType, ...input }: BulkApplyReturnShipmentInput) {
     const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment) ? shipment.id : shipment)?.map(e => String(e));
     const formData = new FormData();
-    if(fulfilmentType){
-    formData.append('fulfilmentType', fulfilmentType);
+    if (fulfilmentType) {
+        formData.append('fulfilmentType', fulfilmentType);
     }
-    for(const key in input){
+    for (const key in input) {
         const value = (input as any)[key];
         formData.append(key, value);
     }
@@ -173,7 +190,7 @@ export async function bulkReturnShipments({ shipments: _shipments, fulfilmentTyp
 export async function bulkDeleteShipments({ shipments: _shipments, fulfilmentType, ...input }: BulkApplyReturnShipmentInput) {
     const shipments = _shipments?.map((shipment) => (shipment instanceof Shipment) ? shipment.id : shipment)?.map(e => String(e));
     const formData = new FormData();
-    for(const key in input){
+    for (const key in input) {
         const value = (input as any)[key];
         formData.append(key, value);
     }
@@ -234,7 +251,9 @@ export interface ShipmentType {
 export interface ShipmentReturnFormData {
     fulfilmentType?: ShipmentReturnType;
     // shipment: string;
-    originAddress?:  AddressFormData;
+    carrier?: string;
+    storage?: string;
+    originAddress?: AddressFormData;
     destinationAddress?: AddressFormData;
     items: ShipmentReturnItemFormData[]
 }

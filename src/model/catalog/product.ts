@@ -1,3 +1,6 @@
+import { ProductFormData } from "@/admin/repository/catalog/product_repository";
+import Category from "./category";
+
 export default class Product {
 
 
@@ -6,6 +9,7 @@ export default class Product {
     gtin?: string;
     name?: string;
     price: any;
+    category?: Category;
     enabled?: boolean;
 
     constructor({
@@ -14,6 +18,7 @@ export default class Product {
         gtin,
         name,
         price,
+        category,
         enabled,
     }: {
         id?: any;
@@ -21,6 +26,7 @@ export default class Product {
         gtin?: string;
         name?: string;
         price?: any;
+        category?: Category;
         enabled?: boolean;
     }) {
         this.id = id;
@@ -28,6 +34,7 @@ export default class Product {
         this.gtin = gtin;
         this.name = name;
         this.price = price;
+        this.category = category;
         this.enabled = enabled;
     }
 
@@ -37,6 +44,7 @@ export default class Product {
         gtin,
         name,
         price,
+        category,
         enabled,
     }: {
         id?: any;
@@ -44,6 +52,7 @@ export default class Product {
         gtin?: string;
         name?: string;
         price?: any;
+        category?: Category;
         enabled?: boolean;
     }): Product {
         return new Product({
@@ -52,6 +61,7 @@ export default class Product {
             gtin: gtin ?? this.gtin,
             name: name ?? this.name,
             price: price ?? this.price,
+            category: category ?? this.category,
             enabled: enabled ?? this.enabled,
         });
     }
@@ -63,17 +73,20 @@ export default class Product {
             gtin: json["gtin"],
             name: json["name"],
             price: json["price"],
+            category: json["category"] ? Category.fromJson(json["category"]) : undefined,
             enabled: json["enabled"],
         });
     }
 
-    toJson(): { [key: string]: any } {
+    toJson(): ProductFormData {
         return {
-            "id": this.id,
+            // "id": this.id,
             "code": this.code,
             "gtin": this.gtin,
             "name": this.name,
-            "price": this.price,
+            "category": this.category?.id,
+            // "price": this.price,
+            // "category": this.category?.toJson(),
             "enabled": this.enabled,
         };
     }

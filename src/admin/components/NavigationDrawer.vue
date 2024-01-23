@@ -124,7 +124,7 @@
                     </create-shipment-button>
                     <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments"
                         :to="{ name: 'admin:shipment:index' }" value="myfiles"></v-list-item>
-                        
+
                     <v-list-item prepend-icon="mdi-package" title="Carrier Shipments"
                         :to="{ name: 'admin:carrier:shipment:index' }" value="carrier_shipments"></v-list-item>
 
@@ -142,14 +142,17 @@
                     <v-list-item prepend-icon="mdi-truck-delivery" title="Carriers" :to="{ name: 'admin:carrier:index' }"
                         value="carrier"></v-list-item>
                     <!--  -->
+                    <v-divider />
                     <v-list-item prepend-icon="mdi-cart" title="Products" :to="{ name: 'admin:catalog:product:index' }"
                         value="products"></v-list-item>
+                    <v-list-item prepend-icon="mdi-group" title="Categories" :to="{ name: 'admin:catalog:category:index' }"
+                        value="categories"></v-list-item>
                     <v-divider />
                     <v-list-item prepend-icon="mdi-account" title="Users" :to="{ name: 'admin:account:user:index' }"
                         value="users"></v-list-item>
                     <v-divider />
-                    <v-list-item prepend-icon="mdi-warehouse" title="Warehouses" :to="{ name: 'admin:inventory:storage:index' }"
-                        value="Warehouses"></v-list-item>
+                    <v-list-item prepend-icon="mdi-warehouse" title="Warehouses"
+                        :to="{ name: 'admin:inventory:storage:index' }" value="Warehouses"></v-list-item>
 
                     <v-divider />
                     <v-list-item prepend-icon="mdi-email" title="Email Templates"

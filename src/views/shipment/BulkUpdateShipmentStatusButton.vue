@@ -44,6 +44,7 @@ import { useNotifier } from 'vuetify-notifier';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import { useDisplay } from 'vuetify';
 import { ShipmentDocumentFileAttachmentFormData } from '@/model/shipment/shipment_document_attachment';
+import { useAccountStore } from '@/store/app';
 
 interface ShipmentBulkTransitionArgs {
     shipments: (Shipment | string | number)[];
@@ -66,6 +67,7 @@ const emit = defineEmits<{
 
 const notifier = useNotifier();
 const { xs, smAndDown, sm, smAndUp } = useDisplay();
+const { isGranted } = useAccountStore();
 
 const form = ref<VForm>();
 
@@ -107,21 +109,27 @@ async function updateStatus(transition?: string) {
 
 const isLoading = computed(() => isUpdating.value || props.loading);
 
-const statuses = [
-    // { text: 'New', value: 'new' },
-    // { text: 'Assigned', value: 'assigned' },
-    // { text: 'Processing', value: 'processing' },
-    // { text: 'Ready', value: 'ready' },
-    { text: 'Pickup/In Transit', value: 'intransit' },
-    // { text: 'Delivered', value: 'delivered' },
-    { text: 'On Hold', value: 'onhold' },
-    { text: 'Rejected by Customer', value: 'rejected' },
-    // { text: 'Completed', value: 'completed' },
-    { text: 'Cancelled', value: 'cancelled' },
-];
+const statuses = computed(() => {
+    const isAdmin = isGranted('ROLE_ADMIN');
+    const statuses = [
+        // { text: 'New', value: 'new' },
+        // { text: 'Assigned', value: 'assigned' },
+        // { text: 'Processing', value: 'processing' },
+        // { text: 'Ready', value: 'ready' },
+        { text: 'Pickup/In Transit', value: 'intransit' },
+        // { text: 'Delivered', value: 'delivered' },
+        ...(isAdmin ? [{ text: 'Delivered', value: 'delivered' },] : []),
+        { text: 'On Hold', value: 'onhold' },
+        { text: 'Rejected by Customer', value: 'rejected' },
+        // { text: 'Completed', value: 'completed' },
+        { text: 'Cancelled', value: 'cancelled' },
+    ];
+
+    return statuses;
+})
 
 const possibleStatuses = computed(() => {
-    return statuses;
+    return statuses.value;//.filter(e => e.value != selectedStatus.value);
 });
 
 </script>

@@ -2,6 +2,7 @@
     <div>
         <!-- <DateRangeSelector/> -->
         <!-- {{ { rsql: filter.fulfilmentDatesRsql } }} -->
+        <!-- {{ { rsql: filter.addressRsql } }} -->
         <v-row no-gutters>
             <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
                 <ShipmentFulfilmentDateRangeFilter v-model="filter.fulfilmentDateRange"
@@ -27,15 +28,50 @@
                 <v-text-field v-model="filter.channelOrderId" label="Order ID" placeholder="Enter Order Id"
                     variant="outlined" density="compact" class="mx-1" clearable />
             </v-col>
+
+
             <v-col :cols="12" :sm="4" r-:md="4" r-:lg="3">
-                <v-select v-model="filter.fulfilmentType" label="Fulfilment Type" variant="outlined" density="compact"
-                    class="mx-1" :items="[
-                        'PICKUP_AND_DELIVERY',
-                        'DROPSHIPPING',
-                        'RETURN_ORDER',
-                        'EXCHANGE_ORDER',
-                    ]" clearable multiple></v-select>
+                <v-row class="px-3 pr-4 mt-sm-0">
+                    <!-- <v-col :cols="8"> -->
+                    <v-select v-model="filter.fulfilmentType" label="Fulfilment Type" variant="outlined" density="compact"
+                        class="mx-1" :items="[
+                            'PICKUP_AND_DELIVERY',
+                            'DROPSHIPPING',
+                            'RETURN_ORDER',
+                            'EXCHANGE_ORDER',
+                        ]" clearable multiple>
+                        <template v-slot:selection="{ item, index, }">
+                            <template v-if="index == 0">
+                                {{ item?.raw }}
+                            </template>
+                            <template v-else-if="index == ((filter.fulfilmentType?.length ?? 0) - 1)">
+                                <v-chip size="small">
+                                    +{{ (filter.fulfilmentType!.length ?? 0) - 1 }} more
+                                </v-chip>
+                            </template>
+                        </template>
+                    </v-select>
+                    <!-- </v-col> -->
+                    <!-- <v-col r-:cols="12" r-:sm="1" r-:md="4" r-v-if="!noCarrier" r-:lg="3"> -->
+                    <v-dialog max-width="800px">
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" color="primary" size="large" variant="flat" class="mt-0" :elevation="0">
+                                <v-icon>mdi-map-marker</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-card flat>
+                            <template v-slot:title>
+                                <span>Filter by Addres</span>
+                            </template>
+                            <v-card-text>
+                                <ShipmentAddressFilterForm v-model="filter.address" v-model:rsql="filter.addressRsql" />
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
+                    <!-- </v-col> -->
+                </v-row>
             </v-col>
+
             <v-col :cols="12" :sm="4" r-:md="4" r-v-if="!noCarrier" r-:lg="3">
                 <CarrierInput v-model="filter.carrier" label="Carriers" placeholder="Filter by assigned carriers"
                     variant="outlined" density="compact" class="mx-1" :disabled="noCarrier" multiple clearable />
@@ -68,6 +104,8 @@ import { useRouter } from 'vue-router';
 import { DateRangeInput } from '@/views/shipment/filter/DateRange';
 import { countShipments } from '@/admin/repository/shipment/shipment_repository';
 import { debounce } from 'lodash';
+import ShipmentAddressFilterForm from './ShipmentAddressFilterForm.vue';
+import { AddressFilterFormData } from './types';
 
 interface FilterOptions {
     channel: string[];
@@ -75,11 +113,13 @@ interface FilterOptions {
     code?: string,
     channelOrderId?: string;
     status?: string | string[];
-    fulfilmentDateRange?: DateRangeInput;
     dateRange?: DateRangeInput;
+    address?: AddressFilterFormData;
+    fulfilmentDateRange?: DateRangeInput;
     fulfilmentDatesRsql?: string;
     fulfilmentType?: string[];
     dateRangeRsql?: string;
+    addressRsql?: string;
 }
 
 const props = defineProps<{
@@ -138,6 +178,11 @@ onMounted(() => {
                 if (dateRange) {
                     rebuildDateRange(dateRange);
                     filter.dateRange = dateRange;
+                }
+
+                const address = query.address ? JSON.parse(query.address as string) : undefined;
+                if (address) {
+                    filter.address = address;
                 }
 
                 // console.log("FILTER: ", { filter });
@@ -203,6 +248,9 @@ const rsql = computed(() => {
     if (filter.dateRangeRsql) {
         query = and(query, filter.dateRangeRsql);
     }
+    if (filter.addressRsql) {
+        query = and(query, filter.addressRsql);
+    }
     return query;
 });
 
@@ -259,6 +307,7 @@ function doUpdateUrlQuery() {
             // [props.urlQueryNamespace ?? 'filter']: 
             ...filter,
             ...(props.noCarrier ? { carrier: undefined } : {}),
+            address: filter.address ? JSON.stringify(filter.address) : undefined,
             fulfilmentDateRange: filter.fulfilmentDateRange ? JSON.stringify(filter.fulfilmentDateRange) : undefined,
             dateRange: filter.dateRange ? JSON.stringify(filter.dateRange) : undefined,
             fulfilmentDatesRsql: undefined,

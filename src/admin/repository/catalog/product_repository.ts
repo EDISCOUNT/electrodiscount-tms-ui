@@ -47,12 +47,13 @@ export interface ProductType {
 }
 
 export interface ProductFormData {
-    code: string;
+    code?: string;
     gtin?: string;
-    name: string;
+    name?: string;
     // shortDescription: string;
+    category?: ID;
     description?: string;
     // type: string;
-    enabled: boolean;
+    enabled?: boolean;
     // metadata: { [i: string]: any };
 }
