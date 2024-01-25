@@ -86,6 +86,7 @@
                                                     </v-chip> -->
                                                     <!-- <ShipmentTimeRangeInput/> -->
                                                     <!-- {{ {filter} }} -->
+                                                    <!-- {{ {dateCriteria} }} -->
                                                     <ShipmentTimeRangeOptionInput v-model:criteria="dateCriteria"
                                                         v-model:rsql="parameters.dateRsql" />
                                                 </div>

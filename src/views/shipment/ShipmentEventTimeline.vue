@@ -1,5 +1,10 @@
 <template>
     <v-card flat>
+        <template v-slot:append>
+            <v-btn @click="() => refresh()" variant="plain" icon>
+                <v-icon>mdi-reload</v-icon>
+            </v-btn>
+        </template>
         <template v-if="pagination">
             <v-card-text v-if="error">
                 <v-alert type="error">
@@ -47,7 +52,7 @@
                                     <!-- {{ { attachments: event.attachments } }} -->
                                     <v-row justify="start" class="py-5">
                                         <v-col :cols="6" v-for="(attachment, i) in event.attachments" :key="attachment.id">
-                                           <shipment-event-timeline-item :attachment="attachment"/>
+                                            <shipment-event-timeline-item :attachment="attachment" />
                                         </v-col>
                                     </v-row>
 
@@ -100,9 +105,11 @@ const props = defineProps<{
     getPaginatedShipmentEvents(input: FetchShipmentEventsParams): Promise<Pagination<ShipmentEvent>>
 }>();
 
-const { data: pagination, isValidating: loading, error } = useSWRV(
+const { data: pagination, isValidating: loading, error, mutate: refresh } = useSWRV(
     () => `/api/shipment/shipments/${props.shipment.id!}/events`,
     () => props.getPaginatedShipmentEvents({ shipment: props.shipment, limit: 50 }),
 )
+
+defineExpose({ refresh });
 
 </script>

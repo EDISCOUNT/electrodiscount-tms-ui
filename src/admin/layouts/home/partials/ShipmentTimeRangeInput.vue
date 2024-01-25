@@ -33,6 +33,10 @@
                 This Year
             </v-chip>
 
+            <v-chip>
+                Ever
+            </v-chip>
+
             <template v-if="false">
                 <!-- @update:rsql="dateType = ShipmentFilterDateType.DATE_SELECT" -->
                 <ShipmentFulfilmentDateFilter v-model:rsql="rsql" :possible-fields="possibleFields" :fields="fields"
@@ -199,7 +203,8 @@ function buildRange(type: ShipmentFilterDateType) {
             return { start: startOfYear(now), end: endOfYear(now) };
 
         default:
-            return { start: undefined, end: undefined };
+            return undefined;
+            // return { start: undefined, end: undefined };
     }
 }
 

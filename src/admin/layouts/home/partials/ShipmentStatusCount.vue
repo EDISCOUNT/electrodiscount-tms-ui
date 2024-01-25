@@ -28,6 +28,7 @@ import EntityPageCount from './EntityPageCount.vue';
 import debounce from 'debounce-promise';
 import { computed } from 'vue';
 import { deepEncodeURLParams } from '@/utils/url';
+import { has } from 'lodash';
 
 const props = defineProps<{
     status: string;
@@ -39,9 +40,14 @@ const props = defineProps<{
 const nCriteria = computed(() => {
     const hash: { [i: string]: any } = {};
     for (const key in props.criteria) {
+        const value = props.criteria[key];
         if (key == 'filter') {
             hash[key] = props.criteria[key];
-        } else {
+        }
+        else if (Array.isArray(value)) {
+            hash[key] = value;
+        }
+        else {
             hash[key] = JSON.stringify(props.criteria[key]);
         }
     }

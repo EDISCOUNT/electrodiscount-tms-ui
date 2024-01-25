@@ -76,6 +76,7 @@ function updateDates(value?: DateInput) {
 }
 
 function buildCriteria(value?: DateInput) {
+    console.log("DATE RANGE VALUE: ", { value });
     let criteria: Criteria | undefined;
     value ??= dates.value;
     if (value) {

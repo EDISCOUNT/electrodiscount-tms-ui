@@ -53,19 +53,29 @@
                     </v-select>
                     <!-- </v-col> -->
                     <!-- <v-col r-:cols="12" r-:sm="1" r-:md="4" r-v-if="!noCarrier" r-:lg="3"> -->
-                    <v-dialog max-width="800px">
+                    <v-dialog v-model="addressFilterDialog" max-width="800px" ref="addressFilterForm">
                         <template v-slot:activator="{ props }">
                             <v-btn v-bind="props" color="primary" size="large" variant="flat" class="mt-0" :elevation="0">
                                 <v-icon>mdi-map-marker</v-icon>
                             </v-btn>
                         </template>
                         <v-card flat>
+
+                            <!-- <template v-slot:prepend>
+                               
+                            </template> -->
+                            <template v-slot:append>
+                                <v-btn variant="plain" icon @click="addressFilterDialog = false">
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
+                            </template>
                             <template v-slot:title>
-                                <span>Filter by Addres</span>
+                                <span>Filter by Address</span>
                             </template>
                             <v-card-text>
                                 <ShipmentAddressFilterForm v-model="filter.address" v-model:rsql="filter.addressRsql" />
                             </v-card-text>
+                           
                         </v-card>
                     </v-dialog>
                     <!-- </v-col> -->
@@ -90,7 +100,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import CarrierInput from '../CarrierInput.vue';
 import ChannelInput from '../ChannelInput.vue';
 import { computed } from 'vue';
@@ -138,6 +148,8 @@ const emit = defineEmits<{
 
 const router = useRouter();
 const { xs, sm, lg } = useDisplay();
+
+const addressFilterDialog = ref(false);
 
 const filter = reactive<FilterOptions>({
     carrier: [],

@@ -3,6 +3,7 @@ export enum ShipmentFilterDateType {
     THIS_WEEK,
     THIS_MONTH,
     THIS_YEAR,
+    EVER,
     DATE_SELECT,
     DATE_RANGE_SELECT,
 }

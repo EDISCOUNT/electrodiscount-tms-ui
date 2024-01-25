@@ -64,6 +64,13 @@
               </template>
               <v-divider />
               <v-card-text>
+
+                <v-card-text class="pb-0">
+                  <ShipmentTimeRangeInput :shipment="shipment" @update:shipment="(shipment) => onUpdateShipment(shipment)"
+                    :update-shipment="updateShipment" />
+                </v-card-text>
+                <v-divider />
+
                 <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
               </v-card-text>
             </v-card>
@@ -136,7 +143,7 @@
               </template>
               <v-divider />
               <v-card-text class="pa-2">
-                <ShipmentMapView :shipment="shipment" height="450px"/>
+                <ShipmentMapView :shipment="shipment" height="450px" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -167,7 +174,8 @@
               </template>
               <v-divider />
               <v-card-text>
-                <ShipmentEventTimeline :get-paginated-shipment-events="getPaginatedShipmentEvents" :shipment="shipment" />
+                <ShipmentEventTimeline ref="eventTimeline" :get-paginated-shipment-events="getPaginatedShipmentEvents"
+                  :shipment="shipment" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -212,6 +220,7 @@ import EmailDrawer from '@/views/mailing/email/EmailDrawer.vue';
 import SmsDrawer from '@/views/texting/sms/SmsDrawer.vue';
 import { getPaginatedShipmentEvents } from '@/carrier/repository/shipment/shipment_event_repository';
 import ShipmentMapView from '@/views/shipment/ShipmentMapView.vue';
+import ShipmentTimeRangeInput from '@/views/shipment/ShipmentTimeRangeInput.vue';
 
 const props = defineProps<{
   id: string,
@@ -234,10 +243,13 @@ onMounted(async () => {
 
 
 
+const eventTimeline = ref<typeof ShipmentEventTimeline>();
+
 function onUpdateShipment(rshipment: Shipment) {
   if (rshipment) {
     shipment.value = rshipment;
   }
+  eventTimeline.value!.refresh();
 }
 
 async function save(data: ShipmentFormData) {

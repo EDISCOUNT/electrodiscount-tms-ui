@@ -13,9 +13,7 @@ import { useDisplay } from 'vuetify';
 
 const props = defineProps<{
     shipments: (string)[],
-
 }>();
-
 
 const emit = defineEmits<{
     (e: 'deleted', ids: ID[]): void;

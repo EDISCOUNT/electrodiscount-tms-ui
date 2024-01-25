@@ -81,6 +81,7 @@
                 <ShipmentTimeRangeInput :shipment="shipment"
                   @update:shipment="(shipment) => onUpdateShipment(shipment)" />
               </v-card-text>
+              <v-divider/>
               <v-card-text>
                 <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
               </v-card-text>
@@ -230,7 +231,7 @@
               <v-divider />
               <v-card-text>
 
-                <ShipmentEventTimeline :get-paginated-shipment-events="getPaginatedShipmentEvents" :shipment="shipment" />
+                <ShipmentEventTimeline ref="eventTimeline" :get-paginated-shipment-events="getPaginatedShipmentEvents" :shipment="shipment" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -279,7 +280,8 @@ import ShipmentMapView from '@/views/shipment/ShipmentMapView.vue';
 import CarrierInput from './partials/CarrierInput.vue';
 import ChannelInput from './partials/ChannelInput.vue';
 import StorageInput from './partials/StorageInput.vue';
-import ShipmentTimeRangeInput from './partials/ShipmentTimeRangeInput.vue';
+import ShipmentTimeRangeInput from '@/views/shipment/ShipmentTimeRangeInput.vue';
+// import ShipmentTimeRangeInput from './partials/ShipmentTimeRangeInput.vue';
 
 const props = defineProps<{
   id: string,
@@ -317,10 +319,13 @@ onMounted(async () => {
 // }
 
 
+const eventTimeline = ref<typeof ShipmentEventTimeline>();
+
 
 function onUpdateShipment(rshipment: Shipment) {
   if (rshipment) {
     shipment.value = rshipment;
+    eventTimeline.value!.refresh();
   }
 }
 

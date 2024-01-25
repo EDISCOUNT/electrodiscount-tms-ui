@@ -170,6 +170,12 @@
 
             </v-row>
         </v-card-text>
+        <v-card-actions>
+            <v-spacer/>
+            <v-btn variant="plain" @click="() => clear()">
+                Clear
+            </v-btn>
+        </v-card-actions>
     </v-card>
 </template>
 <script lang="ts" setup>
@@ -219,7 +225,7 @@ function buildRsql(input: AddressFilterFormData) {
     const reverseShipmentTypes = [ShipmentFulfilmentType.RETURN_ORDER, ShipmentFulfilmentType.EXCHANGE_ORDER];
     const originFilter = buildAddressRsql(input, 'originAddress');
     const destinationFilter = buildAddressRsql(input, 'destinationAddress');
-    if(!originFilter && !destinationFilter) {
+    if (!originFilter && !destinationFilter) {
         return undefined;
     }
     return or(
@@ -264,5 +270,13 @@ function buildAddressRsql(input: AddressFilterFormData, field: string): string {
     }
 
     return and(...predicates);
+}
+
+
+
+function clear() {
+    for (const key in data) {
+        delete (data as any)[key];
+    }
 }
 </script>

@@ -3,7 +3,7 @@
         <v-icon>mdi-undo</v-icon>
         <span v-show="smAndUp">Return</span>
         <v-divider class="my-0 ml-1" vertical/>
-        <v-menu>
+        <v-menu open-on-hover open-on-focus>
             <template v-slot:activator="{props}">
                 <v-icon v-bind="props" @click.stop="() => undefined">mdi-chevron-down</v-icon>
             </template>
