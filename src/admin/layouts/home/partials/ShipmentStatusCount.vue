@@ -2,7 +2,7 @@
     <!-- {{ {criteria} }} -->
     <!-- {{ {criteriaParams} }} -->
     <v-card :to="{ name: 'admin:shipment:index', query: { status, ...nCriteria } }" flat>
-        <EntityPageCount :fetcher="() => countShipments({ criteria: { ...criteria, status, filter } })!"
+        <EntityPageCount :fetcher="() => countShipments({ criteria: { ...criteria, status, filter } })"
             :uri="`/api/admin/shipment/shipments/count?status=${status}&${criteriaParams}`">
             <template v-slot:title>
                 <slot name="title">
@@ -24,7 +24,8 @@
 <script lang="ts" setup>
 import { getPaginatedShipments, countShipments as _countShipments } from '@/admin/repository/shipment/shipment_repository';
 import EntityPageCount from './EntityPageCount.vue';
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
+import debounce from 'debounce-promise';
 import { computed } from 'vue';
 import { deepEncodeURLParams } from '@/utils/url';
 

@@ -1,6 +1,6 @@
 <template>
     <!-- {{ {criteria, status, dType: typeof(criteria?.dateRange)} }} -->
-    <EntityPageCount :fetcher="() => countShipments({ criteria: { ...criteria, status } })!"
+    <EntityPageCount :fetcher="() => countShipments({ criteria: { ...criteria, status } })"
         :uri="`/api/admin/shipment/shipments?status=${status}&filter=${criteria.filter}&criteria=${JSON.stringify(criteria)}`">
         <template v-slot:default="{ pagination, loading }">
             <v-badge color="primary" :content="pagination?.count ?? 0" floating>
@@ -19,7 +19,8 @@ import EntityPageCount from './EntityPageCount.vue';
 import Carrier from '@/model/carrier/carrier';
 import { computed } from 'vue';
 import { and, comparison, eq } from 'rsql-builder';
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
+import debounce from 'debounce-promise';
 
 const props = defineProps<{
     status: string;
