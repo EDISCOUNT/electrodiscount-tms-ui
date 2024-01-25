@@ -217,7 +217,7 @@ const headers = [
 ];
 
 
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(100);
 const search = ref('');
 const serverItems = ref<any[]>([]);
 const loading = ref(true);

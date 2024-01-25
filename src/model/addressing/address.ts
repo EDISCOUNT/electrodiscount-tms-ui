@@ -66,7 +66,7 @@ export default class Address {
     }
 
     get label(): string {
-        return ` ${this.street ?? ''}, ${this.city ?? ''}, ${this.postcode ?? ''}, ${this.provinceCode ?? this.provinceName ?? ''}, ${this.countryCode ?? ''}`;
+        return ` ${this.street ?? ''}, ${this.postcode ?? ''}, ${this.city ?? ''}, ${(this.provinceName?? this.provinceCode) ? `${this.provinceName?? this.provinceCode},` : ''} ${this.countryCode ?? ''}`;
     }
 
     get formatted(): string {

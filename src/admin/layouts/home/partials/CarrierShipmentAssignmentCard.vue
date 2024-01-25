@@ -140,9 +140,14 @@ const isDark = computed(() => theme.current.value.dark);
 const nCriteria = computed(() => {
     const hash: { [i: string]: any } = {};
     for (const key in props.criteria) {
+        const value = props.criteria[key];
         if (key == 'filter') {
             hash[key] = props.criteria[key];
-        } else {
+        }
+        else if (Array.isArray(value)) {
+            hash[key] = value;
+        }
+        else {
             hash[key] = JSON.stringify(props.criteria[key]);
         }
     }

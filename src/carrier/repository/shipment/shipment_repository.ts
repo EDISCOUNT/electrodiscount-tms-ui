@@ -22,12 +22,12 @@ export async function getPaginatedShipments({ page, limit, criteria }: { page?: 
         if (!Array.isArray(status)) {
             status = [status];
         }
-        let filter = criteria.filter ?? '';
-        filter = and(
-            filter,
-            comparison('status', inList(...status)),
-        );
-        criteria.filter = filter;
+        // let filter = criteria.filter ?? '';
+        // filter = and(
+        //     filter,
+        //     comparison('status', inList(...status)),
+        // );
+        // criteria.filter = filter;
         // delete criteria.status;
     }
     const query = deepEncodeURLParams({

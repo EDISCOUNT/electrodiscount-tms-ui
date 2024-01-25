@@ -16,6 +16,7 @@
         </v-card-title> -->
         <v-card-text>
             <!-- {{ { dates, rsql } }} -->
+
             <!-- {{ { dType: typeof(dates)} }} -->
             <ShipmentTimeRangeInput v-model:dates="dates" :possible-fields="[]" :fields="[]" r-:possible-fields="[
                 { label: 'Exact Delivery Date', value: 'fulfilment.latestDeliveryDate' },

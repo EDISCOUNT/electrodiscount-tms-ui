@@ -25,7 +25,7 @@
             </v-card-text>
             <v-divider />
             <v-card-text>
-                <div v-show="isDelivery">
+                <div v-show="requiresAttachment">
                     <!-- <v-file-input v-model="attachments" chips multiple label="Add file Attachments" variant="outlined"
                         :rules="[
                             (v) => (selectedStatus != 'delivered') || v?.length > 0 || 'This filed is required'
@@ -39,7 +39,7 @@
                             <v-file-input @update:focused="(focused) => focused && toggle()"
                                 :model-value="attachments.map(e => e.src)" :rules="isAdmin ? [] : [
                                     (v) => (selectedStatus != 'delivered') || v?.length > 0 || 'This filed is required'
-                                ]" label="File Attachments(POD)" variant="outlined" multiple chips readonly />
+                                ]" :label="attachmentLabel" variant="outlined" multiple chips readonly />
                         </template>
                     </ShipmentDocumentDrawer>
                     <v-divider class="my-3" />
@@ -76,6 +76,7 @@ import { useNotifier } from 'vuetify-notifier';
 import { VForm } from 'vuetify/lib/components/index.mjs';
 import ShipmentDocumentDrawer from './document/ShipmentDocumentDrawer.vue';
 import { useAccountStore } from '@/store/app';
+import ShipmentFulfilmentType from '@/model/shipment/shipment_fulfilment_type';
 
 interface ShipmentTransitionArgs {
     shipment: Shipment;
@@ -111,9 +112,25 @@ function selectStatus(status: string) {
 
 const isAdmin = computed(() => isGranted('ROLE_ADMIN'));
 const isDelivery = computed(() => selectedStatus.value == 'delivered');
+const isPickup = computed(() => selectedStatus.value == 'intransit');
 const isCancelation = computed(() => selectedStatus.value == 'cancelled');
 const isHold = computed(() => selectedStatus.value == 'onhold');
+const isReturnShipment = computed(() => {
+    const returnTypes = [ShipmentFulfilmentType.RETURN_ORDER, ShipmentFulfilmentType.EXCHANGE_ORDER];
+    return props.shipment.fulfilmentType && returnTypes.includes(props.shipment.fulfilmentType)
+});
+const requiresAttachment = computed(() => isDelivery.value || (isReturnShipment.value && isPickup.value));
 // selectedStatus
+
+const attachmentLabel = computed(() => {
+    if (isDelivery.value) {
+        return 'File Attachments(POD)'
+    }
+    if (isPickup.value) {
+        return 'Pickup Confirmation';
+    }
+    return 'Document Files'
+})
 
 const isUpdating = ref(false);
 

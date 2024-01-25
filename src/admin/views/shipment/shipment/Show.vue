@@ -83,7 +83,7 @@
               </v-card-text>
               <v-divider/>
               <v-card-text>
-                <ShipmentFulfilmentCard :fulfilment="shipment?.fulfilment" />
+                <ShipmentFulfilmentCard :shipment="shipment" :fulfilment="shipment?.fulfilment" />
               </v-card-text>
             </v-card>
             <v-card class="fill-height" color="transparent" flat>

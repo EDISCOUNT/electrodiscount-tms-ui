@@ -30,12 +30,23 @@
             </v-col>
             <v-col :cols="12" :sm="3" r-:md="4" r-:lg="3">
                 <v-select v-model="filter.fulfilmentType" label="Fulfilment Type" variant="outlined" density="compact"
-                    class="mx-1" :items="[
-                        'PICKUP_AND_DELIVERY',
-                        'DROPSHIPPING',
-                        'RETURN_ORDER',
-                        'EXCHANGE_ORDER',
-                    ]" clearable multiple></v-select>
+                        class="mx-1" :items="[
+                            'PICKUP_AND_DELIVERY',
+                            'DROPSHIPPING',
+                            'RETURN_ORDER',
+                            'EXCHANGE_ORDER',
+                        ]" clearable multiple>
+                        <template v-slot:selection="{ item, index, }">
+                            <template v-if="index == 0">
+                                {{ item?.raw }}
+                            </template>
+                            <template v-else-if="index == ((filter.fulfilmentType?.length ?? 0) - 1)">
+                                <v-chip size="small">
+                                    +{{ (filter.fulfilmentType!.length ?? 0) - 1 }} more
+                                </v-chip>
+                            </template>
+                        </template>
+                    </v-select>
             </v-col>
             <!-- <v-col :cols="12" :sm="4" r-:md="4" r-v-if="!noCarrier" r-:lg="3">
                 <CarrierInput v-model="filter.carrier" label="Carriers" placeholder="Filter by assigned carriers"

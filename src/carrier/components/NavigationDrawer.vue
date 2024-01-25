@@ -7,8 +7,7 @@
         </template>
 
         <template v-slot:append>
-            <v-list-item v-if="user" :prepend-avatar="AvatarImage" :title="user.fullName"
-                :subtitle="user.username" nav>
+            <v-list-item v-if="user" :prepend-avatar="AvatarImage" :title="user.fullName" :subtitle="user.username" nav>
                 <template v-slot:append>
                     <v-menu>
                         <template v-slot:activator="{ props }">
@@ -34,6 +33,7 @@
 
 
         <v-toolbar-items v-if="!xs">
+            <v-list-item prepend-icon="mdi-home" title="Home" :to="{ name: 'carrier:home' }" value="home" exact></v-list-item>
             <v-list-item prepend-icon="mdi-package-variant-closed" title="Shipments"
                 :to="{ name: 'carrier:shipment:index' }" value="myfiles"></v-list-item>
 

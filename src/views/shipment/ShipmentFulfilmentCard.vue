@@ -69,17 +69,53 @@
                         </template>
                     </v-list-item>
                 </v-col>
+
+                <v-col :cols="12" :md="6">
+                    <v-list-item>
+                        <template v-slot:prepend>
+                            <v-icon>mdi-group</v-icon>
+                        </template>
+                        <template v-slot:title>
+                            <template v-if="shipment?.fulfilmentType">
+                                <strong>{{ shipment.fulfilmentType }}</strong>
+                            </template>
+                            <span class="text-grey" v-else></span>
+                        </template>
+                        <template v-slot:subtitle>
+                            <span>Fulfilment Type</span>
+                        </template>
+                    </v-list-item>
+                </v-col>
+
+                <!-- <v-col :cols="12" :md="6">
+                    <v-list-item>
+                        <template v-slot:prepend>
+                            <v-icon>mdi-group</v-icon>
+                        </template>
+                        <template v-slot:title>
+                            <template v-if="fulfilment?.timeFrameType">
+                                <strong>{{ fulfilment.timeFrameType }}</strong>
+                            </template>
+                            <span class="text-grey" v-else></span>
+                        </template>
+                        <template v-slot:subtitle>
+                            <span>Delivery Type</span>
+                        </template>
+                    </v-list-item>
+                </v-col> -->
             </v-row>
         </v-card-text>
     </v-card>
 </template>
 <script lang="ts" setup>
 
+import Shipment from '@/model/shipment/shipment';
 import ShipmentFulfilment from '@/model/shipment/shipment_fulfilment';
 import { formatDate } from '@/utils/format';
 
 const props = defineProps<{
     fulfilment?: ShipmentFulfilment;
+    shipment?: Shipment;
 }>();
 
 
