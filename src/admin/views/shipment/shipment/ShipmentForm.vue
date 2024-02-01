@@ -64,6 +64,7 @@
                                                         'DROPSHIPPING',
                                                         'RETURN_ORDER',
                                                         'EXCHANGE_ORDER',
+                                                        'REPAIR_ORDER',
                                                     ]"></v-select>
                                             </v-col>
 
@@ -443,7 +444,7 @@ function checkIsReturnShipment(shipment?: Shipment | ShipmentFulfilmentType) {
     if (!shipment) {
         return false;
     }
-    return [ShipmentFulfilmentType.RETURN_ORDER, ShipmentFulfilmentType.EXCHANGE_ORDER].includes(shipment);
+    return [ShipmentFulfilmentType.RETURN_ORDER, ShipmentFulfilmentType.EXCHANGE_ORDER, ShipmentFulfilmentType.REPAIR_ORDER].includes(shipment);
 }
 
 function addItem() {
