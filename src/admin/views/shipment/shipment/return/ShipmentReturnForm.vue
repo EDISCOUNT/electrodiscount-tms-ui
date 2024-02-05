@@ -81,6 +81,7 @@
                                 <v-select v-model="data.fulfilmentType" :items="[
                                     'RETURN_ORDER',
                                     'EXCHANGE_ORDER',
+                                    'REPAIR_ORDER',
                                 ]" label="Return Type" placeholder="Select return type" variant="outlined"
                                     density="compact" />
                             </v-card-text>

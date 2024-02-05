@@ -64,9 +64,11 @@
                                                     <v-chip value="RETURN_ORDER">
                                                         Return
                                                     </v-chip>
-
                                                     <v-chip value="EXCHANGE_ORDER">
                                                         Exchange
+                                                    </v-chip>
+                                                    <v-chip value="REPAIR_ORDER">
+                                                        Repair
                                                     </v-chip>
                                                 </v-chip-group>
                                                 <!-- </v-col> -->

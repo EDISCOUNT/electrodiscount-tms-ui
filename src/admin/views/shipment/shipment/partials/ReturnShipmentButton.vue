@@ -21,6 +21,20 @@
                         </span>
                     </template>
                 </v-list-item>
+                <v-divider/>
+                <v-list-item @click.stop="() => returnShipments(ShipmentReturnType.REPAIR_ORDER)" >
+                    <template v-slot:prepend>
+                        <v-icon>mdi-tools</v-icon>
+                    </template>
+                    <template v-slot:title>
+                        Return Repair
+                    </template>
+                    <template v-slot:subtitle>
+                        <span>
+                            Create a repair order instead
+                        </span>
+                    </template>
+                </v-list-item>
             </v-list>
         </v-menu>
     </v-btn>

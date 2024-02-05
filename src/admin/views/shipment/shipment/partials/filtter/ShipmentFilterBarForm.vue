@@ -39,6 +39,7 @@
                             'DROPSHIPPING',
                             'RETURN_ORDER',
                             'EXCHANGE_ORDER',
+                            'REPAIR_ORDER',
                         ]" clearable multiple>
                         <template v-slot:selection="{ item, index, }">
                             <template v-if="index == 0">
