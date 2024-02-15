@@ -124,7 +124,7 @@
                 <v-icon>mdi-tools</v-icon>
               </template>
               <template v-slot:title>
-                Shipment Status
+                Addtional Services
               </template>
               <v-divider />
               <v-card-text>

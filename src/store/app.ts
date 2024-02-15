@@ -116,7 +116,7 @@ export const useAccountStore = defineStore('account', () => {
   });
 
 
-  let _fetchUserPromise: Promise<User> | undefined;;
+  let _fetchUserPromise: Promise<User> | undefined;
 
   const targetRoute = ref<TargetRouteInfo>();
   const user = ref<User>();

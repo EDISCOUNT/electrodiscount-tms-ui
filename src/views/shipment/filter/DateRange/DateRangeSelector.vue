@@ -18,7 +18,7 @@
             </v-row>
             <v-date-picker v-else v-model:month="month" v-model:year="year" :model-value="selectedDate"
               @update:model-value="handleDateChange" :allowed-dates="allowedDates" :min="minDate" :max="maxDate"
-              label="Select Date Range" @change="handleDateChange" multiple>
+              label="Select Date Range" @change="handleDateChange" show-adjacent-months multiple>
               <template v-slot:title>
                 <slot name="title"></slot>
               </template>
